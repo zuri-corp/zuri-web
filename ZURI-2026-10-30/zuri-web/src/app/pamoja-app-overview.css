@@ -1,0 +1,33 @@
+.pamoja-audiences .audience-hero h1{font-size:clamp(44px,5.2vw,76px);max-width:1000px;text-wrap:balance}
+.pamoja-app-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.pamoja-app-world{--app-accent:#00d4ff;--app-tint:#edf9fc;padding:29px;border:1px solid #c2d3df;border-radius:19px;background:linear-gradient(140deg,#fff,var(--app-tint));box-shadow:0 10px 28px #1a34430a;min-width:0}
+.app-world-motion{--app-accent:#ff6b1a;--app-tint:#fff3eb}.app-world-rizz{--app-accent:#ff2878;--app-tint:#fceff5}.app-world-lore{--app-accent:#4b8cf7;--app-tint:#edf2fe}
+.pamoja-app-world header{display:flex;align-items:center;gap:14px;font-size:14px;font-weight:600;color:#294657}
+.pamoja-app-world header img{width:48px;height:48px;padding:9px;background:#152536;border:1px solid #45586a;border-radius:14px;box-shadow:0 5px 17px #19374615}
+.pamoja-app-world h3{font-size:30px;line-height:1.16;letter-spacing:-.035em;color:#203b4e;margin:25px 0 18px;font-weight:500}
+.pamoja-app-world p{font-size:14px;line-height:1.9;color:#4a6172;max-width:500px}
+.pamoja-app-world small{display:block;border-top:1px solid #bdcfdc;margin-top:25px;padding-top:18px;font-size:11px;line-height:1.9;color:#42607a}
+.pamoja-lounge-note{background:#eeeef8;border:1px solid #c7c9df;border-radius:14px;padding:24px 28px;margin-top:20px}
+.pamoja-lounge-note>span{font-size:10px;letter-spacing:.1em;color:#5b547c;line-height:1.8}
+.pamoja-lounge-note p{font-size:14px;line-height:1.9;color:#505674;max-width:950px;margin-top:12px}
+.pamoja-connected-journey{background:linear-gradient(130deg,#183442,#254654);border:1px solid #52727e;border-radius:18px;padding:32px;margin-top:28px;color:#f0f8fa}
+.pamoja-connected-journey>span{font-size:10px;letter-spacing:.1em;line-height:1.8;color:#b7d3da}
+.pamoja-connected-journey h3{font-size:34px;line-height:1.15;letter-spacing:-.035em;margin:22px 0 28px;font-weight:500}
+.pamoja-connected-journey h3 em{font-family:Georgia,serif;font-weight:400;color:#c5e7df}
+.pamoja-connected-journey ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;list-style:none;padding:0;counter-reset:journey}
+.pamoja-connected-journey li{padding-top:16px;border-top:1px solid #a2c9ce55;counter-increment:journey}
+.pamoja-connected-journey li b{display:block;font-size:15px;line-height:1.9;font-weight:500;color:#f1fcff}
+.pamoja-connected-journey li b:before{content:counter(journey,decimal-leading-zero) ' / ';font-size:10px;color:#b7d8dd;margin-right:6px}
+.pamoja-connected-journey li span{display:block;font-size:12px;line-height:1.9;color:#cce1e8;margin-top:12px}
+.pamoja-connected-journey>p{font-size:12px;line-height:1.9;color:#d8ece9;margin-top:27px}
+.pamoja-connected-journey>small{display:block;font-size:11px;line-height:1.9;color:#bfd5dd;margin-top:12px;max-width:900px}
+.pamoja-opportunity-fit{padding:30px;background:linear-gradient(135deg,#eaf1f7,#f3f5fa);border:1px solid #b9cbdc;border-radius:17px;margin-top:30px}
+.pamoja-opportunity-fit>span{font-size:10px;line-height:1.8;letter-spacing:.1em;color:#48647e}
+.pamoja-opportunity-fit>h3{font-size:clamp(29px,3.1vw,42px);line-height:1.16;letter-spacing:-.04em;color:#27455d;margin:20px 0 27px;font-weight:500}
+.pamoja-opportunity-fit h3 em{font-family:Georgia,serif;font-weight:400;color:#466780}
+.pamoja-opportunity-fit>div{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.pamoja-opportunity-fit h4{font-size:20px;line-height:1.3;letter-spacing:-.02em;color:#2a4f66;margin-bottom:15px}
+.pamoja-opportunity-fit article p{font-size:14px;line-height:1.9;color:#496477;max-width:470px}
+.pamoja-opportunity-fit>.pn-small{border-top:1px solid #b7cbdc;padding-top:20px;margin-top:25px;color:#4a6277;font-size:12px;line-height:1.9}
+@media(max-width:900px){.pamoja-connected-journey ol{grid-template-columns:1fr 1fr;gap:25px}}
+@media(max-width:760px){.pamoja-app-worlds{grid-template-columns:1fr;gap:16px}.pamoja-app-world{padding:25px}.pamoja-app-world h3{font-size:29px}.pamoja-connected-journey{padding:25px}.pamoja-connected-journey h3{font-size:32px}.pamoja-connected-journey ol{grid-template-columns:1fr}.pamoja-opportunity-fit{padding:25px}.pamoja-opportunity-fit>div{grid-template-columns:1fr;gap:24px}.pamoja-lounge-note{padding:24px}}

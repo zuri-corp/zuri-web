@@ -1,0 +1,10 @@
+project_id = "eghtvbqzytyxsdgvwkge"
+
+# Each handler verifies the actual user token with Supabase Auth. A publishable
+# key alone never authorizes private operations. Supports asymmetric Auth JWTs.
+[functions.zuri-api]
+verify_jwt = false
+[functions.zuri-media]
+verify_jwt = false
+[functions.zuri-ai]
+verify_jwt = false

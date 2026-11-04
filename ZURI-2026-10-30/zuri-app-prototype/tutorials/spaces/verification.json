@@ -1,0 +1,10 @@
+{
+  "width": 720,
+  "height": 1280,
+  "frames": 720,
+  "fps": 12.0,
+  "seconds": 60.0,
+  "codec": "VP8",
+  "first_frame_readable": true,
+  "last_frame_readable": true
+}

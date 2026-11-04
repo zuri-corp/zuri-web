@@ -1,0 +1,11 @@
+const worlds=[
+ {id:'aura',name:'Aura',promise:'Find where you belong.',tabs:'Feed · Spaces · Societies · Find',text:'Discover people, establishments, communities and offerings. Keep the context when you find something worth pursuing.'},
+ {id:'motion',name:'Motion',promise:'Turn intention into plans.',tabs:'Planner · Events · Pings',text:'Organise tasks, prepare gatherings and plan a next step. After an activity, collect a recap with reflections and follow-up work.'},
+ {id:'rizz',name:'Rizz',promise:'Give your world a voice.',tabs:'Feed · Create · Channels · Chats',text:'Create posts, organise channel updates and keep conversations in one messaging home. Your work and progress have a place to be seen.'},
+ {id:'lore',name:'Lore',promise:'Make something of your moments.',tabs:'Moments · Discover · Chapters · Profile',text:'Collect moments, notes, tasks and events in Chapters. Choose the work you share and edit the name, photo and introduction that represent you.'},
+];
+export default function ZuriAppOverview(){return <>
+ <div className="pamoja-app-worlds">{worlds.map(world=><article className={`pamoja-app-world app-world-${world.id}`} key={world.id}><header><img src={`/brands/app/${world.id}.svg`} alt="" width={48} height={48}/><span>{world.name}</span></header><h3>{world.promise}</h3><p>{world.text}</p><small>{world.tabs}</small></article>)}</div>
+ <div className="pamoja-lounge-note"><span>YOUR STARTING PLACE / LOUNGE</span><p>See your open tasks, owned channels, Chapters and request drafts, with a direct route to the work. Personal counts come from your records.</p></div>
+ <div className="pamoja-connected-journey"><span>ONE ACTIVITY / CONNECTED ACROSS ZURI</span><h3>Keep the context.<br/><em>Take the next step.</em></h3><ol><li><b>Aura</b><span>Discover a venue and prepare an enquiry.</span></li><li><b>Motion</b><span>Plan the next step; one task appears in Planner and its Chapter.</span></li><li><b>Lore</b><span>Collect selected moments and a private recap.</span></li><li><b>Rizz</b><span>Prepare a separate channel update, with its source linked.</span></li></ol><p>Save to Chapter · Plan a next step · Prepare an update · Collect a recap</p><small>Linking a source, creating a task and publishing an update are different actions. Private Chapter contents are not copied automatically.</small></div>
+ </>}

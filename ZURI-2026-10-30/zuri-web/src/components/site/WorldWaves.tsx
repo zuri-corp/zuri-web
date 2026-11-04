@@ -1,0 +1,1 @@
+export default function WorldWaves(){return <div className="select-waves" aria-hidden="true"><svg viewBox="0 0 1400 600" fill="none" preserveAspectRatio="none"><path d="M-100 420C160 50 320 660 650 270S1140 510 1500 80"/><path d="M-100 460C220 90 310 700 680 310S1190 550 1500 120"/><path d="M-100 500C180 130 380 740 730 350S1200 590 1500 160"/></svg></div>}

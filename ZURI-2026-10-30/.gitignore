@@ -1,0 +1,10 @@
+**/node_modules/
+**/.next/
+**/dist/
+**/dist-website/
+**/.env*
+!**/.env.example
+!**/.env.testing.example
+**/*.log
+**/*.tsbuildinfo
+**/.vercel/

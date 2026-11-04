@@ -1,0 +1,2 @@
+import {intakePhotoPaths} from '@/lib/pamoja/intake';
+export default function IntakePhotos({message}:{message:string|null}){const paths=intakePhotoPaths(message);return paths.length?<div className="mt-5 flex flex-wrap gap-4">{paths.map((path,i)=><a href={`/api/admin/pamoja/photos?path=${encodeURIComponent(path)}`} target="_blank" rel="noreferrer" className="text-sm text-blue-700 underline" key={path}>View submitted photo {i+1} ↗</a>)}</div>:null}

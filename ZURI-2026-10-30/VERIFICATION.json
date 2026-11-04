@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-30",
+  "websiteTests": {"passed":276,"failed":0},
+  "appTests": {"passed":123,"failed":0},
+  "appTypecheckAndProductionBuild": "passed",
+  "embeddedAppBuild": "passed; generated directory replaced to remove obsolete bundles",
+  "nextProductionBuild": "passed with Next.js16.4.3 and webpack",
+  "dependencyManifestAndLockConsistency": "passed for both projects",
+  "exportHelperSyntax": "passed",
+  "apiCheckerLive": {"healthHttp":200,"privateAccountWithoutSignInHttp":401},
+  "freshDependencyInstallOnAnotherMachine": "not performed; install instructions and lockfiles included",
+  "verifiedAccountEndToEnd": "pending owner sign-in",
+  "providerCallsMadeForExport": false,
+  "remoteCustomerWritesMadeForExport": false,
+  "aiExecutionEnabled": false,
+  "opportunityIngestionEnabled": false,
+  "quicketAndPayments": "not activated integrations",
+  "warnings": ["App JavaScript bundle has a size advisory", "Some rich social/editing/administration flows remain unsupported; see app EXPORT-STATUS.md", "Real external origins, Auth email delivery and secrets require setup"]
+}

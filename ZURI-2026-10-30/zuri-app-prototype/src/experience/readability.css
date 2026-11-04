@@ -1,0 +1,76 @@
+/* Final semantic text layer: day and night share typography, not ink colours. */
+.zuri-exp{--zi-text:#f4f3fa;--zi-secondary:#c7c8d8;--zi-border:#ffffff24;--zi-control:#ffffff12;--zi-error-bg:#482d36;--zi-error-ink:#ffe0e6}
+.zuri-exp[data-mode=day]:not([data-world=lounge]){--zi-text:var(--zi-ink);--zi-secondary:var(--zi-muted);--zi-border:#202b4529;--zi-control:color-mix(in srgb,var(--zi-ink) 8%,transparent);--zi-error-bg:#f4d1d8;--zi-error-ink:#681c32}
+.zuri-exp[data-world=lounge]{--zi-text:#faf5ff;--zi-secondary:#ddd6eb}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(h1,h2,h3,h4,p,strong,label,time,small,legend,summary){color:var(--zi-text)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-muted,.xf-hint,.pj-note,.pj-pending,.pj-intro>p,.pj-section>p,.xf-ping-content>p,.zm-about p,.zm-event-body p,.zm-place-intro p,.zm-meta,.xf-info-grid small,.xf-context-action small,.xf-people span,.xf-people small,.xf-archive-label,.xf-create-author small,.xf-channel-info small,.xf-chapter-entry time,.xf-chapter-entry small,.xf-thread-note,.xf-thread-entry time,.zm-inbox-row small,.zm-inbox-row time,.zm-inbox-row p,.zm-topic-row p,.zm-topic-row small,.zx-card small,.zx-card-body>span,.zx-tasks small,.pj-row small,.pj-result p,.pj-result small,.pj-row p,.zi-upload-target span,.xf-header-title small){color:var(--zi-secondary)!important}
+.zuri-exp :is(.xf-info-grid strong,.xf-context-action strong,.xf-people span,.xf-ping-content>p,.xf-hint,.xf-thread-note){color:var(--zi-text)}
+.zuri-exp :is(.xf-info-grid small,.xf-context-action small,.xf-thread-entry time){color:var(--zi-secondary)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.xf-context-action,.xf-context-results,.xf-thread-welcome,.xf-channel-info,.zm-pinned,.zm-channel-bottom,.zm-topic-hash,.xf-ticket,.xf-ticket-preview){background:var(--zi-surface);color:var(--zi-text);border:1px solid var(--zi-border)}
+.zuri-exp .xf-context-action>span{color:var(--zi-text)}
+.zuri-exp .xf-info-grid>span{color:var(--zx-accent)}
+.zuri-exp .xf-info-grid strong{color:var(--zi-text)!important;font-size:16px;font-weight:750;line-height:1.4;margin-top:8px}
+.zuri-exp .xf-info-grid small{display:block;font-size:13px;line-height:1.45;font-weight:500;letter-spacing:0;margin-top:5px}
+.zuri-exp .xf-info-grid{gap:18px 15px;padding:20px 0}
+.zuri-exp .xf-ping-content>p{font-size:16px;line-height:1.65;margin:0 0 18px;overflow-wrap:anywhere}
+.zuri-exp .xf-people{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:12px 8px;margin:15px 0 23px}
+.zuri-exp .xf-people button{width:100%;min-width:0;min-height:72px}
+.zuri-exp .xf-people span{font-size:12px;font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+.zuri-exp .xf-people img,.zuri-exp .xf-people .zm-photo-fallback{width:46px;height:46px}
+.zuri-exp .xf-context-action strong{font-size:15px;font-weight:750;line-height:1.4}
+.zuri-exp .xf-context-action small{display:block;font-size:13px;line-height:1.45}
+.zuri-exp :is(.xf-hint,.pj-note,.pj-pending,.zx-muted,.xf-thread-note){font-size:13px!important;line-height:1.6;letter-spacing:0}
+.zuri-exp :is(.xf-context-results strong,.xf-create-author strong,.xf-channel-info strong,.zm-inbox-row strong,.pj-row strong,.pj-result strong){font-size:16px;font-weight:700;line-height:1.4}
+.zuri-exp :is(.xf-context-results small,.xf-create-author small,.xf-channel-info small,.xf-feed-post header small,.zm-inbox-row small,.zm-inbox-row time,.pj-row small,.pj-result p,.zx-card small,.zx-tasks small){font-size:12px!important;line-height:1.45;letter-spacing:0}
+.zuri-exp :is(.xf-form label,.pj-field,.pj-check,.zx-profile label){font-size:14px;font-weight:650;line-height:1.5}
+.zuri-exp :is(.xf-thread-entry p,.zm-bubble p,.zm-broadcast-post p,.xf-chapter-entry p){font-size:16px;line-height:1.65}
+.zuri-exp :is(.xf-thread-entry time,.xf-thread-entry strong,.zm-bubble small){font-size:12px}
+.zuri-exp :is(.xf-header-title small,.zx-mobile-nav button){font-size:12px;line-height:1.3}
+.zuri-exp .xf-header-title strong{font-size:20px;line-height:1.25;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.zuri-exp .xf-header-title{flex:1;min-width:0}.zuri-exp .zx-topbar>div:first-child{min-width:0}
+.zuri-exp :is(.zx-primary,.zx-secondary,.xf-soft-button,.xf-publish){font-size:15px!important;font-weight:750;line-height:1.35;min-height:44px}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-secondary,.xf-soft-button){background:var(--zi-raised);color:var(--zi-text)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-primary,.xf-publish){color:#fff}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-primary,.xf-publish) :is(span,strong,small){color:inherit}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(input,textarea)::placeholder{color:var(--zi-secondary)!important;opacity:1}
+.zuri-exp :is(.zx-alert,.zx-offline){font-size:14px;line-height:1.55;background:var(--zi-error-bg);color:var(--zi-error-ink);border-color:currentColor}
+.zuri-exp :is(.zx-alert,.zx-offline) :is(p,strong,small,button){color:inherit!important}
+.zuri-exp button:disabled{opacity:.6}
+/* Photo surfaces always use a dark scrim and light text, in either colour mode. */
+.zuri-exp .xf-ping-cover::after{background:linear-gradient(180deg,#090d184d 0%,#090d1866 38%,#090d18ed 100%)}
+.zuri-exp .xf-ping-cover h2{color:#fff!important;font-family:inherit;font-size:30px;font-weight:750;line-height:1.12;padding:115px 20px 22px;letter-spacing:-.035em;text-shadow:0 2px 10px #0009}
+.zuri-exp .xf-ping-cover>span{color:#fff!important;font-size:11px;font-weight:700;letter-spacing:.07em;text-shadow:0 1px 5px #000}
+.zuri-exp :is(.zm-space-label,.zm-event-shade,.zm-event-cover,.xf-chapter-cover,.xf-chapter-tile) :is(h2,strong,p,small,span){color:#fff!important;text-shadow:0 1px 7px #0008}
+.zuri-exp :is(.zm-space-label small,.zm-event-shade>small,.zm-event-cover small,.xf-chapter-cover>span,.xf-chapter-tile>small){font-size:12px!important;line-height:1.4}
+.zuri-exp :is(.zm-space-label strong,.zm-event-shade>strong){font-size:28px;font-weight:750;line-height:1.12}
+.zuri-exp .pj-wallpapers button,.zuri-exp .pj-wallpapers button span{color:#fff!important}
+.zuri-exp .zm-cover-tag,.zuri-exp .zm-space-badge{color:#fff!important;background:#101727c9;border-color:#ffffff55}
+.zuri-exp .xf-context-action:focus-visible,.zuri-exp .xf-people button:focus-visible{outline:3px solid var(--zx-accent);outline-offset:3px}
+.zuri-exp[data-mode=day][data-world=aura]{--zx-accent:#075e53!important;--zi-muted:#294f45}
+.zuri-exp[data-mode=day][data-world=motion]{--zx-accent:#84380d!important;--zi-muted:#65422c}
+.zuri-exp[data-mode=day][data-world=rizz]{--zx-accent:#7c204c!important;--zi-muted:#62384d}
+.zuri-exp[data-mode=day][data-world=lore]{--zx-accent:#30458f!important;--zi-muted:#384968}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-tabs button,.zm-filter-strip button,.xf-segment>button){color:var(--zi-text)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.xf-section-heading>button,.xf-channel-avatar,.zm-topic-hash){background:var(--zi-raised);color:var(--zi-text)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zm-search>span,.xf-context-search>span){color:var(--zi-secondary)}
+.zuri-exp .zm-viola-orb{background:#44305f!important;color:#fff!important;border-color:#d8c2f5}
+/* Nested activity and commerce cards must use the same surface as their app. */
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zm-pulse-post,.zm-offerings article,.zm-context-pill,.zm-event-facts,.zm-event-book,.zm-date,.zm-chat-intro,.zm-chat>header,.zm-broadcast>header,.zm-day-chip,.xf-ticket-options>button,.xf-demo-payment,.xf-attending-state,.xf-ride,.pj-offer-grid>button,.pj-result>i,.xf-create-tools button){background:var(--zi-surface)!important;color:var(--zi-text);border-color:var(--zi-border)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zm-pulse-post,.zm-offerings article,.xf-ticket-options>button,.xf-demo-payment,.xf-attending-state,.xf-ride,.pj-offer-grid>button) :is(p,span,strong,small,label,time){color:var(--zi-text)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zm-author small,.zm-offerings small,.zm-offerings p,.zm-ping-row small,.zm-ping-row span>span,.zm-chat-intro p,.zm-event-facts small,.xf-ride small,.xf-ticket-options small,.pj-offer-grid small){color:var(--zi-secondary)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zm-local-tabs button,.zm-context-pill,.zm-offerings button,.zm-pulse-post>.zx-text,.zm-event-book,.xf-create-tools button){color:var(--zx-accent)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) .xf-ticket-options>button[aria-pressed=true]{background:var(--zi-raised)!important;outline:2px solid var(--zx-accent);outline-offset:-2px}
+.zuri-exp .zm-author strong{font-size:16px;font-weight:750;line-height:1.4}
+.zuri-exp .zm-author small{display:block;font-size:12px;line-height:1.45;margin-top:3px}
+.zuri-exp .zm-author{padding:14px;align-items:flex-start;text-align:left}
+.zuri-exp .zm-author>img{width:38px;height:38px;flex-shrink:0}
+.zuri-exp .zm-pulse-post{margin:13px 0;border-radius:21px}
+.zuri-exp .zm-pulse-post>p{font-size:16px;line-height:1.6}
+.zuri-exp .zm-pulse-post>.zi-post-meta{padding:7px 14px}
+.zuri-exp .zm-pulse-post>.zx-text{margin:0 14px 7px}
+.zuri-exp :is(.zm-offerings strong,.zm-ping-row strong){font-size:16px;font-weight:700}
+.zuri-exp :is(.zm-offerings p,.zm-offerings small,.zm-ping-row span>span,.zm-event-facts small){font-size:13px;line-height:1.5}
+.zuri-exp .zm-offerings button,.zuri-exp .zm-local-tabs button{font-size:14px;font-weight:650;min-height:44px}
+.zuri-exp .xf-attend-cover :is(h2,strong,p,small,span){color:#fff!important}
+.zuri-exp .xf-attend-cover{background:#263347}
+@media(max-width:370px){.zuri-exp .xf-header-title strong{font-size:18px}.zuri-exp .xf-ping-cover h2{font-size:27px}.zuri-exp .xf-info-grid strong{font-size:15px}}

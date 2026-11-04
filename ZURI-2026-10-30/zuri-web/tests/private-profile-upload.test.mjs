@@ -1,0 +1,7 @@
+import './hooks.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {NextRequest} from 'next/server.js';
+import {state,reset} from './supabase-mock.mjs';
+const route=await import('../src/app/api/pamoja/intake/route.ts');
+test('intake fails closed before uploading when its staging bucket is public',async()=>{const oldURL=process.env.SUPABASE_URL,oldKey=process.env.SUPABASE_SECRET_KEY;try{process.env.SUPABASE_URL='https://example.supabase.co';process.env.SUPABASE_SECRET_KEY='test-only-not-a-key';reset();state.bucketPublic=true;const form=new FormData();form.set('profile',JSON.stringify({kind:'space',name:'Test business',description:'A test presence',sells:'',offers:'',location:'',links:'',email:'owner@example.com',package:'presence',consent:true}));form.append('photos',new Blob([new Uint8Array([255,216,255])],{type:'image/jpeg'}),'photo.jpg');const result=await route.POST(new NextRequest('http://localhost/api/pamoja/intake',{method:'POST',headers:{origin:'http://localhost'},body:form}));assert.equal(result.status,503);assert.equal(state.calls.some(c=>c.operation==='upload'),false);assert.equal(state.calls.some(c=>c.table==='enquiries'),false)}finally{reset();if(oldURL===undefined)delete process.env.SUPABASE_URL;else process.env.SUPABASE_URL=oldURL;if(oldKey===undefined)delete process.env.SUPABASE_SECRET_KEY;else process.env.SUPABASE_SECRET_KEY=oldKey}});

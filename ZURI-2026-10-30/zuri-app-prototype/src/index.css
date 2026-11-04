@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import 'tailwindcss';
+
+html, body, #root {
+  height: 100%;
+  background: #03030A;
+  overflow: hidden;
+}
+
+:root {
+  --page-bg: #03030A;
+  --status-text: rgba(255,255,255,0.5);
+
+  --glass-05: rgba(255,255,255,0.05);
+  --glass-06: rgba(255,255,255,0.06);
+  --glass-07: rgba(255,255,255,0.07);
+  --glass-08: rgba(255,255,255,0.08);
+  --glass-09: rgba(255,255,255,0.09);
+  --glass-10: rgba(255,255,255,0.1);
+  --glass-12: rgba(255,255,255,0.12);
+  --glass-14: rgba(255,255,255,0.14);
+  --glass-18: rgba(255,255,255,0.18);
+  --glass-50: rgba(255,255,255,0.5);
+
+  --surface-blur1: rgba(15,15,26,0.55);
+  --surface-blur2: rgba(15,15,26,0.6);
+  --surface-blur3: rgba(10,10,21,0.55);
+
+  --wallpaper-25: rgba(6,6,13,0.25);
+  --wallpaper-55: rgba(6,6,13,0.55);
+  --wallpaper-65: rgba(6,6,13,0.65);
+  --wallpaper-92: rgba(6,6,13,0.92);
+}
+
+html.light, html.light body { background: #EDEDF4; }
+
+.light {
+  --color-eco-bg: #EDEDF4;
+  --color-eco-surface: #FFFFFF;
+  --color-eco-surface2: #F5F5FA;
+  --color-eco-surface3: #E8E8F0;
+  --color-eco-border: rgba(10,10,30,0.08);
+  --color-eco-border2: rgba(10,10,30,0.14);
+  --color-eco-text: #14141F;
+  --color-eco-muted: #6B6B85;
+  --color-eco-subtle: #A6A6BE;
+
+  --page-bg: #D8D8E2;
+  --status-text: rgba(10,10,25,0.55);
+
+  --glass-05: rgba(10,10,30,0.04);
+  --glass-06: rgba(10,10,30,0.05);
+  --glass-07: rgba(10,10,30,0.055);
+  --glass-08: rgba(10,10,30,0.06);
+  --glass-09: rgba(10,10,30,0.07);
+  --glass-10: rgba(10,10,30,0.08);
+  --glass-12: rgba(10,10,30,0.1);
+  --glass-14: rgba(10,10,30,0.12);
+  --glass-18: rgba(10,10,30,0.16);
+  --glass-50: rgba(10,10,30,0.35);
+
+  --surface-blur1: rgba(255,255,255,0.7);
+  --surface-blur2: rgba(255,255,255,0.75);
+  --surface-blur3: rgba(255,255,255,0.7);
+
+  --wallpaper-25: rgba(237,237,244,0.3);
+  --wallpaper-55: rgba(237,237,244,0.62);
+  --wallpaper-65: rgba(237,237,244,0.72);
+  --wallpaper-92: rgba(237,237,244,0.95);
+}
+
+@theme {
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --color-eco-bg: #06060D;
+  --color-eco-surface: #0F0F1A;
+  --color-eco-surface2: #171725;
+  --color-eco-surface3: #20202F;
+  --color-eco-border: rgba(255,255,255,0.07);
+  --color-eco-border2: rgba(255,255,255,0.13);
+  --color-eco-text: #F0F0FF;
+  --color-eco-muted: #6A6A8E;
+  --color-eco-subtle: #38385A;
+
+  --color-ping: #00D4FF;
+  --color-rizz: #FF2878;
+  --color-xp: #4B8CF7;
+  --color-motion: #FF6B1A;
+  --color-wallet: #FFD700;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--color-eco-text);
+}
+
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes bounce-in {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes ping-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+:root {
+  --shimmer-1: #14142A;
+  --shimmer-2: #1E1E35;
+}
+.light {
+  --shimmer-1: #E4E4EE;
+  --shimmer-2: #F2F2F8;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--shimmer-1) 25%, var(--shimmer-2) 50%, var(--shimmer-1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+.animate-fadeUp { animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-fadeIn { animation: fadeIn 0.25s ease both; }
+.animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-slideUp { animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-bounceIn { animation: bounce-in 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-spin { animation: spin 1s linear infinite; }
+
+.pressable {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  cursor: pointer;
+  user-select: none;
+}
+.pressable:active { transform: scale(0.95); opacity: 0.85; }
+
+/* Per-app accent variables */
+.app-aura   { --accent:#00D4FF; --accent-rgb:0,212,255;   --accent-dim:rgba(0,212,255,0.12);   --accent-dim2:rgba(0,212,255,0.22);  --accent-bg:#000D14; }
+.app-rizz   { --accent:#FF2878; --accent-rgb:255,40,120;  --accent-dim:rgba(255,40,120,0.12);  --accent-dim2:rgba(255,40,120,0.22); --accent-bg:#140008; }
+.app-xp     { --accent:#4B8CF7; --accent-rgb:75,140,247;  --accent-dim:rgba(75,140,247,0.12);  --accent-dim2:rgba(75,140,247,0.22); --accent-bg:#010817; }
+.app-motion { --accent:#FF6B1A; --accent-rgb:255,107,26;  --accent-dim:rgba(255,107,26,0.12);  --accent-dim2:rgba(255,107,26,0.22); --accent-bg:#130600; }
+
+/* Stable shared navigation and honest unavailable controls. */
+[hidden] { display: none !important; }
+.zuri-global-nav { display: flex; align-items: center; gap: 8px; padding: 10px 14px 4px; flex-shrink: 0; color: var(--color-eco-text); font-family: Inter, sans-serif; }
+.zuri-global-nav button { padding: 6px 8px; border-radius: 10px; background: var(--glass-06); font-size: 11px; font-weight: 700; }
+button:disabled { cursor: not-allowed; opacity: .42; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #a78bfa; outline-offset: 3px; }
+.flex-1 { min-height: 0; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {reviewedAIMessages,matchesAIReview,draftKeys} from '../src/core/privacy.ts';
+import {initialData,readData} from '../src/experience/model.ts';
+import {pj} from '../src/experience/pamojaModel.ts';
+test('AI payload includes only reviewed conversation fields and rejects changed text',()=>{const input=[{role:'user',content:'Hello',privateLore:'secret',token:'credential'}];const reviewed=reviewedAIMessages(input);assert.deepEqual(reviewed,[{role:'user',content:'Hello'}]);assert.equal(matchesAIReview(input,JSON.stringify(reviewed)),true);assert.equal(matchesAIReview([{role:'user',content:'Different'}],JSON.stringify(reviewed)),false);assert.equal(reviewedAIMessages(Array.from({length:20},()=>({role:'user',content:'x'}))).length,12);assert.throws(()=>reviewedAIMessages([{role:'system',content:'secret'}]));});
+test('clearing form drafts cannot select workspace data or tool records',()=>{const keys=['zuri-form-one','zuri-v2-views','zuri-context-one','workspace','zuri-form-two'];assert.deepEqual(draftKeys({length:keys.length,key:i=>keys[i]}),['zuri-form-one','zuri-form-two']);});
+test('form persistence is opt in and malformed preferences are rejected',()=>{assert.notEqual(pj(initialData).preferences.rememberDrafts,true);const p=pj(initialData);const d={...initialData,pamoja:{...p,preferences:{...p.preferences,rememberDrafts:true}}};assert.equal(readData(JSON.stringify(d)).pamoja.preferences.rememberDrafts,true);assert.throws(()=>readData(JSON.stringify({...d,pamoja:{...p,preferences:{...p.preferences,rememberDrafts:'yes'}}})),/draft privacy/);});

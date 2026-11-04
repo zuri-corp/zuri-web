@@ -1,0 +1,29 @@
+{
+  "recordedDate": "2026-10-29",
+  "timezone": "Africa/Kampala",
+  "projectRef": "eghtvbqzytyxsdgvwkge",
+  "source": "database/proposals/006_zuri_ai_gateway.sql",
+  "sourceSha256": "1447b11f0ef9b48b2fbf79895eb0447cf3e73367e4da09f4820c4ba1db01966a",
+  "applicationMethod": "Supabase dashboard SQL Editor; manual SQL execution, not CLI migration-history registration",
+  "schemaApplied": true,
+  "dailyLimitMicroUsd": 5000000,
+  "automaticTrialMonthlyMicroUsd": 0,
+  "gatewayPolicyEnabled": false,
+  "pilot": {
+    "email": "zuri.incorp@gmail.com",
+    "monthlyLimitMicroUsd": 3000000,
+    "status": "pending_verified_auth_account",
+    "matchingAuthAccountsAtCheck": 0
+  },
+  "verification": {
+    "expectedTables": 5,
+    "expectedRestrictedFunctions": 3,
+    "providerCallsMade": false,
+    "securedTablesVerified": 5,
+    "restrictedFunctionsVerified": 3,
+    "requestLedgerCount": 0,
+    "anonymousDirectAccess": false,
+    "authenticatedDirectAccess": false,
+    "serviceRoleFunctionExecution": true
+  }
+}

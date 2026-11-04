@@ -1,0 +1,2735 @@
+{
+  "release": "2026-10-30",
+  "type": "external-testing-source-bundle",
+  "secretsIncluded": false,
+  "verification": {
+    "date": "2026-10-30",
+    "websiteTests": {
+      "passed": 276,
+      "failed": 0
+    },
+    "appTests": {
+      "passed": 123,
+      "failed": 0
+    },
+    "appTypecheckAndProductionBuild": "passed",
+    "embeddedAppBuild": "passed; generated directory replaced to remove obsolete bundles",
+    "nextProductionBuild": "passed with Next.js16.4.3 and webpack",
+    "dependencyManifestAndLockConsistency": "passed for both projects",
+    "exportHelperSyntax": "passed",
+    "apiCheckerLive": {
+      "healthHttp": 200,
+      "privateAccountWithoutSignInHttp": 401
+    },
+    "freshDependencyInstallOnAnotherMachine": "not performed; install instructions and lockfiles included",
+    "verifiedAccountEndToEnd": "pending owner sign-in",
+    "providerCallsMadeForExport": false,
+    "remoteCustomerWritesMadeForExport": false,
+    "aiExecutionEnabled": false,
+    "opportunityIngestionEnabled": false,
+    "quicketAndPayments": "not activated integrations",
+    "warnings": [
+      "App JavaScript bundle has a size advisory",
+      "Some rich social/editing/administration flows remain unsupported; see app EXPORT-STATUS.md",
+      "Real external origins, Auth email delivery and secrets require setup"
+    ]
+  },
+  "files": {
+    "zuri-web/.env.example": {
+      "bytes": 2701,
+      "sha256": "fc7afcb375aa6f45a72605cabe931ae84dfcebcf02938eedd1f4b1844a62bd0b"
+    },
+    "zuri-web/.gitignore": {
+      "bytes": 480,
+      "sha256": "207e265ff4901f9ad9f96d8ce08530e04f9fc600815472a66d0a446096d654cd"
+    },
+    "zuri-web/AGENTS.md": {
+      "bytes": 679,
+      "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0"
+    },
+    "zuri-web/README.md": {
+      "bytes": 2430,
+      "sha256": "05334872d2c31e29ec4003b60c2f1dd8073450b31cbfe64e1885a2f45a8d015b"
+    },
+    "zuri-web/START-HERE.md": {
+      "bytes": 4342,
+      "sha256": "73d5890ca6d06b0efa86df2ff107dbc77c1296db5bebcbcc81967ce93a384584"
+    },
+    "zuri-web/eslint.config.mjs": {
+      "bytes": 465,
+      "sha256": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493"
+    },
+    "zuri-web/next-env.d.ts": {
+      "bytes": 288,
+      "sha256": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b"
+    },
+    "zuri-web/next.config.ts": {
+      "bytes": 318,
+      "sha256": "17145a9822ec351b92b8a5f8d3a709a531c8690ed92d397a4405ae084ea9acc7"
+    },
+    "zuri-web/package-lock.json": {
+      "bytes": 246468,
+      "sha256": "19e04872d3912c4a9fb7766fc45ce6ff481512242a986e6120d350e0ab650439"
+    },
+    "zuri-web/package.json": {
+      "bytes": 997,
+      "sha256": "b36bd0c4e41c7ad5a6c362c4a27641d4ac85b66561ee35c8944d79f2b550cf0f"
+    },
+    "zuri-web/tsconfig.json": {
+      "bytes": 838,
+      "sha256": "2f17c1902f02a33d0e3726af06b77c48ced68762e71b6da840849a21c2f671ab"
+    },
+    "zuri-web/database/README.md": {
+      "bytes": 7056,
+      "sha256": "68689094997745699429e8a1c112dcad666f76617c34a89d4d68ed1faa417a0c"
+    },
+    "zuri-web/database/deployments/2026-10-29-zuri-ai-gateway.json": {
+      "bytes": 1040,
+      "sha256": "7f6ff71c5511f988401b60ee8fc501354cb45a062eb774b08c587ac110b23a81"
+    },
+    "zuri-web/database/deployments/2026-10-29-zuri-backend.json": {
+      "bytes": 2644,
+      "sha256": "b636a3dd707399edaf842892ea064148c2d502c207e631a6aabd8b5ab6466043"
+    },
+    "zuri-web/database/operations/activate_zuri_owner_pilot.sql": {
+      "bytes": 2389,
+      "sha256": "d0e62f4172356eda6d38078bdc2e15bdca83c66f61bf691ed4d3508a3603a5c6"
+    },
+    "zuri-web/database/operations/enable_ai_pilot.sql": {
+      "bytes": 2139,
+      "sha256": "7a2b83a49c79753e2325acb8e175bbb9b0f584d0b38428ce23ede93d6427a9a5"
+    },
+    "zuri-web/database/proposals/001_curated_website_content.sql": {
+      "bytes": 3074,
+      "sha256": "e1cb65eb93edb0a29b37b471db485c5779d744aa18855143dc3e506c3c27c91b"
+    },
+    "zuri-web/database/proposals/002_verified_management_and_moments.sql": {
+      "bytes": 11590,
+      "sha256": "2624d613095b6dc9f43ec3d34521440a8161b3bde847a77e96343b76f929c297"
+    },
+    "zuri-web/database/proposals/003_basic_accounts_and_contributions.sql": {
+      "bytes": 8207,
+      "sha256": "c49bd9420cb16f15c37fec67bdb595a3fabd36c12b73cca6d2f80b2544217717"
+    },
+    "zuri-web/database/proposals/004-pamoja-intake-photos.sql": {
+      "bytes": 690,
+      "sha256": "9f4ed7e141cbb94a4e39c3cd39a9668b5f61ec4ba1af614549967829a4b16c92"
+    },
+    "zuri-web/database/proposals/005_developer_studio.sql": {
+      "bytes": 31262,
+      "sha256": "84b50131cbd9a8376bc7d13e4d915d630996123a58a07d15920f318d5e7aa262"
+    },
+    "zuri-web/database/proposals/006_zuri_ai_gateway.sql": {
+      "bytes": 10160,
+      "sha256": "1447b11f0ef9b48b2fbf79895eb0447cf3e73367e4da09f4820c4ba1db01966a"
+    },
+    "zuri-web/database/proposals/007_opportunity_engine.sql": {
+      "bytes": 18512,
+      "sha256": "36258744737a6e1f305091539b0cab90ce8d80ee08675881a43e340819983a3a"
+    },
+    "zuri-web/database/proposals/008_app_backend.sql": {
+      "bytes": 31635,
+      "sha256": "b8c1f9ac51209a0c48f45911ed81824097a9154e211e1c6136d6b384d09dbf9c"
+    },
+    "zuri-web/database/proposals/009_storage_and_account_bootstrap.sql": {
+      "bytes": 5378,
+      "sha256": "832616b40734dafe1e7d01f7794e35e742575b2a3a1393e48006de86487d5f4c"
+    },
+    "zuri-web/database/proposals/010_backend_hardening.sql": {
+      "bytes": 21716,
+      "sha256": "f4b539522e642b5c6938ccfea2ef3a045a3e2e820b23623968684377d7e10e5b"
+    },
+    "zuri-web/docs/AI-APPROVED-KNOWLEDGE.md": {
+      "bytes": 4976,
+      "sha256": "608c75a865446dc2554196c1699ac58da6294b272ecd8c5a2392d36266808ed5"
+    },
+    "zuri-web/docs/APP-CHAT-ALIGNMENT.md": {
+      "bytes": 2016,
+      "sha256": "232538fe249ff3999523d9a2a51c401e5748fa8083defe97dbfadb97703c3e53"
+    },
+    "zuri-web/docs/BACKEND-READINESS.md": {
+      "bytes": 9338,
+      "sha256": "8ecca646b1acb85cc81e1b611307e697d780f51606b054ab79307ce3ca4d6336"
+    },
+    "zuri-web/docs/BASIC-ACCOUNTS-MOMENTS-MILESTONE.md": {
+      "bytes": 8215,
+      "sha256": "314056364de7aa888d5f49994e69f51837fdb4ceeda0cac50f998a3294ded4d5"
+    },
+    "zuri-web/docs/BRAND-DESTINATION-BUILD.md": {
+      "bytes": 2364,
+      "sha256": "b647a074d539fedb508e0b9c53869fa87e58b8ecdd329f1ef5385e975001fe3b"
+    },
+    "zuri-web/docs/CONVERSATION-TO-INTENT.md": {
+      "bytes": 4977,
+      "sha256": "82cf1e54c23220d8832620d9e346a5ceab38b046841e491e08418ba8fd85028a"
+    },
+    "zuri-web/docs/CONVERSATIONS-PRESENCE.md": {
+      "bytes": 5391,
+      "sha256": "15a5915a2c4c6deb6a38da4f8603efe216778c123f758ea7657fa16b53751b4c"
+    },
+    "zuri-web/docs/DEVELOPER-STUDIO.md": {
+      "bytes": 6849,
+      "sha256": "c6c9de1c9f777fb827ede7820e6b39506d46981f2022e01244f29b58bb601022"
+    },
+    "zuri-web/docs/DISCOVERABILITY-REQUESTS-2026-10-15.md": {
+      "bytes": 2377,
+      "sha256": "b278c04ac97fc23b41c071827dffd7453a1df11cdb846bc574e0f25abc50fba5"
+    },
+    "zuri-web/docs/ENQUIRY-MILESTONE.md": {
+      "bytes": 5939,
+      "sha256": "f30f7411c296003d1152de9467d9a6c7e7c34d4311e5713e2876e2a049bc5bb9"
+    },
+    "zuri-web/docs/EXPERIENCE-V2.md": {
+      "bytes": 6850,
+      "sha256": "7b64480cbdb631c817e99af8004bd55f0301ee3d466d763f1afcd3dcff2de7a8"
+    },
+    "zuri-web/docs/HOMEPAGE-ARTWORK.md": {
+      "bytes": 1877,
+      "sha256": "4900eac960d6db557e446b49f5b50406fa477a8dc517cd6f9c862deeb0e84336"
+    },
+    "zuri-web/docs/IMMERSIVE-HOMEPAGE-WORLDS.md": {
+      "bytes": 859,
+      "sha256": "12ad1734392c6851c1478bba794ef05876c052f6edcb83210e12561e83bee901"
+    },
+    "zuri-web/docs/INNOVATION-STORY.md": {
+      "bytes": 6731,
+      "sha256": "01d9a39441b8baeda56dea8764ceb7788f1ab435d3cd98c5a7d6f4e33efa05e8"
+    },
+    "zuri-web/docs/INTENT-ENGINE.md": {
+      "bytes": 6992,
+      "sha256": "339d58e52b455cdc22d22c540a1162f6fa9cc691a4596a2e893d05dafd0508b3"
+    },
+    "zuri-web/docs/LIVING-SPACE-TOUR.md": {
+      "bytes": 2152,
+      "sha256": "a3ecdd6053d511c6885ee969a4c02448c94df2756a8879937ab80fd7b00a0326"
+    },
+    "zuri-web/docs/MARKETPLACE-25.md": {
+      "bytes": 3877,
+      "sha256": "6f7706bc4af6909bbb448dcd93cc4040d03dc3e8e45da15c2a1bcb6ce36c0951"
+    },
+    "zuri-web/docs/OPPORTUNITY-ENGINE.md": {
+      "bytes": 13569,
+      "sha256": "fee5d0fcc6b6bb151232343ea3834b8ad8be3ecaf4f6fc426275fa55403ae255"
+    },
+    "zuri-web/docs/PAMOJA-AUDIENCE-POSITIONING.md": {
+      "bytes": 1868,
+      "sha256": "4bc496e0746101809784ae90df7ae2b1b6837600125b41d38a904e0d13cb7eab"
+    },
+    "zuri-web/docs/PAMOJA-NETWORK.md": {
+      "bytes": 1086,
+      "sha256": "e3b064b2fb7a11787880753afee20a645bb86184c078ceda7d4a9bd438616e09"
+    },
+    "zuri-web/docs/PAMOJA-OPPORTUNITY-REBUILD.md": {
+      "bytes": 5901,
+      "sha256": "071a114edbf11c7b2bec07d4d08881921d60be1311d0b743949954c76675178f"
+    },
+    "zuri-web/docs/PHOTO-CREDITS.md": {
+      "bytes": 2179,
+      "sha256": "ca567a139a79d4e73b414721d5b86e5dfe0c34479d0df9a4b93c4b7e7701fc48"
+    },
+    "zuri-web/docs/PRICING-OFFERS.md": {
+      "bytes": 2420,
+      "sha256": "875c21dec1bd646897ad164ac73eb716db076b59efa09ed9fc51a4e3001bb756"
+    },
+    "zuri-web/docs/PRICING-PAGE-SIMPLIFICATION.md": {
+      "bytes": 890,
+      "sha256": "a54814e11f51b7a9666d0666ff074e547b10bf8b80444b55d1f7379ee37078d2"
+    },
+    "zuri-web/docs/PUBLISHING-MILESTONE.md": {
+      "bytes": 6532,
+      "sha256": "f51e73c6c0f1eb318c877621751beb85c624f3256d10abf7fd76cd078ebedefa"
+    },
+    "zuri-web/docs/SOURCE-CHANGES.json": {
+      "bytes": 5136,
+      "sha256": "1b8508cfe7a6c3b0b42c39cd78c01c53204a96733359e8d3459b703c9e0fa7bd"
+    },
+    "zuri-web/docs/STRATEGY-REPOSITIONING.md": {
+      "bytes": 8568,
+      "sha256": "26736579a4ba22d22b5c8cd149c54be09add9c56be1aa9ef185805b21938305f"
+    },
+    "zuri-web/docs/VERIFIED-MANAGEMENT-MILESTONE.md": {
+      "bytes": 6389,
+      "sha256": "d5078f5e264ad6b342991614361ef5f0d1e9fafdac0b2f29988b30d99add9aa7"
+    },
+    "zuri-web/docs/VIVID-WORLDS.md": {
+      "bytes": 2440,
+      "sha256": "5d87de2625b0b4b821d842290bc013a457b5eb6f86401d945130782562529a53"
+    },
+    "zuri-web/docs/WEB-APP-INTEGRATION.md": {
+      "bytes": 3088,
+      "sha256": "54d3375465a6efad5cba1dd3ee9bee3d76e91ebd421fbb0d352935be76cf45af"
+    },
+    "zuri-web/docs/WEBSITE-MILESTONE.md": {
+      "bytes": 4982,
+      "sha256": "bc77a757eb650b25ac8807aa5493abe855378af5c6a4457d6fe72b1d80294adf"
+    },
+    "zuri-web/docs/ZURI-AI-GATEWAY.md": {
+      "bytes": 8446,
+      "sha256": "9de1598834836461ccda56cb80b6fba4c8577c90100c3067ae33b6caaa6985fa"
+    },
+    "zuri-web/docs/client-wedding-edition.md": {
+      "bytes": 1454,
+      "sha256": "059d1f47ca8440f48a541d22607da8002a9f010a25c00f021a0643e5f8e29881"
+    },
+    "zuri-web/docs/populated-edition.md": {
+      "bytes": 2756,
+      "sha256": "2b4ee7f4006d9f8ce4a6b5476af7a862a9604a5ee889e0ae03785ed58250ce57"
+    },
+    "zuri-web/docs/preview-corporate-story-2026-10-17.png": {
+      "bytes": 66442,
+      "sha256": "09ed880099b084b2f81e918207edc4681a99d340fe21845a223349836f319111"
+    },
+    "zuri-web/docs/preview-david-profile.png": {
+      "bytes": 58633,
+      "sha256": "76b9c6b3348c5f14579ce2141a141349b84d486f925ef653464aa2d2d3cbb63d"
+    },
+    "zuri-web/docs/preview-dawdy-profile.png": {
+      "bytes": 55496,
+      "sha256": "619e34d9396aea30c3a95a35f24b12c9e0e445b290f09c93e645aac6db89f967"
+    },
+    "zuri-web/docs/preview-home-artwork-2026-10-17.png": {
+      "bytes": 102131,
+      "sha256": "f49a96f7ad4fe30386dc5eabe03712f4eb536e57cc0109ac431dd129a28550f2"
+    },
+    "zuri-web/docs/preview-home-worlds-motion.png": {
+      "bytes": 97148,
+      "sha256": "a5418a5cfc97227a727b74c00cbbe30269eef753c089ac6ec5cd725b41f626b1"
+    },
+    "zuri-web/docs/preview-invites-client-noir.png": {
+      "bytes": 79731,
+      "sha256": "33e62a9f8e8b6170137170a7ab9e02dac514ece9db2e1021062524089bc7cb8a"
+    },
+    "zuri-web/docs/preview-invites-collection.png": {
+      "bytes": 55064,
+      "sha256": "b920f0e6a685889aea3d4ea68de7b731c0f075d7bb0ec88a91028ac462153e57"
+    },
+    "zuri-web/docs/preview-pamoja-network-2026-10-19.png": {
+      "bytes": 74438,
+      "sha256": "e868280d48532a6a5a7b5f31af5eaea1e04e686d3ed4b751151593b45941b258"
+    },
+    "zuri-web/docs/preview-parent.png": {
+      "bytes": 63241,
+      "sha256": "3ea1c58210bcb0225ce9678bb83c616fcf2d45600ba1015bbf18d9ef0ac59c59"
+    },
+    "zuri-web/docs/preview-presence-setup.png": {
+      "bytes": 60497,
+      "sha256": "9049f5a6daf68355f325734750c001f3d2b7f21da16e223bf284d2804579debb"
+    },
+    "zuri-web/docs/preview-select-bulletin-2026-10-17.png": {
+      "bytes": 78620,
+      "sha256": "20e4465dbadc5b0fe2df3b0e39155f178350bd6e0c62617999d84277066980a7"
+    },
+    "zuri-web/docs/preview-select-first-edition.png": {
+      "bytes": 78191,
+      "sha256": "f96f62bf0835b3ee6cd2c27b98e483362e8a76d5c1b3c9b143379ea055875981"
+    },
+    "zuri-web/docs/preview-select-library.png": {
+      "bytes": 100522,
+      "sha256": "5cebdc00c7a672893996c01804ab8c04f2a949ab31e207653973c8b2ef01f808"
+    },
+    "zuri-web/docs/preview-tech-request-v2.png": {
+      "bytes": 76383,
+      "sha256": "042e3c6c55a30ddb6267966672e3d717a5073aec596ceca2b0e33db58e874db1"
+    },
+    "zuri-web/docs/preview-tech-services-2026-10-17.png": {
+      "bytes": 75915,
+      "sha256": "6eb1dd0d09537663a85ebfa6f3f9d2aa05d9cfd37c030c423dc4355955648aeb"
+    },
+    "zuri-web/docs/preview-vivid-invites.png": {
+      "bytes": 78341,
+      "sha256": "7758695772c08fa65dfdab2e2400fa7374a195a9f2ea3f01d6cb32a7413fa132"
+    },
+    "zuri-web/docs/preview-vivid-pamoja.png": {
+      "bytes": 44398,
+      "sha256": "ed74a1c8a31b1e19c0bd3a5d10c8e0971db4502bcab9dc2b3dd025d8e0912018"
+    },
+    "zuri-web/docs/preview-vivid-select.png": {
+      "bytes": 57430,
+      "sha256": "796ef2eed80dfc501f6c5b247e8df6be1c1871c1afa3c3add2ce57c353eaba8b"
+    },
+    "zuri-web/docs/preview-vivid-tech.png": {
+      "bytes": 66892,
+      "sha256": "c980702ca271141a2907dcbe01e6615c8bae5b3bbcedbbe84200da4f7835bb56"
+    },
+    "zuri-web/docs/preview-worlds-v2.png": {
+      "bytes": 84701,
+      "sha256": "8c12407c6116ace3c5f17fa7ace80716edbb5e4567fc83c1d731382d81eec22e"
+    },
+    "zuri-web/docs/preview-zuri-conversation.png": {
+      "bytes": 80593,
+      "sha256": "266e37dfbe591a437c5e7ce7648157dd24b823eda90e0c95d81dd722242e6c31"
+    },
+    "zuri-web/docs/references/ZURI-Strategy-Handoff.txt": {
+      "bytes": 21218,
+      "sha256": "69e843dc94beaa97c719c579f472c1d463cd696fe9a649e6edf669a9246cb5a8"
+    },
+    "zuri-web/packages/intent-engine/README.md": {
+      "bytes": 2561,
+      "sha256": "7cbf4cfc97dffafe847f001fc169845553d8343cec0e1095b37cd0f9b77bf049"
+    },
+    "zuri-web/packages/intent-engine/index.d.mts": {
+      "bytes": 2287,
+      "sha256": "ac1715296a12c3734484684e32c729e1e1b2896df5df57cd1572af0c6cc6d6ef"
+    },
+    "zuri-web/packages/intent-engine/index.mjs": {
+      "bytes": 19754,
+      "sha256": "28b2712d29b4d132ef40cf832578df72576b8632f2da35c40444cd74cf096223"
+    },
+    "zuri-web/packages/intent-engine/package.json": {
+      "bytes": 365,
+      "sha256": "0d80a754d220e7bbcfce4b3e9266f73aa5b73cef202b6d3cc43ccf5a0fe0391c"
+    },
+    "zuri-web/packages/tool-sdk/README.md": {
+      "bytes": 4778,
+      "sha256": "c5e4880302f00ebbb7f72d6b2bfe2b2dd059b5598ac3ad1b471a549c2a37cb04"
+    },
+    "zuri-web/packages/tool-sdk/cli.mjs": {
+      "bytes": 885,
+      "sha256": "22f5d13b742a1c976c6a4811ad61d7f9b7c37c00c36fe930920d3602a3392d1e"
+    },
+    "zuri-web/packages/tool-sdk/index.d.ts": {
+      "bytes": 2232,
+      "sha256": "fb0d9bbe9bfe228266977963ee890a3ec285fad11b2c468af2f4f425d9fc2b93"
+    },
+    "zuri-web/packages/tool-sdk/index.mjs": {
+      "bytes": 3107,
+      "sha256": "f9d95414969b3b6f057c2aaf260b544c43f9733201523816d16122f07d467349"
+    },
+    "zuri-web/packages/tool-sdk/manifest.mjs": {
+      "bytes": 3523,
+      "sha256": "2b838c8e90956008850c8c0b557f6ece64c3e178a1dba6439ab0bb0809a3320c"
+    },
+    "zuri-web/packages/tool-sdk/package.json": {
+      "bytes": 563,
+      "sha256": "9a040d5aa3ab3b91a88830ef05bac4e584ab20ffd474e92d58c84518387e095a"
+    },
+    "zuri-web/packages/tool-sdk/examples/space-booking.mjs": {
+      "bytes": 605,
+      "sha256": "c1074e1acf20e6c08dcf32d5228da065ea078bfbad849fff81e5c1fc2a29c679"
+    },
+    "zuri-web/public/globe.svg": {
+      "bytes": 1035,
+      "sha256": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf"
+    },
+    "zuri-web/public/next.svg": {
+      "bytes": 1375,
+      "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc"
+    },
+    "zuri-web/public/vercel.svg": {
+      "bytes": 128,
+      "sha256": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4"
+    },
+    "zuri-web/public/window.svg": {
+      "bytes": 385,
+      "sha256": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1"
+    },
+    "zuri-web/public/artwork/zuri-connected-world.jpg": {
+      "bytes": 152676,
+      "sha256": "ca96f0b70dfbc49beb3e3bd3fa82fb85fd702e72dfe28311d18873be8d541951"
+    },
+    "zuri-web/public/artwork/zuri-digital-sea.png": {
+      "bytes": 2909448,
+      "sha256": "d2b2b4969155453e91fec2426ac44b05258be1e4e6a89f8d07f4fb3f82c445d3"
+    },
+    "zuri-web/public/artwork/zuri-electric-workshop.png": {
+      "bytes": 2591304,
+      "sha256": "252fef30346b9af845defa05dbc56c2a32ff51abb815b7ba56d72bc44e74ea23"
+    },
+    "zuri-web/public/artwork/zuri-pyramid-horizon.png": {
+      "bytes": 2433813,
+      "sha256": "2c19d68c4a76a27bcb26cb4cfc14e223351ec1b41862a294ea745ced7d3bc8c6"
+    },
+    "zuri-web/public/artwork/history/crucifixion.png": {
+      "bytes": 2094706,
+      "sha256": "fcd18f1272459142f0141be51bf3657ce041755d39bfc69a1da9b083a08eb3e1"
+    },
+    "zuri-web/public/artwork/history/d-day.png": {
+      "bytes": 2257813,
+      "sha256": "3e39ae7662a9bbe78be82e610eb42cb408b1d997494afe78b6d2132be29c41d3"
+    },
+    "zuri-web/public/artwork/history/fire.png": {
+      "bytes": 2379088,
+      "sha256": "357d15ade7d0db4c50011bd4e80e220174209875a67626f791f2253e7940c0dc"
+    },
+    "zuri-web/public/artwork/history/gobekli-tepe.png": {
+      "bytes": 2849971,
+      "sha256": "fe702afc3ae854a6672df4f2cb7347ac7ce2e1dab0b444c1f88d8418fbc79437"
+    },
+    "zuri-web/public/artwork/history/moon-landing.png": {
+      "bytes": 3012301,
+      "sha256": "7cf0c489144a9cea2f364f9603d7e4179d32d3ba67f95867b847b2594ed89f75"
+    },
+    "zuri-web/public/artwork/history/newton.png": {
+      "bytes": 2666413,
+      "sha256": "8a59884cdf462256aaa66694b0bdcdad5a5a0633d619cabaf214790e4da50f2f"
+    },
+    "zuri-web/public/artwork/history/pyramid-builders.png": {
+      "bytes": 2589605,
+      "sha256": "b1c743f329c57d10fdc9eb18322f799aba6c91268efa3e44da11912bd757355e"
+    },
+    "zuri-web/public/artwork/history/water-travel.png": {
+      "bytes": 2754988,
+      "sha256": "97ac8d0158ac17a9d814cc4ba48f53f24fe27c6e89b1649289fb709b61daa123"
+    },
+    "zuri-web/public/brands/select-fortran.svg": {
+      "bytes": 910,
+      "sha256": "f9cc17de52168a3c7f4021ec3d797a0397103f147eb5e6aa3ca94a06cd77849a"
+    },
+    "zuri-web/public/brands/select-meetings.svg": {
+      "bytes": 913,
+      "sha256": "58dfa4e9c609090fdefbe5c1a32157cf6e6b70c2174cf26bef1c5a2e26fe2d36"
+    },
+    "zuri-web/public/brands/select-openai.svg": {
+      "bytes": 905,
+      "sha256": "42f477450b8dc96e94366e17946256e7fc4199159d3c30bd26f7eae36ba170b4"
+    },
+    "zuri-web/public/brands/select-policy.svg": {
+      "bytes": 916,
+      "sha256": "d2bed7fa026c7bb369853a8eb541fd91bc7431e4182d50cc42cbce748688f672"
+    },
+    "zuri-web/public/brands/select-proposal.svg": {
+      "bytes": 908,
+      "sha256": "72cd5d896bf0b64b4b7b2a5bff649ff4d0ba73b1a03f682c50243a80160a6485"
+    },
+    "zuri-web/public/brands/select-quickbooks.svg": {
+      "bytes": 904,
+      "sha256": "7a599091c23b08e760099191cd013b233a3f78ef871dceb3386102b6f6b7528c"
+    },
+    "zuri-web/public/brands/select-work.svg": {
+      "bytes": 917,
+      "sha256": "dd2c423143fe8310f9b627392dd5b918ad8eb44ecf5b79bcab0dd7e9479e30d2"
+    },
+    "zuri-web/public/brands/zuri-corporate-purple.png": {
+      "bytes": 669341,
+      "sha256": "5966de1e9c46cba4713be5995b7119379494a6ece3cd31fe01e5776e4b778435"
+    },
+    "zuri-web/public/brands/zuri-family-reference.png": {
+      "bytes": 771117,
+      "sha256": "a42fe0f6f8b107188c2f7167d0e08241625206dfaa27841bf3bcd488f675a47a"
+    },
+    "zuri-web/public/brands/zuri-family.png": {
+      "bytes": 1033155,
+      "sha256": "21f03178b9172bfe3c0cd7a66a4e02d53b3e5769989257547f4e0c101ca40002"
+    },
+    "zuri-web/public/brands/zuri-founder-portrait.jpeg": {
+      "bytes": 36360,
+      "sha256": "7437bd13c34d7f26cd0a196075ff875b09450834042d0e8d4165c52eec2701df"
+    },
+    "zuri-web/public/brands/zuri-pamoja.png": {
+      "bytes": 98078,
+      "sha256": "4181ef0c9c5d001c7a47358a9515833397c02feb87ae6e6260a484b34ee473aa"
+    },
+    "zuri-web/public/brands/zuri-select.png": {
+      "bytes": 318639,
+      "sha256": "b7de3355d98b462b68acc9be096756d44468e30951eceae242d71e7076839e36"
+    },
+    "zuri-web/public/brands/zuri-tech.png": {
+      "bytes": 298260,
+      "sha256": "1fe7eb899554aa84ab4030029f1a662625a7a1b11fa37b137d7029d7f30c235c"
+    },
+    "zuri-web/public/brands/app/aura.svg": {
+      "bytes": 803,
+      "sha256": "37b2a03fb9f2058eac2a7aba269cc78fc55603813c5e5e285bc5058a11b8d1ec"
+    },
+    "zuri-web/public/brands/app/lore.svg": {
+      "bytes": 766,
+      "sha256": "7f8a6e547f1e97d492951f8d828c58de1e4e90d9f355472117929473c9f2b9ef"
+    },
+    "zuri-web/public/brands/app/motion.svg": {
+      "bytes": 727,
+      "sha256": "45f7ccc9d549790b263ba926377524971e2934c528fbab7f87623dd75a51c64f"
+    },
+    "zuri-web/public/brands/app/rizz.svg": {
+      "bytes": 672,
+      "sha256": "cd1be68478a2fca297383e7620c1448431a9f98e982c6522300b2fe45ef3e995"
+    },
+    "zuri-web/public/brands/tools/1password.svg": {
+      "bytes": 1156,
+      "sha256": "d97aaa5d344196b5fb08bcac4b60e25d4364be221719a9987de44d65439d16aa"
+    },
+    "zuri-web/public/brands/tools/adobe-express.ico": {
+      "bytes": 15086,
+      "sha256": "5eed69e764f1d40b943a19b4b36aca72519b2626dd519891173d7728a74d821c"
+    },
+    "zuri-web/public/brands/tools/asana.ico": {
+      "bytes": 41662,
+      "sha256": "a42ae227f92cc034bed8015af2bb5664327c3ef4c207e3dc6cd06e8642845e77"
+    },
+    "zuri-web/public/brands/tools/bitwarden.png": {
+      "bytes": 1119,
+      "sha256": "b1328e52cd6e0531e5fc0b70ddc7520bd4c342f08edc690393eaf891f731a335"
+    },
+    "zuri-web/public/brands/tools/brevo.svg": {
+      "bytes": 882,
+      "sha256": "b6a8f454586580a1d79f86cb10b694f316c6bcc0af6e8b88d813d23d85f81f67"
+    },
+    "zuri-web/public/brands/tools/buffer.png": {
+      "bytes": 6348,
+      "sha256": "11d46d6ddabfba348fe99147f3c62647cc986f4235d7db2adb80a897ba9ea486"
+    },
+    "zuri-web/public/brands/tools/canva.png": {
+      "bytes": 11535,
+      "sha256": "f185093b0c68c57e953e0928709cb34c3e167743d9834b6db6332ffa65cdff39"
+    },
+    "zuri-web/public/brands/tools/chatgpt.webp": {
+      "bytes": 3856,
+      "sha256": "19708325a6bbd461be38abcf80987f2d772ff38bc69aa66543ddf5baef4ae833"
+    },
+    "zuri-web/public/brands/tools/claude.png": {
+      "bytes": 1198,
+      "sha256": "4004381309500f25e49a1ae639912ce307ea81da74cc383954a1ac8b9d343fe6"
+    },
+    "zuri-web/public/brands/tools/cloudflare.ico": {
+      "bytes": 908,
+      "sha256": "5414bc6e4b3f6e10f99b5d37abf4420da4dcaece66f8f2c08e090e87267adbc5"
+    },
+    "zuri-web/public/brands/tools/figma.png": {
+      "bytes": 1270,
+      "sha256": "a70db90a2a7c18f811cac60e65e26155403dc4ba23fc137da1564ef010125d69"
+    },
+    "zuri-web/public/brands/tools/freshbooks.ico": {
+      "bytes": 3327,
+      "sha256": "d80c85233770eb09122cf4015590463fd6b83e716337b5879be5d710a8b900f3"
+    },
+    "zuri-web/public/brands/tools/gemini.png": {
+      "bytes": 9531,
+      "sha256": "f39c8b1c0dbdf1411a52b203cd7d2815ef1dc5f899f457499e7d5aa57f25b6c8"
+    },
+    "zuri-web/public/brands/tools/manifest.json": {
+      "bytes": 6449,
+      "sha256": "ec503dadcc90410988636b6f43d945e06727d0c04c3e1f9ee208b8ab847d637a"
+    },
+    "zuri-web/public/brands/tools/notion.png": {
+      "bytes": 8078,
+      "sha256": "483846a85e43e22879445047b83b22033e70fcc25ab34809ebadb7f856507ee0"
+    },
+    "zuri-web/public/brands/tools/perplexity.ico": {
+      "bytes": 15086,
+      "sha256": "df9a6478592660077e4e774d37bae6db1eb4d7d9d2cac31f0dcdab8804f76c06"
+    },
+    "zuri-web/public/brands/tools/shopify.png": {
+      "bytes": 3754,
+      "sha256": "b4f8929dca6d35346d63a49605eed3ab4f8ca0e706dfc5c3aa0a79eed98954fe"
+    },
+    "zuri-web/public/brands/tools/slack.png": {
+      "bytes": 702,
+      "sha256": "ca3872d0fb85ff9858bcbdc529d6e1db32c029c681c6e723e4f2ecb1c7defea6"
+    },
+    "zuri-web/public/brands/tools/trello.ico": {
+      "bytes": 2710,
+      "sha256": "6245384a876e446ac4c95de04e2598c8d68023d845f4151599584afabc6203ab"
+    },
+    "zuri-web/public/brands/tools/wave.png": {
+      "bytes": 6365,
+      "sha256": "94e08144bbba1786d5053bcc51318be3ab4063c791e59c89df116101f4d574d9"
+    },
+    "zuri-web/public/brands/tools/wordpress.png": {
+      "bytes": 84434,
+      "sha256": "06049b810ea5605edc375f6208fb788efaa5a95ee40d6ee0d84b9d2e2639ecb3"
+    },
+    "zuri-web/public/brands/tools/workspace.png": {
+      "bytes": 827,
+      "sha256": "8657bd13763477ea9d924f71b889634fd0d7abb51417d0628be34202ccd17b69"
+    },
+    "zuri-web/public/brands/tools/xero.png": {
+      "bytes": 1886,
+      "sha256": "542aefce90f0aff2920c73f0cf16c7e0ac5a78dd9a9f64ff711542ffbb68abff"
+    },
+    "zuri-web/public/brands/tools/zapier.ico": {
+      "bytes": 57638,
+      "sha256": "733fdd5c9e5b3020cbae07b0f9f6b0e21653b4975b400f8fe230c2a4e10f931a"
+    },
+    "zuri-web/public/brands/tools/zoho-books.ico": {
+      "bytes": 15086,
+      "sha256": "578688454641bfca876d506e911b1ad9e6a0521a773e9dabe18a1adaa1a0a013"
+    },
+    "zuri-web/public/developers/zuri-tool-sdk-0.1.0.tgz": {
+      "bytes": 5764,
+      "sha256": "243184a2af86d107623149ecf4c9ccc4384a477314ea68528ce51045e1cfa28d"
+    },
+    "zuri-web/public/developers/zuri-tool-sdk-0.2.0.tgz": {
+      "bytes": 6431,
+      "sha256": "eb49aa2485b57af4f88e94c3723ab680f395d8c01d3f80fccb1e0deb311ec17e"
+    },
+    "zuri-web/public/photos/business-books.jpg": {
+      "bytes": 223182,
+      "sha256": "7dfdc12fdcca98196be767c1e9ffb8c595f53f64ff0f5173395e32bf65ca7695"
+    },
+    "zuri-web/public/photos/computer-circuits.jpg": {
+      "bytes": 231793,
+      "sha256": "00612c31097f25d1d2391465df7f6beba03b5a4d59088904589c5783840bf52d"
+    },
+    "zuri-web/public/photos/customer-work.jpg": {
+      "bytes": 234942,
+      "sha256": "de3d8613a52b6308f9f664414da908ff30b27f0e231c66e9ea036f9ae5405153"
+    },
+    "zuri-web/public/photos/project-planning.jpg": {
+      "bytes": 263353,
+      "sha256": "36730a62d7d40deaabe7f99afe5120cee3e72482d69ae4d883ce2b09a4615426"
+    },
+    "zuri-web/public/photos/software-work.jpg": {
+      "bytes": 214888,
+      "sha256": "3ff2d200497046a149c216375c2732251b9d374ab235611dd81264b8421c4243"
+    },
+    "zuri-web/public/photos/team-meeting.jpg": {
+      "bytes": 228679,
+      "sha256": "6524f92b0cc70fff99d3dc212a1f56f90172510f9aa1bbb68dcac30473a771f4"
+    },
+    "zuri-web/public/photos/team-policy.jpg": {
+      "bytes": 321101,
+      "sha256": "5acb76d42ba6dc89dbe7799482772d92a7f6cca06515b8f685240c160c707d2b"
+    },
+    "zuri-web/public/photos/vintage-computer.jpg": {
+      "bytes": 878766,
+      "sha256": "eeb434b44d2465a35318b0efabf22ec6a4bd1429d7b0dba012e5f5b1d8f7c3af"
+    },
+    "zuri-web/public/zuri-app/icon.svg": {
+      "bytes": 281,
+      "sha256": "cb93028290c0fc47586d7a2091b90e32668c53faa2751be4bee9faf3716a72d7"
+    },
+    "zuri-web/public/zuri-app/index.html": {
+      "bytes": 878,
+      "sha256": "b0594c3528a523b1e60ab4515c96cd7048a0cadda485bd4597d4697a309b4606"
+    },
+    "zuri-web/public/zuri-app/lounge-wallpaper.svg": {
+      "bytes": 1120,
+      "sha256": "2596f872b7883aa6f29644162d04d4b23d9a6386c585a10c7a1f24cf79d6a1f9"
+    },
+    "zuri-web/public/zuri-app/manifest.webmanifest": {
+      "bytes": 438,
+      "sha256": "c4729945ad8d8899ea100fe4fa3203f96db682c9f9a02f213940a08baf3b61f1"
+    },
+    "zuri-web/public/zuri-app/sw.js": {
+      "bytes": 1875,
+      "sha256": "8050443dbb384d8fd328c2b8ec2f09126c11a5bf64a95716cf29f7b3e9bbf3fe"
+    },
+    "zuri-web/public/zuri-app/assets/index-D4qVFtUc.css": {
+      "bytes": 267496,
+      "sha256": "9d395ae8cf703bb26560457950d40a23f744345d39c049c33cdc075c7879a08f"
+    },
+    "zuri-web/public/zuri-app/assets/index-icao-vn3.js": {
+      "bytes": 727172,
+      "sha256": "904feb9150010e4c5aac10aa919146478ed78a612668f51e0a2b286e160d6ecb"
+    },
+    "zuri-web/public/zuri-app/brand/aura.svg": {
+      "bytes": 803,
+      "sha256": "37b2a03fb9f2058eac2a7aba269cc78fc55603813c5e5e285bc5058a11b8d1ec"
+    },
+    "zuri-web/public/zuri-app/brand/lore.svg": {
+      "bytes": 766,
+      "sha256": "7f8a6e547f1e97d492951f8d828c58de1e4e90d9f355472117929473c9f2b9ef"
+    },
+    "zuri-web/public/zuri-app/brand/motion.svg": {
+      "bytes": 727,
+      "sha256": "45f7ccc9d549790b263ba926377524971e2934c528fbab7f87623dd75a51c64f"
+    },
+    "zuri-web/public/zuri-app/brand/rizz.svg": {
+      "bytes": 672,
+      "sha256": "cd1be68478a2fca297383e7620c1448431a9f98e982c6522300b2fe45ef3e995"
+    },
+    "zuri-web/scripts/build-app.mjs": {
+      "bytes": 1675,
+      "sha256": "6388cc8490c80010894f612c5edb361978158e4dce70df7408dbabe74da17dac"
+    },
+    "zuri-web/scripts/build-edge-functions.mjs": {
+      "bytes": 3997,
+      "sha256": "b125aa151aff09677a3b07d0cc694bd59501acbccac33f0bb1556d9225df5a42"
+    },
+    "zuri-web/scripts/collect-marketplace-icons.mjs": {
+      "bytes": 3804,
+      "sha256": "31020c6c1eddd1882967d0fbfc3ec580dbc882f8e04a00af2390d0ac2fc18cff"
+    },
+    "zuri-web/scripts/generate-editorial-covers.mjs": {
+      "bytes": 1719,
+      "sha256": "ef926f2ecab3cfde690e10927f62d01e3266e2e98628c1021a17b9c13d627ee2"
+    },
+    "zuri-web/scripts/sync-opportunity-client.mjs": {
+      "bytes": 647,
+      "sha256": "6fbda3df583b71acedfff9c1c661904f03cbe8810fa43b64b06d0a54eb43ad51"
+    },
+    "zuri-web/scripts/verify-integration.mjs": {
+      "bytes": 4491,
+      "sha256": "ccd92e92ec0f104fb132c7a1b03ddd8bcc3074a01d8ea61defab66ec997fcf33"
+    },
+    "zuri-web/src/proxy.ts": {
+      "bytes": 1466,
+      "sha256": "a96a565b75ed1df99093d9be852634997bc0b2be03ac7545224d81484e621f00"
+    },
+    "zuri-web/src/app/content-edition.css": {
+      "bytes": 12282,
+      "sha256": "1b611c123e7481da74b356370d65caaa9493750304489da86f9da0dc64e48b49"
+    },
+    "zuri-web/src/app/conversations-presence.css": {
+      "bytes": 28440,
+      "sha256": "095f6e81dd28acc265fba722a00f711623b5d3e545511086f4841550247a9b51"
+    },
+    "zuri-web/src/app/favicon.ico": {
+      "bytes": 15086,
+      "sha256": "c28fdd2a4f31e2dc64f653962286da5c82a4cdfc518b242d32812c624e9a19a4"
+    },
+    "zuri-web/src/app/globals.css": {
+      "bytes": 60186,
+      "sha256": "3f72c19244a43d3b91db47dcd94d401ea9fdce21adee4ac46011a5c249ceff9c"
+    },
+    "zuri-web/src/app/innovation-story.css": {
+      "bytes": 3830,
+      "sha256": "bd2f3d5d16908753d14dd707b61ca42293982fc5dae13022060bf2dc0e627fd0"
+    },
+    "zuri-web/src/app/intent.css": {
+      "bytes": 7419,
+      "sha256": "bed5e96838ddef6890b12bcf6c084090046af1e4fc96cea0d236a18e492bea11"
+    },
+    "zuri-web/src/app/layout.tsx": {
+      "bytes": 1840,
+      "sha256": "5636fcbd7636be99cfef83cfebfdf530805bbd3e98391aa8702306eff2393bc0"
+    },
+    "zuri-web/src/app/marketplace-catalogue.css": {
+      "bytes": 8271,
+      "sha256": "5b4eb63e249f83b50ee54f12b8b93ff58ffe1fd0e1d1b6957b6c7e4f918d5611"
+    },
+    "zuri-web/src/app/not-found.tsx": {
+      "bytes": 647,
+      "sha256": "25d3c91e25229fb0cbaafa71695a68fb7272098d0c670f74f83330bf8ff180cc"
+    },
+    "zuri-web/src/app/opportunities.css": {
+      "bytes": 1598,
+      "sha256": "46781e18773dbb5fc2b1c039a2703f0d7fe11136c414beca7d62d860c14c693a"
+    },
+    "zuri-web/src/app/page.tsx": {
+      "bytes": 4234,
+      "sha256": "a3901e656b820f96ca2ec16df91052dd7b94beb25208b79e2a00786cb94fc303"
+    },
+    "zuri-web/src/app/pamoja-app-overview.css": {
+      "bytes": 4230,
+      "sha256": "db333477a6ad39334786e3b8acdd42ea2a684ec9e572ac0b8eb3962b328fe567"
+    },
+    "zuri-web/src/app/pamoja-network.css": {
+      "bytes": 6072,
+      "sha256": "6f5ce25da3e573b0599b6f53c7cc8490b5b9f6df5c0ebfb3b2d7240ee01cbfcd"
+    },
+    "zuri-web/src/app/pamoja-opportunity.css": {
+      "bytes": 41954,
+      "sha256": "2f9685a1891e3e99b7c848d8c236bdc53b198a943fa8be632ad593aba16611b9"
+    },
+    "zuri-web/src/app/pricing.css": {
+      "bytes": 16461,
+      "sha256": "283dd2d6fa363ea8a9d2efd91f39ab3614346a235b9d841061cfb53e3f9c01a8"
+    },
+    "zuri-web/src/app/robots.ts": {
+      "bytes": 376,
+      "sha256": "3fcb46b2257e2525179845a2c8ef0034ce63aa254543043f657050390c959a61"
+    },
+    "zuri-web/src/app/sitemap.ts": {
+      "bytes": 922,
+      "sha256": "1526675cfeee376a01ba7e02d517483d6ae40575abc85f8e512936570babc20b"
+    },
+    "zuri-web/src/app/space-life.css": {
+      "bytes": 7402,
+      "sha256": "37266930786d70406cdbb58f2944585db49e6b735b1f37dd50b70d0c760b3b6d"
+    },
+    "zuri-web/src/app/studio.css": {
+      "bytes": 12838,
+      "sha256": "49477de14533cdb7f5fd8c1c81ca5f18f3f0fc612fb45c0821ed1c41a60b33e3"
+    },
+    "zuri-web/src/app/wedding-client.css": {
+      "bytes": 10139,
+      "sha256": "8bf140a6ffa1d254b940d403d563f4db3a2e238fe64465699719bd0b1c92f0aa"
+    },
+    "zuri-web/src/app/worlds-immersive.css": {
+      "bytes": 7776,
+      "sha256": "f304311a31b5df7d9fe8d8f5c229e7457eef71328cbf15ab9fad500ea6134312"
+    },
+    "zuri-web/src/app/worlds-vivid.css": {
+      "bytes": 28719,
+      "sha256": "02368f8e014e122a3c2463b8d2227662077914808d2ce24cd1c9dc9ad715373b"
+    },
+    "zuri-web/src/app/zuri-web-app.css": {
+      "bytes": 630,
+      "sha256": "bddf054231341a734fc566f8ba003ddb1a5ded479f19e1ca69d3e13fcb9feb79"
+    },
+    "zuri-web/src/app/[address]/page.tsx": {
+      "bytes": 1663,
+      "sha256": "7a575ca10a6791723c4558417dad6aa7b3bac3e72ad2ac74838bbc37761639bb"
+    },
+    "zuri-web/src/app/about/page.tsx": {
+      "bytes": 4712,
+      "sha256": "e5b8d848ededac0f1cb0c5e4674dbb441bb7fbc25953303f2c06838be84cfdf7"
+    },
+    "zuri-web/src/app/admin/actions.ts": {
+      "bytes": 562,
+      "sha256": "7560b3c64da59cabfcfc2cfe47fa5d0de1be846b1cf598487c10bf8f5a8c44d5"
+    },
+    "zuri-web/src/app/admin/error.tsx": {
+      "bytes": 595,
+      "sha256": "4bd24385d0dcee5bb9ad41e4b492db239cfb64b736484cc882ae418efe4b9165"
+    },
+    "zuri-web/src/app/admin/layout.tsx": {
+      "bytes": 197,
+      "sha256": "793ca4c8e0215bda2ad6f3ca0a4e71612d1a46587e491a778066b0b02d55f5e6"
+    },
+    "zuri-web/src/app/admin/page.tsx": {
+      "bytes": 3072,
+      "sha256": "36c2256fafd85d5805ebd2be47731fd35f8ad1a2101b407457e76707e8854289"
+    },
+    "zuri-web/src/app/admin/enquiries/page.tsx": {
+      "bytes": 4490,
+      "sha256": "b636ec8b9c2b69944dfcf3d956322cacaedd65ba96a4d495c9f15a7f78797f8a"
+    },
+    "zuri-web/src/app/admin/login/page.tsx": {
+      "bytes": 3113,
+      "sha256": "be11f0d09fce66167808d588179f89c01c0820d1e4594be8c91bb9cd4c3f773f"
+    },
+    "zuri-web/src/app/admin/opportunities/page.tsx": {
+      "bytes": 706,
+      "sha256": "2bb34a09e4edb652b5aab38b37f875d7b577de3c87d61e88d9548483cff923a0"
+    },
+    "zuri-web/src/app/admin/pamoja/page.tsx": {
+      "bytes": 6329,
+      "sha256": "723f4a95910c57c883bb5728c794a9ded69cebfacaeba519c1ea31db23e3c1c9"
+    },
+    "zuri-web/src/app/admin/publishing/[kind]/page.tsx": {
+      "bytes": 1821,
+      "sha256": "73f21550742f0c6704e17f048a58d5afa3217199799def4d72a6dafaf6bf2b75"
+    },
+    "zuri-web/src/app/admin/studio/page.tsx": {
+      "bytes": 651,
+      "sha256": "f3e70e7ebc6db9e451cd2fd6e0a39629ca57a6bbc6b29b3e20717eccc260223e"
+    },
+    "zuri-web/src/app/ai-knowledge/page.tsx": {
+      "bytes": 3793,
+      "sha256": "f77bbd242d1d8b61f4f9f12fa5c854d8dddab05afde2b32c4f338663fa9ceaa1"
+    },
+    "zuri-web/src/app/ai-privacy/page.tsx": {
+      "bytes": 2996,
+      "sha256": "f9298f229057f3fd94c9cab7427a62c1ddf08e7c66d6b941a1f23c0ec9731fc3"
+    },
+    "zuri-web/src/app/api/admin/enquiries/[id]/route.ts": {
+      "bytes": 2996,
+      "sha256": "79cc17003323f45732466ee62dd122b9d6e0ad34912fe1ceb734a6c531f69d86"
+    },
+    "zuri-web/src/app/api/admin/enquiries/[id]/notes/route.ts": {
+      "bytes": 4658,
+      "sha256": "070b91a21eb649f9e4226ba589292205b7684e19d0e4ee74c3501a445245e47c"
+    },
+    "zuri-web/src/app/api/admin/opportunities/route.ts": {
+      "bytes": 4392,
+      "sha256": "f7f6f6c87a08e5d2c61c5eb6fb7c58a36d26315911aa950bc868d7a5263f3f01"
+    },
+    "zuri-web/src/app/api/admin/opportunities/venue/route.ts": {
+      "bytes": 1509,
+      "sha256": "aac1b001fda03c3e90ba9dc608cf65b58621e8a79571fca6229f038c0fd40aa9"
+    },
+    "zuri-web/src/app/api/admin/pamoja/route.ts": {
+      "bytes": 1434,
+      "sha256": "b86f305ea14df5608704ac66612b6d41025aeaac94b97f6654b7bd41996034c8"
+    },
+    "zuri-web/src/app/api/admin/pamoja/photos/route.ts": {
+      "bytes": 988,
+      "sha256": "0d483382c1ae28059576a94ed7283d4bd99cec1d1feced2e6c276ee6f0b043df"
+    },
+    "zuri-web/src/app/api/admin/publishing/[kind]/route.ts": {
+      "bytes": 2275,
+      "sha256": "a097620de8c0622943eaafd354405ee5cef6019ee6c56a9b1f9b5af9d5472e21"
+    },
+    "zuri-web/src/app/api/admin/publishing/[kind]/[id]/route.ts": {
+      "bytes": 4597,
+      "sha256": "45f6f3d24a10ce2250473a79d5b418c56f6ae8884cc92a82afa5ae76a339d894"
+    },
+    "zuri-web/src/app/api/ai/route.ts": {
+      "bytes": 202,
+      "sha256": "4be68a99a103b39c4d5c356bde0659f979867afa85c766a6f2913ce2d6530e25"
+    },
+    "zuri-web/src/app/api/backend/route.ts": {
+      "bytes": 1661,
+      "sha256": "2139ada6e94b9c4fee6bf5b50ccb83b1581f5cd2e3ae0cdff1f0c5702791c123"
+    },
+    "zuri-web/src/app/api/backend/discover/route.ts": {
+      "bytes": 624,
+      "sha256": "d209be87b45ae1c2692367dd147f6b4ddf38c93c8ca2afe01f25bf2e2467d22e"
+    },
+    "zuri-web/src/app/api/backend/logout/route.ts": {
+      "bytes": 557,
+      "sha256": "2f46cc152fa1e15efafe5008c7bff181c034b60e6e73971413e470272f5de58b"
+    },
+    "zuri-web/src/app/api/backend/media/route.ts": {
+      "bytes": 1459,
+      "sha256": "5e546744bef0d8af5c8947072fa070635d95a20df48e648860793bfa7399a4f4"
+    },
+    "zuri-web/src/app/api/chat/route.ts": {
+      "bytes": 218,
+      "sha256": "0baffdbb61325c57f21666b08ecc0c4f0f093e89ea5a36df0ac38002e3f60b1e"
+    },
+    "zuri-web/src/app/api/enquiries/route.ts": {
+      "bytes": 1909,
+      "sha256": "2edc83c1646c4272902fe1a0df573dd15d1b412cd597a9fbfcd202a79aa147e1"
+    },
+    "zuri-web/src/app/api/intents/resolve/route.ts": {
+      "bytes": 1590,
+      "sha256": "e1af1fbd5a7067357f28f8d36e96b32d10f613a2ddb2dfa27cdc291c4ca82884"
+    },
+    "zuri-web/src/app/api/opportunities/route.ts": {
+      "bytes": 1630,
+      "sha256": "dfbf341f2142658fc76bf76172caf3263d14cadee6c97baa75b5f0eb4b74ccac"
+    },
+    "zuri-web/src/app/api/opportunities/me/route.ts": {
+      "bytes": 2300,
+      "sha256": "7f4855759a1082f51a037d26d5fe7f9ef9f43c70a5fe981e60844452af159641"
+    },
+    "zuri-web/src/app/api/pamoja/account/route.ts": {
+      "bytes": 1611,
+      "sha256": "b66d6987e49d706b39c7ae237a1bc13bfd46cbb62108befa6583d67c92261d93"
+    },
+    "zuri-web/src/app/api/pamoja/intake/route.ts": {
+      "bytes": 3504,
+      "sha256": "081be1f7d839a1e836696b4095d27f4164dd852bbaad434220b6ee73c03280da"
+    },
+    "zuri-web/src/app/api/pamoja/manage/route.ts": {
+      "bytes": 1311,
+      "sha256": "46f0e8bbc9bb377f69dd07f03b9af48e463b455c66af5c99531f4c4dac3673c8"
+    },
+    "zuri-web/src/app/api/pamoja/moments/route.ts": {
+      "bytes": 1389,
+      "sha256": "72bfd0dbf1b64bc9957876b0cb468846d5002af70ea02925d0feddf1d80d3cf1"
+    },
+    "zuri-web/src/app/api/studio/route.ts": {
+      "bytes": 1475,
+      "sha256": "9f06842f9739ffba2717720c363e64c93a0c179aef6e157f5074ba556cf6a09e"
+    },
+    "zuri-web/src/app/api/studio/catalog/route.ts": {
+      "bytes": 522,
+      "sha256": "bd41724abe9ec025c577e00f0b07e2b799a51a44d729bc9526652efeb9c2bb6e"
+    },
+    "zuri-web/src/app/api/tools/runtime/route.ts": {
+      "bytes": 1209,
+      "sha256": "127b7508fc04a9f48d1b60726557762bac97ca5ddf740fdf0ddd6bb19df67333"
+    },
+    "zuri-web/src/app/api/viola/route.ts": {
+      "bytes": 218,
+      "sha256": "d84c6cffdbdddb191319ee9984eb553626c6ae3918960b62abb036a3a5e2580d"
+    },
+    "zuri-web/src/app/api/workers/opportunities/route.ts": {
+      "bytes": 1515,
+      "sha256": "31028c457861236e7766ddec3fe75c7b9df202d1a0c45ceaca9be65eda538b30"
+    },
+    "zuri-web/src/app/app/page.tsx": {
+      "bytes": 322,
+      "sha256": "db6d03b774798d7ae011ac7df0948fa280ab3f00692bcf026809193173e1f845"
+    },
+    "zuri-web/src/app/contact/page.tsx": {
+      "bytes": 1244,
+      "sha256": "4205dac748d0a5412aa2f2ed24180cd732465be870134e5a3cbf5c4e3949c3aa"
+    },
+    "zuri-web/src/app/experience/error.tsx": {
+      "bytes": 293,
+      "sha256": "388b364677836337c2197eb28613dfe6324af6f2e0c7d2257067297da10ca277"
+    },
+    "zuri-web/src/app/experience/experience.css": {
+      "bytes": 19961,
+      "sha256": "804dae35edb479464ba80be7c034d28e558382d562e6905c680a874f9ddc77b5"
+    },
+    "zuri-web/src/app/experience/loading.tsx": {
+      "bytes": 220,
+      "sha256": "94a0e2c92cc9d2ed1895473ecfbe0dfae93b2bdc86cae1e1ef378a7419795a38"
+    },
+    "zuri-web/src/app/experience/page.tsx": {
+      "bytes": 330,
+      "sha256": "5b03046594dda1789bfb63b28631de3ee21f32cd0a24b89a5d02ff7bec7700c9"
+    },
+    "zuri-web/src/app/intent/page.tsx": {
+      "bytes": 1715,
+      "sha256": "60ddbc8a8c8555868821dc2c9192bb3acb37d92d8150b250f7a9518f404a78ba"
+    },
+    "zuri-web/src/app/pamoja/page.tsx": {
+      "bytes": 13666,
+      "sha256": "dad8200b61e913a26c7565d0e4cfc0044bceeb393cda11efeff9dbd7bf233c2e"
+    },
+    "zuri-web/src/app/pamoja/account/layout.tsx": {
+      "bytes": 252,
+      "sha256": "0f2a413909b078886b4d80d61acc81a04d841519c1fcaf3250939b40a2739a75"
+    },
+    "zuri-web/src/app/pamoja/account/page.tsx": {
+      "bytes": 3963,
+      "sha256": "d7455da24add63b5652cf08a73cd19b165492b855334ada83a645e04da898441"
+    },
+    "zuri-web/src/app/pamoja/app-preview/page.tsx": {
+      "bytes": 185,
+      "sha256": "5892b9fe9005ddef46cf32601891c1e27b7796405343acdd6b8010e76e2772ab"
+    },
+    "zuri-web/src/app/pamoja/claim/page.tsx": {
+      "bytes": 1180,
+      "sha256": "aa4aee978528b0882d0b2837977ed5ce44fb39263fc0ac03a8fa8ff6fd27c0a5"
+    },
+    "zuri-web/src/app/pamoja/connect/page.tsx": {
+      "bytes": 1354,
+      "sha256": "efaa7898ec800be3d3e15c1caaa2eed25a8cb206797690a00fd9d1a2b2aad1bb"
+    },
+    "zuri-web/src/app/pamoja/login/layout.tsx": {
+      "bytes": 194,
+      "sha256": "dacf35853719f48b69f115ae7db66cac5a02f3a13cae345fb8ccdf5b6500caea"
+    },
+    "zuri-web/src/app/pamoja/login/page.tsx": {
+      "bytes": 577,
+      "sha256": "26e2423b08a80923d47e7d56bcced85a77a8e82dd8d307d3449fc888cf6799e5"
+    },
+    "zuri-web/src/app/pamoja/manage/layout.tsx": {
+      "bytes": 214,
+      "sha256": "b2e156f77bac138aa77311c9af1e613dd56c1425a0dfc9e1603d683a83fe937d"
+    },
+    "zuri-web/src/app/pamoja/manage/page.tsx": {
+      "bytes": 6283,
+      "sha256": "ad197eab00007117a994c8b069e39741ede64af3d66a23f0429bf3709a0eda7b"
+    },
+    "zuri-web/src/app/pamoja/moments/[slug]/page.tsx": {
+      "bytes": 1543,
+      "sha256": "9cb7a39a8282407ab6f04ebfa76f591d7de91840cdccc7a9d4837f4a9adbabb5"
+    },
+    "zuri-web/src/app/pamoja/opportunities/page.tsx": {
+      "bytes": 299,
+      "sha256": "98a5ce6ca484b05f449ed52060c477679506a15f1354855ef989b654efad9af6"
+    },
+    "zuri-web/src/app/pamoja/people/[slug]/page.tsx": {
+      "bytes": 1296,
+      "sha256": "b5d7a971fbbb56c56774e91a1054ff295c5f2b0540d5c6e78dbb908ce9838bca"
+    },
+    "zuri-web/src/app/pamoja/space-preview/page.tsx": {
+      "bytes": 891,
+      "sha256": "2326e63b10db312b4e165f242898b94e876ca2f0419c42e813510a104166506a"
+    },
+    "zuri-web/src/app/pamoja/spaces/[slug]/page.tsx": {
+      "bytes": 1293,
+      "sha256": "ca54ce7590e9cd424d6a7802c629ad506925970a4da892985abd624d47499596"
+    },
+    "zuri-web/src/app/pamoja/tools/page.tsx": {
+      "bytes": 289,
+      "sha256": "c3e4df175ecdc57631becd96140e3ae5deda5a7ed2886838f326a47a55a332b3"
+    },
+    "zuri-web/src/app/pricing/page.tsx": {
+      "bytes": 5301,
+      "sha256": "dd3d14deee98f39e12d45e87366c7e231a5eb9b7b8b2d3d8b9ac5c4e48e4b216"
+    },
+    "zuri-web/src/app/select/page.tsx": {
+      "bytes": 2432,
+      "sha256": "163bc8e047470cda235c2186b2fd8167f159a409290aa5237912bdd01058c72a"
+    },
+    "zuri-web/src/app/select/[slug]/page.tsx": {
+      "bytes": 3894,
+      "sha256": "3b69b3a9d051f894c8883a49658114251b338866665c945f23ca65c51d710782"
+    },
+    "zuri-web/src/app/tech/page.tsx": {
+      "bytes": 3939,
+      "sha256": "11e33dc3595413c03f040f57433c4eba8013c03c78431d682d4f09fcf3bcc4cc"
+    },
+    "zuri-web/src/app/tech/[service]/page.tsx": {
+      "bytes": 2531,
+      "sha256": "6d656ca8c137a94e2e17b3f75fc93e15f31aba7a2aaf1be5afb9260a7dd242d7"
+    },
+    "zuri-web/src/app/tech/enquire/page.tsx": {
+      "bytes": 1771,
+      "sha256": "bac1179b5f194756ca016422cf209f7142259af7a3ab9d0b70a7b5a5ddc45bd2"
+    },
+    "zuri-web/src/app/tech/find/page.tsx": {
+      "bytes": 466,
+      "sha256": "56ea3a3c135332a3c2351f1e77f9d556299707d241d4cb843cba55a85ab1fc4b"
+    },
+    "zuri-web/src/app/tech/invites/page.tsx": {
+      "bytes": 4432,
+      "sha256": "a10c695b1dc8b8f7ca2e56c655c400cc2600a29d3a7aa9a0e07707acd10d1dfd"
+    },
+    "zuri-web/src/app/tech/invites/demo/layout.tsx": {
+      "bytes": 199,
+      "sha256": "5c35e5349436fff38e4046dbf35955a457cd452c39a758821bf8942ce49a7cca"
+    },
+    "zuri-web/src/app/tech/invites/demo/page.tsx": {
+      "bytes": 219,
+      "sha256": "8b5c2fd5adf691781c4a71b896eff1b7d1462afe2232228ab3ec0c16ddba7189"
+    },
+    "zuri-web/src/app/tech/invites/enquire/page.tsx": {
+      "bytes": 974,
+      "sha256": "44b8f15a34babe5820ad45a36d343428cbc913da502a22c04bccb580b6f4deb7"
+    },
+    "zuri-web/src/app/tech/invites/templates/page.tsx": {
+      "bytes": 2128,
+      "sha256": "d9d642eeb1887c0dcf36cc8b532120ef82ff16b87e50c897686dde221c8a867c"
+    },
+    "zuri-web/src/app/tech/invites/templates/[template]/page.tsx": {
+      "bytes": 718,
+      "sha256": "f2093024e1ebf92014cad82893e070074636ac45a78cef732d2bc010b7510b10"
+    },
+    "zuri-web/src/app/tech/marketplace/page.tsx": {
+      "bytes": 104,
+      "sha256": "04c6002d8e76d041f3be28fb929795655c6a7d28e8f0e6a28fbf46ee79c93b4e"
+    },
+    "zuri-web/src/app/tech/products/page.tsx": {
+      "bytes": 105,
+      "sha256": "1707bdc268eee8b0fb8125b5ac0d4f06bb598b43a22abf7fa6ae368d2f644b77"
+    },
+    "zuri-web/src/app/tech/services/page.tsx": {
+      "bytes": 101,
+      "sha256": "764be9766676949dfb2753a5773a77a451a9414dafbdd72845bc605a629f32ac"
+    },
+    "zuri-web/src/app/tech/studio/page.tsx": {
+      "bytes": 319,
+      "sha256": "25b5d5822d57bc7cc18cb9d006ce1f9ffde4228919b21e91985357b4c159a3a0"
+    },
+    "zuri-web/src/app/tech/studio/docs/page.tsx": {
+      "bytes": 8210,
+      "sha256": "c2b7102cc268e2180d4bb54872caf283507c876dd7006454d069d0e7a993addf"
+    },
+    "zuri-web/src/components/BrandMark.tsx": {
+      "bytes": 787,
+      "sha256": "485adba23cd78efaeba8b8a89e4836a9e7241dd734178fc75328c975fd023e6a"
+    },
+    "zuri-web/src/components/SiteFooter.tsx": {
+      "bytes": 997,
+      "sha256": "30d42a9bf47bb92a4409415f1f9d5485684955424beda7949cdb5d34abac4deb"
+    },
+    "zuri-web/src/components/SiteHeader.tsx": {
+      "bytes": 4549,
+      "sha256": "d792c4e61ca8aae26d5c520aa04f955513371ecbe516c7a73efb26121ccf9ab0"
+    },
+    "zuri-web/src/components/admin/EnquiryFilters.tsx": {
+      "bytes": 4057,
+      "sha256": "2bef963f9cdc1775c66c60e3ff8d98c417d68532ff517fa727275115a7fb0025"
+    },
+    "zuri-web/src/components/admin/EnquiryNotes.tsx": {
+      "bytes": 4880,
+      "sha256": "326e4b62921c40fcb6995aaebb5ded238f10f1f47a186ba7db4229316a55a088"
+    },
+    "zuri-web/src/components/admin/EnquiryStatusSelect.tsx": {
+      "bytes": 2495,
+      "sha256": "27a3b630b9cb2f437f54b72a58b06bdf399cd9751ebb8add37541ed507f9c308"
+    },
+    "zuri-web/src/components/admin/IntakePhotos.tsx": {
+      "bytes": 453,
+      "sha256": "c0b361ff540570131bf85ed2c784fa4d1ea22f4bbff780f601589c1a29687461"
+    },
+    "zuri-web/src/components/admin/SignOut.tsx": {
+      "bytes": 757,
+      "sha256": "cfbe42e35cefc0777ec6814cddcf21597fc72f21fe78ea81f718c00247336717"
+    },
+    "zuri-web/src/components/admin/publishing/ContentPreview.tsx": {
+      "bytes": 3048,
+      "sha256": "bb67ba472949215850154315841919bf8bd9b394cdacf2d41bd7ab5f1df5af0b"
+    },
+    "zuri-web/src/components/admin/publishing/Editor.tsx": {
+      "bytes": 10240,
+      "sha256": "0c65c612fcda9749eda39c89f39bd3e87804e00ed77952d2fe7782a440d5ea1a"
+    },
+    "zuri-web/src/components/admin/publishing/Workspace.tsx": {
+      "bytes": 4546,
+      "sha256": "eb7e9c36984fbb553b5f74ac939769cf88bd7e6517463d3af2ff989c494b8374"
+    },
+    "zuri-web/src/components/experience/Experience.tsx": {
+      "bytes": 38975,
+      "sha256": "c2377b7e83e6a01a54110f2f1a76c7468ebae14feed134552840247b1b89d17f"
+    },
+    "zuri-web/src/components/opportunities/OpportunityAdmin.tsx": {
+      "bytes": 8503,
+      "sha256": "c9e9af278a3b3444a357d1ca17d4d1289bb95ee451b36664a11143068ff1115a"
+    },
+    "zuri-web/src/components/opportunities/OpportunityDiscovery.tsx": {
+      "bytes": 5828,
+      "sha256": "bbf44f9ae45b6cde0b9e6f352652c569aa9dc7677c673d85858e868b88ba259d"
+    },
+    "zuri-web/src/components/pamoja/AccountNameForm.tsx": {
+      "bytes": 1815,
+      "sha256": "176a880c9fad86b74936d257fb647d2ef28bec5453c6cf4ced6c80112c466e7c"
+    },
+    "zuri-web/src/components/pamoja/EmailLogin.tsx": {
+      "bytes": 3823,
+      "sha256": "3fc2a767381763d7448268beee732cc4b0f27c825c3e311a331e77830ba1b919"
+    },
+    "zuri-web/src/components/pamoja/MomentComposer.tsx": {
+      "bytes": 5559,
+      "sha256": "169739387af5cce6099e92cc6e6ea9bd844b8fb22cac4dda97419c33a2f2a292"
+    },
+    "zuri-web/src/components/pamoja/PamojaJourneys.tsx": {
+      "bytes": 10535,
+      "sha256": "a5ee8c02e1da2f75203d1d3ff4b36897f4a8e42ff7ba18557efeedd6fc96d5a2"
+    },
+    "zuri-web/src/components/pamoja/SpaceLife.tsx": {
+      "bytes": 7959,
+      "sha256": "cdaf90646b9ac1ec8f00bbbd66697cb42d684798c689d3041a697561107808f7"
+    },
+    "zuri-web/src/components/pamoja/SpacePreview.tsx": {
+      "bytes": 38,
+      "sha256": "6e3c06e23ff2c9fa8d0b49c1941e1217bddae6e419fe913d27e1895edff89721"
+    },
+    "zuri-web/src/components/pamoja/SpaceTour.tsx": {
+      "bytes": 9808,
+      "sha256": "36a6e2b0bcf93c22bcf49f7c631d7f883188362276524b1b17bc992bd9770ba2"
+    },
+    "zuri-web/src/components/pamoja/ZuriAppOverview.tsx": {
+      "bytes": 2367,
+      "sha256": "53a3e95a4f359860957584524a9ea4e58cfd88ae92d203cba11d7f7401518d50"
+    },
+    "zuri-web/src/components/pamoja/ZuriWebApp.tsx": {
+      "bytes": 1173,
+      "sha256": "29d3e359ea77f81acd499bf2bae759671dc7d6c8999f4f41c6258be7b9d78a04"
+    },
+    "zuri-web/src/components/pamoja/useBasicAccount.ts": {
+      "bytes": 1753,
+      "sha256": "60878e337b7bb6445971f25a7da151bbcdc1c1fa2feef599d03df44bbb1ab4a9"
+    },
+    "zuri-web/src/components/site/ContentState.tsx": {
+      "bytes": 478,
+      "sha256": "859c613517fa193915242169ec8a05ebc818b45096bd8e3c4dc14b4f1f3118c0"
+    },
+    "zuri-web/src/components/site/ConversationNextStep.tsx": {
+      "bytes": 2059,
+      "sha256": "f35263c27eac515265a30537fa43c361868c59cfe08dcf69fe3bc986378e54d5"
+    },
+    "zuri-web/src/components/site/ConversationShortcut.tsx": {
+      "bytes": 551,
+      "sha256": "32090bfc8387a68cea9e3fa769b2efc10169703de77a167eb58d1d3833e50006"
+    },
+    "zuri-web/src/components/site/Directory.tsx": {
+      "bytes": 4198,
+      "sha256": "20892590f30215339e3761d3f5526f3104f177ba3522e708fdbd8406decbce83"
+    },
+    "zuri-web/src/components/site/EditorialStory.tsx": {
+      "bytes": 1014,
+      "sha256": "d121a6ee981d38a12d11252a84d63d51f7b6f3c7f309335a25cf68a862e80dc9"
+    },
+    "zuri-web/src/components/site/GoalAI.tsx": {
+      "bytes": 3347,
+      "sha256": "2d6906aa480aced26182f5035f0dd373d3018a64f2de6b33ea47d6e4bc942d94"
+    },
+    "zuri-web/src/components/site/HistoryBackdrop.tsx": {
+      "bytes": 2342,
+      "sha256": "558d1ce479f3523d1185485e6d9bbcf844cb1e81001d4cfab775b50f754ed2f7"
+    },
+    "zuri-web/src/components/site/HomeArtwork.tsx": {
+      "bytes": 956,
+      "sha256": "b399ba694aa83c12aa845fc4237f17c108c34dd06b5d015156fbab15c8121b10"
+    },
+    "zuri-web/src/components/site/IntentPlanner.tsx": {
+      "bytes": 6167,
+      "sha256": "ee2b7c4dc16c1d24c824dda7449cdc1d78a1e8ada1e9d879a264193ae7040ce3"
+    },
+    "zuri-web/src/components/site/InvitesEnquiry.tsx": {
+      "bytes": 8211,
+      "sha256": "affc025ad4f24b684dd44968757ae0afc21048a58b46712fd94c95dd9035cf6e"
+    },
+    "zuri-web/src/components/site/InvitesShowcase.tsx": {
+      "bytes": 1429,
+      "sha256": "79af9b0965eb9f5be20cbb829a0d0b65877cd18fa40cce7b1520096f2b47701c"
+    },
+    "zuri-web/src/components/site/Moments.tsx": {
+      "bytes": 899,
+      "sha256": "ff8d4435be66825da1137abd45397d5ecee51b5dd42c3223d7a9ba4999fc492e"
+    },
+    "zuri-web/src/components/site/OfferBenefits.tsx": {
+      "bytes": 6952,
+      "sha256": "b17f87845a1628d69add9362dfc8142d431b262c01d83e13eae5d1c9d53f6e91"
+    },
+    "zuri-web/src/components/site/OfferCards.tsx": {
+      "bytes": 1130,
+      "sha256": "bd9708ff364da41cb169f473328acfd3059c9a0e90fe8852fbf0251dfcdc6b95"
+    },
+    "zuri-web/src/components/site/PamojaNetwork.tsx": {
+      "bytes": 1976,
+      "sha256": "8f89042cac971013f258232ef623718caab85606ecce4b54e5bf82131035f7af"
+    },
+    "zuri-web/src/components/site/PortalAtmosphere.tsx": {
+      "bytes": 860,
+      "sha256": "ff85f4e097e183a6b651a88dd446a1be9e12b35132fc337a4133ac46f4387769"
+    },
+    "zuri-web/src/components/site/PresenceIntake.tsx": {
+      "bytes": 7606,
+      "sha256": "199921b01e0c76b69df98a4bbbd54e6bbb33b8f1b8bf387957fafb04a107c6ee"
+    },
+    "zuri-web/src/components/site/PresenceOffer.tsx": {
+      "bytes": 1632,
+      "sha256": "42cff40a305b5383ca8bfcf7ca2d5f8bed9539e4296c879f58efe85f6fff22c1"
+    },
+    "zuri-web/src/components/site/Profile.tsx": {
+      "bytes": 3719,
+      "sha256": "37b71860b44dd9aca96d7d2ec952ab6922cc0b0199679a480fd62cfa7aa7511b"
+    },
+    "zuri-web/src/components/site/ProfileStructuredData.tsx": {
+      "bytes": 370,
+      "sha256": "2b47e5af26996d4cf4f4a576f5f3ac548369ab1c7c309cb444a4c6f69cb2d273"
+    },
+    "zuri-web/src/components/site/RSVPPreview.tsx": {
+      "bytes": 1182,
+      "sha256": "6a4ba710a77f4cc11f0b1d43e1f83b40de3858c63fac2fb62e1f77a9e6de86c2"
+    },
+    "zuri-web/src/components/site/RequestForm.tsx": {
+      "bytes": 4388,
+      "sha256": "87435d6db21c7c1bc742f0c718d5ba1bd68f0419b244cd3e93d2eab5686f56fa"
+    },
+    "zuri-web/src/components/site/SelectBulletin.tsx": {
+      "bytes": 1271,
+      "sha256": "58a9f4d4a49018dea4b51d2bcced0877279a88bb600a55f88fef8536508e90b7"
+    },
+    "zuri-web/src/components/site/SelectLibrary.tsx": {
+      "bytes": 2596,
+      "sha256": "294de881faa4c20ccf7a5911877c98970c14df3a3692e29589f43237ac696552"
+    },
+    "zuri-web/src/components/site/ShareStory.tsx": {
+      "bytes": 636,
+      "sha256": "449c6ce6665c6c62623847c74306cd17186efa77f68aa288b0b338d6c0d65ffb"
+    },
+    "zuri-web/src/components/site/StoryCard.tsx": {
+      "bytes": 671,
+      "sha256": "4280763e63a7f26f94a8dca5d3bcc841d46161182bca0f56c40a1dfd61b01f25"
+    },
+    "zuri-web/src/components/site/TechServicesGraphic.tsx": {
+      "bytes": 2284,
+      "sha256": "9b9c17a78a103dfb7c7046c0cc3df190852db516cdadeb27289ce2068b6e5f63"
+    },
+    "zuri-web/src/components/site/TechnologyFinder.tsx": {
+      "bytes": 3257,
+      "sha256": "dccda271819966ee28e62926523a507d7d7b38d23afcedaa302f7bb518a1e182"
+    },
+    "zuri-web/src/components/site/TechnologyShelf.tsx": {
+      "bytes": 5155,
+      "sha256": "9aab6a02901bb6037e151d3aa525a851d45c3932b83fe450ed19e9ee87ef7193"
+    },
+    "zuri-web/src/components/site/WeddingExperience.tsx": {
+      "bytes": 8990,
+      "sha256": "6e5fb0943693806fbab9de93843fd26ef71cce3e4f84da2c79203a4bc4903b2b"
+    },
+    "zuri-web/src/components/site/WorldWaves.tsx": {
+      "bytes": 360,
+      "sha256": "c921e33df18244f88b1da0ebfe4955e237b7db97d37933ed7fad97652bec7c41"
+    },
+    "zuri-web/src/components/site/ZuriConversation.tsx": {
+      "bytes": 7024,
+      "sha256": "eacba9c831d81f5cb6eb74a72820a06e52b69c3fd0d570ac25bd4a725e14a941"
+    },
+    "zuri-web/src/components/studio/StudioWorkbench.tsx": {
+      "bytes": 24712,
+      "sha256": "988809b00ee516fe72067ff220645d5b8baabb2668ddf84b1f230966ad8e31b8"
+    },
+    "zuri-web/src/components/studio/ToolCatalog.tsx": {
+      "bytes": 5191,
+      "sha256": "67c1d80d5f0c3ad9b2d3fdcc6a0974df05cb1d75c66236655297303f278413d6"
+    },
+    "zuri-web/src/lib/ai/contracts.ts": {
+      "bytes": 4339,
+      "sha256": "8593859438acfdc1c6a108f1dd35c1848fac70e07b8a8d324209340fddd82214"
+    },
+    "zuri-web/src/lib/ai/edge-proxy.ts": {
+      "bytes": 1687,
+      "sha256": "50a0015f3332f0d6581acb69e1f04b280f0a18c1715e72d11f3126ee10b2fef8"
+    },
+    "zuri-web/src/lib/ai/gateway.ts": {
+      "bytes": 10178,
+      "sha256": "d3a6d4ebb4641f7d155f0bb978f0b041c5ff06cf6213c438655119eea518331d"
+    },
+    "zuri-web/src/lib/ai/provider.ts": {
+      "bytes": 1220,
+      "sha256": "1dcb35fb0a8e0d03cd5ae6d8334576ec8d9a9332ca0a785747e3b72366e0d7ed"
+    },
+    "zuri-web/src/lib/ai/knowledge/catalog.ts": {
+      "bytes": 11363,
+      "sha256": "f04ef40a755cb70b2a71b617c7bd9b5f0c290eab0d8fa67fea759b785121be74"
+    },
+    "zuri-web/src/lib/ai/knowledge/context.ts": {
+      "bytes": 2091,
+      "sha256": "272e85b59815e9ac370d8fa0c4530d8b683166b8782919cb4246c39f41b6b9b1"
+    },
+    "zuri-web/src/lib/ai/knowledge/retrieve.ts": {
+      "bytes": 943,
+      "sha256": "263765e4ba4fb30a10007eb61bffcba1b081547e858bd0538ca8370898a6d7ad"
+    },
+    "zuri-web/src/lib/ai/knowledge/search.ts": {
+      "bytes": 3301,
+      "sha256": "f2c3aeb1f286535cec594c1f7f9c423f9336ec7e5f1081d7efa1fd24dd54b36d"
+    },
+    "zuri-web/src/lib/ai/knowledge/types.ts": {
+      "bytes": 1335,
+      "sha256": "30edcca8d683760f002ce67063667f81940c6cb6bb73ee2d8ce64f76fac0464a"
+    },
+    "zuri-web/src/lib/backend/edge.ts": {
+      "bytes": 2456,
+      "sha256": "453e33f671a6290be6326d79e56d29fc39d189e69da9c9c070c2c6e5b19aec42"
+    },
+    "zuri-web/src/lib/backend/intake-proxy.ts": {
+      "bytes": 1153,
+      "sha256": "e37dc7bff6eab6bb1b0c2749a0a57d12467ccec34a1699d91f6f54967ab540e0"
+    },
+    "zuri-web/src/lib/chat/conversation.ts": {
+      "bytes": 4508,
+      "sha256": "d4ef0e0262617636bbed6585517b737a1fc6fd7db7489777d0e3e7e1b44269e1"
+    },
+    "zuri-web/src/lib/commerce/offers.ts": {
+      "bytes": 7054,
+      "sha256": "dadf2a876250c37a9a026ed212b936404b53519d2504d8b600e45f65789b864d"
+    },
+    "zuri-web/src/lib/content/innovation-scenes.ts": {
+      "bytes": 720,
+      "sha256": "bd397c2f1be15dd1cdd3d5c5beb97604a61e636943275b6fd4e3c90a9a98d9ec"
+    },
+    "zuri-web/src/lib/content/launch-profiles.ts": {
+      "bytes": 4868,
+      "sha256": "9bd8dc29d9915de1ef46c4661254e31bd4d1e1291e2ba4bc6f5d5ba4d65bb7db"
+    },
+    "zuri-web/src/lib/content/launch-stories.ts": {
+      "bytes": 21837,
+      "sha256": "84b3f03ed29a7f7b4af2151f022f4206ce227b38db57069e30b401e3d2295177"
+    },
+    "zuri-web/src/lib/content/photography.ts": {
+      "bytes": 1291,
+      "sha256": "be544429974729c8bf9dcc097b3c44f40e2be38ecc4490700e395fe545c6d98c"
+    },
+    "zuri-web/src/lib/content/website.ts": {
+      "bytes": 8700,
+      "sha256": "dc3f39f42395a5c64536ee84073011ca1b9efec782b681780f03950aaa3f3fe1"
+    },
+    "zuri-web/src/lib/discovery/profiles.ts": {
+      "bytes": 1665,
+      "sha256": "2d04871cc4617b7543c196f28871d3980effe6c8fdba03d202f06a4b399fb167"
+    },
+    "zuri-web/src/lib/enquiries/form.ts": {
+      "bytes": 386,
+      "sha256": "9b51cc194eef7afb94805f4da3798e99fea6364c53e97856d038ecffe5c1b676"
+    },
+    "zuri-web/src/lib/enquiries/pagination.ts": {
+      "bytes": 238,
+      "sha256": "888ff23f947921316096c99a138da8b0b092a8a504a3eb60fd8139c13628b76b"
+    },
+    "zuri-web/src/lib/enquiries/validation.ts": {
+      "bytes": 2896,
+      "sha256": "fa1c184a8413ae4831ad19a24ad75d1257ada3d76d7f7951aa2a4b4fdfcfb64d"
+    },
+    "zuri-web/src/lib/experience/model.ts": {
+      "bytes": 5254,
+      "sha256": "d9fdd89f9c1fb14ebe7095fefa740fddb7f3ea110a3e573d4f52dbb047ce6fae"
+    },
+    "zuri-web/src/lib/experience/seed.ts": {
+      "bytes": 46878,
+      "sha256": "5d31f480fa4b370d30ef98a98741a287c46e8e4b1a2857c42ffaf8fa86d32cef"
+    },
+    "zuri-web/src/lib/experience/viola.ts": {
+      "bytes": 742,
+      "sha256": "53e763feb73e6bfd39f015561e68a90cce3bf70325647daa623688fa47a56b27"
+    },
+    "zuri-web/src/lib/http/body.ts": {
+      "bytes": 529,
+      "sha256": "d384b991c99cd5fd7054df66365177f8d076198b4e31a8e4eb48654b47111173"
+    },
+    "zuri-web/src/lib/http/origin.ts": {
+      "bytes": 527,
+      "sha256": "a3367366f9808a74a632ef9b41a54479e52b0f2031b17e6a28eead040630d821"
+    },
+    "zuri-web/src/lib/intent/engine.ts": {
+      "bytes": 59,
+      "sha256": "0b70b387d8c1871bc7b33980649f6efffb3f30f9e6c692a03035d6039e2dfcca"
+    },
+    "zuri-web/src/lib/invites/templates.ts": {
+      "bytes": 5838,
+      "sha256": "845a568eeca6276de995db9e2bb285161439a6c415fe1e9bb58e8f83c886f4c5"
+    },
+    "zuri-web/src/lib/navigation/routes.ts": {
+      "bytes": 1942,
+      "sha256": "ef0dfa6a3cae3af71aba508f22a2d7a50d18f3de7c3acc6b998d716132efa82f"
+    },
+    "zuri-web/src/lib/navigation/zuri-app.ts": {
+      "bytes": 220,
+      "sha256": "1421fd8b73b3762175e1f92719d2aeb71bbc21f451d229a85f629b7efdaa34c1"
+    },
+    "zuri-web/src/lib/opportunities/connectors.ts": {
+      "bytes": 4573,
+      "sha256": "21b8928b2819ad640d47912aeb961fdfb8d7c168e2b8b3e442f020fd9a055e9d"
+    },
+    "zuri-web/src/lib/opportunities/extraction.ts": {
+      "bytes": 1171,
+      "sha256": "ead9c5671470048da32ff797184c66702000e7f402b0d61de5b111f56e268bd1"
+    },
+    "zuri-web/src/lib/opportunities/metered.ts": {
+      "bytes": 2255,
+      "sha256": "e54df04e317163e662957920d2fff0778a246e28d3914efeda118d87c51b433c"
+    },
+    "zuri-web/src/lib/opportunities/model.ts": {
+      "bytes": 4314,
+      "sha256": "0e3e6a60900f1e06086dafe09ecb98963c41ac932ad1ef0279d55629b2b9b1a6"
+    },
+    "zuri-web/src/lib/opportunities/pipeline.ts": {
+      "bytes": 2613,
+      "sha256": "e82e68b623de001c595a160da8ff8f2dc94f33b51d4719259d3e8d7512de6c21"
+    },
+    "zuri-web/src/lib/opportunities/server.ts": {
+      "bytes": 1751,
+      "sha256": "aed79748a638a2374ebebfe68393a133adad751c0bea2da5a5d5e74e50ef4fac"
+    },
+    "zuri-web/src/lib/pamoja/account.ts": {
+      "bytes": 2271,
+      "sha256": "3fbfd1a1f8eafc8be6b8a60ee33877c99384954070bd9e7fe1a89605805e5301"
+    },
+    "zuri-web/src/lib/pamoja/contribution-server.ts": {
+      "bytes": 2406,
+      "sha256": "60a24cf3e25c3fc012938895f5a8718d89ff70cf3ca0c1d1ee21d06624465eca"
+    },
+    "zuri-web/src/lib/pamoja/draft.ts": {
+      "bytes": 447,
+      "sha256": "8e52f5e239ebdf2cd3d5cbbf3ecfc3565296463ae72abc26ac5d3759678fc21d"
+    },
+    "zuri-web/src/lib/pamoja/email-auth.ts": {
+      "bytes": 1295,
+      "sha256": "cb733313ac4db638e239ac414a7f857a14a226448911a2534507b0c100a47307"
+    },
+    "zuri-web/src/lib/pamoja/intake.ts": {
+      "bytes": 3240,
+      "sha256": "799b129d297318716aa76702277cdd49ba5180863afa0f89e07b50a53c618479"
+    },
+    "zuri-web/src/lib/pamoja/management.ts": {
+      "bytes": 3256,
+      "sha256": "e008913335d762d0103eacf8f50a0692826578048e3008de72ce476ce235089a"
+    },
+    "zuri-web/src/lib/pamoja/public.ts": {
+      "bytes": 1566,
+      "sha256": "ae151b9515725653e2a7ad9a45db9cd9ff05aa9d0de46e3eb57029e4722b9009"
+    },
+    "zuri-web/src/lib/pamoja/search.ts": {
+      "bytes": 2556,
+      "sha256": "8874f9d0593ba9261a219907d0aef56629268e3c4a540f13d94fc2f876ba17cd"
+    },
+    "zuri-web/src/lib/publishing/admin.ts": {
+      "bytes": 1100,
+      "sha256": "99b219e81241fc9be8dbb836db3ca6337b4556b18aa0aa321fd5da0deeb9a7fa"
+    },
+    "zuri-web/src/lib/publishing/http.ts": {
+      "bytes": 1128,
+      "sha256": "9a560a56621ac5e9fc07d036dc00bc59c8c73ef4dcfe5a129ee3bb4a90b341bd"
+    },
+    "zuri-web/src/lib/publishing/model.ts": {
+      "bytes": 8866,
+      "sha256": "e0f64d36f6dbfcf7ccf838df132a6626d6cb6c737f474d0f7a4b067a295007e5"
+    },
+    "zuri-web/src/lib/publishing/public.ts": {
+      "bytes": 3923,
+      "sha256": "3ac179fbe993d37dfc1dbbf184596b0c67aba23c9be5602696b23866b9f1d334"
+    },
+    "zuri-web/src/lib/studio/gateway.ts": {
+      "bytes": 3653,
+      "sha256": "aae791107d9d5327ef5413ea36eb64dfcd168ea231a55c73a73a9f98cfef3f88"
+    },
+    "zuri-web/src/lib/studio/model.ts": {
+      "bytes": 4771,
+      "sha256": "9e7e918d028bb34e6649ff2e32a9d838b1946666d70fe84aefd785f2950c131d"
+    },
+    "zuri-web/src/lib/studio/sandbox.ts": {
+      "bytes": 4789,
+      "sha256": "8abe69d9272a3a4c108b9e45b1abd93ee09ea50581010e7c3defe49462127965"
+    },
+    "zuri-web/src/lib/studio/server.ts": {
+      "bytes": 2542,
+      "sha256": "fdb0639fdc0dea614248b6885adfdd4e7e427682544df7a51b5d25c045b594f7"
+    },
+    "zuri-web/src/lib/supabase/admin.ts": {
+      "bytes": 418,
+      "sha256": "8ed9d2f46f5f87d7f71b94d9138ef74662ea8f4d04bf5a9128d46f07b0e441d5"
+    },
+    "zuri-web/src/lib/supabase/authorizeAdmin.ts": {
+      "bytes": 836,
+      "sha256": "435f8e77d982cd08c44f6680f6df5b95cc83b1b31d2993060393eb7ada19d674"
+    },
+    "zuri-web/src/lib/supabase/client.ts": {
+      "bytes": 414,
+      "sha256": "ccfb2c5ac094932c12f66eaac7a37b9c59b4d9ad3024a353968226ce6f6dff65"
+    },
+    "zuri-web/src/lib/supabase/public.ts": {
+      "bytes": 391,
+      "sha256": "8e0e9bc8873568385a3b44f5e62de2bfbb311e9a4ff0ee210a7737c548006fcf"
+    },
+    "zuri-web/src/lib/supabase/requireAdmin.ts": {
+      "bytes": 491,
+      "sha256": "2810237b993797ca27ba266ef9bfa4e4f55f27219964f1b0644c1a0460aeafe6"
+    },
+    "zuri-web/src/lib/supabase/server.ts": {
+      "bytes": 1017,
+      "sha256": "5544d34a4e52d8f1ff3957e49c1f02d7f5f58c484fb3ceb1e6ad3e9f23a08366"
+    },
+    "zuri-web/src/lib/technology/guidance.ts": {
+      "bytes": 4103,
+      "sha256": "0d05514b766218340cddeb2e10fba922222bc97436a8393f646cf00ac5041a7f"
+    },
+    "zuri-web/src/lib/technology/practical.ts": {
+      "bytes": 2756,
+      "sha256": "f3ec873de266011bf825d24219a5d9c0bbf264a5adf6f6016fa1d9758c869ab4"
+    },
+    "zuri-web/src/lib/technology/products.ts": {
+      "bytes": 12990,
+      "sha256": "815c77c7da763394dae5a88cb93f5c9df0a92398793f18d5355989542358af2b"
+    },
+    "zuri-web/supabase/config.toml": {
+      "bytes": 318,
+      "sha256": "c162fb85830fbdc565b39287012a5c0755d2ae2a354b1ba5bda1d1fb893b03bf"
+    },
+    "zuri-web/supabase/deploy/sources.json": {
+      "bytes": 2595,
+      "sha256": "83c4edfb745f06454b75981e043ca71642c461076ab1c2d1ccd26e7272762d34"
+    },
+    "zuri-web/supabase/deploy/zuri-ai.ts": {
+      "bytes": 66394,
+      "sha256": "ffb2b0153c7ef4b4414abdd2182175ceee042564f062b1756d4122fb4dfda9dc"
+    },
+    "zuri-web/supabase/deploy/zuri-api.ts": {
+      "bytes": 14381,
+      "sha256": "9adc672332768a279dec00b30ce8bdddf7e058f0b00d9168da8f640639c8f40f"
+    },
+    "zuri-web/supabase/deploy/zuri-media.ts": {
+      "bytes": 6982,
+      "sha256": "143bcc873fa84a095a290a2a382fdb0d9b0dd923ecdffd67a7345689bda7d99a"
+    },
+    "zuri-web/supabase/email-templates/magic-link.html": {
+      "bytes": 945,
+      "sha256": "e76f3773d57e8f3bae87ec8a6e30df0b0cb5de1d38b3d77e7810e03452f8a521"
+    },
+    "zuri-web/supabase/functions/_shared/auth.ts": {
+      "bytes": 1237,
+      "sha256": "025262073c9076e942f2af51618b0330b839f457ae31e61fa92f6f1d77fbbeaa"
+    },
+    "zuri-web/supabase/functions/_shared/intake.ts": {
+      "bytes": 3359,
+      "sha256": "48d9223acf7b7aaa3917e884ba533971c45cc1538ef56438908dcc0dd1a76042"
+    },
+    "zuri-web/supabase/functions/zuri-ai/index.ts": {
+      "bytes": 1144,
+      "sha256": "f9d79e0f0531f83f2298845cb687c4661b4c32dac8ee0fee1aecbcd852aecaf5"
+    },
+    "zuri-web/supabase/functions/zuri-api/index.ts": {
+      "bytes": 1764,
+      "sha256": "ac97b54d4a3fc2d50afea2f43e0d103696b53cda1a086ede307b552373fb89be"
+    },
+    "zuri-web/supabase/functions/zuri-media/index.ts": {
+      "bytes": 3088,
+      "sha256": "1837419b917239c7b421abab85255fa03fa65b74f0dadba40ab7db79b347a8a6"
+    },
+    "zuri-web/supabase/generated/ai-gateway.ts": {
+      "bytes": 9702,
+      "sha256": "780f6099e419a3ec4597f22e70aa91258eaa411997a2d542be572e1b7b010af6"
+    },
+    "zuri-web/tests/ai-gateway.test.mjs": {
+      "bytes": 13555,
+      "sha256": "4281cb0acbe2f09a4824fbce0d63c7350d6755ac6983f12eb0bd9247cc1761e7"
+    },
+    "zuri-web/tests/ai-knowledge.test.mjs": {
+      "bytes": 5189,
+      "sha256": "a5b15ca99d489843cf9b20d73d09c7a4599912abd730f8c89d50711169b83506"
+    },
+    "zuri-web/tests/ai-postgres.test.mjs": {
+      "bytes": 5336,
+      "sha256": "b088504a28a6c97e2942a9991efe384c1720205e25113c59f62e0fb33bdd1ec4"
+    },
+    "zuri-web/tests/ai-provisioning.test.mjs": {
+      "bytes": 4843,
+      "sha256": "f42257fb723325a0833b635cd72dfa47b158e89e3c70386fd431f675dea389f6"
+    },
+    "zuri-web/tests/backend-api.test.mjs": {
+      "bytes": 5143,
+      "sha256": "b58a336fa5dfecbac4cd374f2a55caf7d5180d311b207789a5025fe6b3a66c84"
+    },
+    "zuri-web/tests/backend-edge.test.mjs": {
+      "bytes": 9070,
+      "sha256": "8703e0e44c9c669449bcf1cef9c6889b446cc4c71de4d8589729a98c33231926"
+    },
+    "zuri-web/tests/backend-migrations.test.mjs": {
+      "bytes": 5989,
+      "sha256": "30386c65c301c09978fee41a4560d059da29f7349028e6acd929b866830f3e55"
+    },
+    "zuri-web/tests/backend-postgres.test.mjs": {
+      "bytes": 7510,
+      "sha256": "dd26e2864434d72b8b05d5e5f849affb89ffe7a8819089b7e19645a7182e5bd5"
+    },
+    "zuri-web/tests/basic-account-moments.test.mjs": {
+      "bytes": 11921,
+      "sha256": "66b6a5f81f78907ac1da0ea29e3f94f12f3cc70c6df90f946115471680436d8a"
+    },
+    "zuri-web/tests/content-edition.test.mjs": {
+      "bytes": 4080,
+      "sha256": "d1f0b508bfcbe1e5635e413bd0fdc26b027aeea6d48e6ec12a370ffb14ef1c44"
+    },
+    "zuri-web/tests/conversation-intent.test.mjs": {
+      "bytes": 3491,
+      "sha256": "581816b4aed2ae7476bea69360826725e756613495347f07f531194ddd27d35e"
+    },
+    "zuri-web/tests/conversations-presence.test.mjs": {
+      "bytes": 9270,
+      "sha256": "d0c2bc7431b10ac805b5d5f304c3f77ea71e557e20b734224a78085539eae53b"
+    },
+    "zuri-web/tests/discovery-and-request.test.mjs": {
+      "bytes": 2419,
+      "sha256": "ab6f2cfbe85173eb2d98e4b8288d19044e85f0d62449626c45ec59c8c9337d52"
+    },
+    "zuri-web/tests/enquiries.test.mjs": {
+      "bytes": 7693,
+      "sha256": "0dedaacd951c80eeb94456fa8de58efdc743ca2a1f4568690f24b9d062e8e294"
+    },
+    "zuri-web/tests/experience.test.mjs": {
+      "bytes": 3004,
+      "sha256": "939706460bec38d7cbba2526fc53b05ddbf4c40e5dcdd93c779becd10d0664b0"
+    },
+    "zuri-web/tests/hooks.mjs": {
+      "bytes": 2003,
+      "sha256": "fcaa5feaaf67fc69484c6769f2b1d00740abdea2da38d38967b7abb5cae81fb7"
+    },
+    "zuri-web/tests/intent-api.test.mjs": {
+      "bytes": 1985,
+      "sha256": "25f75934835f5f9bbad9e42841085a53662b5ab917641c433394bec8ca910585"
+    },
+    "zuri-web/tests/intent-engine.test.mjs": {
+      "bytes": 5059,
+      "sha256": "904c1fe1c79d0952a96bbc06e8e14be30c9076a6e6537c123f5e7a1cec710d4b"
+    },
+    "zuri-web/tests/opportunities-api.test.mjs": {
+      "bytes": 2885,
+      "sha256": "f911167e688a5978ce1cd46288dd7acbf438c3cae11876b78fd26f8406a66ce5"
+    },
+    "zuri-web/tests/opportunities-postgres.test.mjs": {
+      "bytes": 5251,
+      "sha256": "c0dcf8948d48cb9465d50ed3c281fa59dbbba132acb558ba6d10db65f370cf47"
+    },
+    "zuri-web/tests/opportunities.test.mjs": {
+      "bytes": 5504,
+      "sha256": "ff7c46e3c39e7080ba11875466f92638b4a79e8746c0b99879765da7a184c32f"
+    },
+    "zuri-web/tests/pagination.test.mjs": {
+      "bytes": 489,
+      "sha256": "f9f6f80eae5e5a8cf7f53e75f07604e923c1aa0ee2b0cd8b798459cc341e418a"
+    },
+    "zuri-web/tests/pamoja-management.test.mjs": {
+      "bytes": 5534,
+      "sha256": "71af1a81cc906237896fc0ad7ec37ea32b4b906a1617edbc9b0861732cac6df6"
+    },
+    "zuri-web/tests/private-profile-upload.test.mjs": {
+      "bytes": 1407,
+      "sha256": "1a7a0a5e31ca55771ab4f0fb3c86a52e7dd37e0167cf14ba7a4ccc5314b6f44c"
+    },
+    "zuri-web/tests/proxy.test.mjs": {
+      "bytes": 1386,
+      "sha256": "1e4c28ff8a86e7e42da3643277a5dbfa0b3616300a219faa21cb31754620ab9e"
+    },
+    "zuri-web/tests/publishing.test.mjs": {
+      "bytes": 12834,
+      "sha256": "13f0b39399fb3c09d9dbecd879c7d347cba20f1ca6cf22b08544435b7925dff6"
+    },
+    "zuri-web/tests/repositioning.test.mjs": {
+      "bytes": 4734,
+      "sha256": "0021dbcdb6b03bba9de3c29a65e7875933a29c079620bacf4d895b91746f1f2f"
+    },
+    "zuri-web/tests/request-time.mjs": {
+      "bytes": 38,
+      "sha256": "5752631de3dc1e02b6cda630b1af991b1ea966f1967e0b4b81ab7f5b45341b3a"
+    },
+    "zuri-web/tests/ssr-mock.mjs": {
+      "bytes": 299,
+      "sha256": "e8459124ba1437f8fab7b5b5d51948ad8717f3e6752fdf38724cd3d7f873ba78"
+    },
+    "zuri-web/tests/studio-api.test.mjs": {
+      "bytes": 4250,
+      "sha256": "f37c2b400080891872e82df59ba31f37d37ace637f8643c574f7f2a324f21377"
+    },
+    "zuri-web/tests/studio-postgres.test.mjs": {
+      "bytes": 10873,
+      "sha256": "c2bca3818a0e8190847bbac0450da314cd4d681328fab43f39eb55e49164f2f9"
+    },
+    "zuri-web/tests/studio-sandbox.test.mjs": {
+      "bytes": 2006,
+      "sha256": "a72ee3a7a63c241c3c626ead41eb0d8d50083b56a0c7276fb854593a20fa9497"
+    },
+    "zuri-web/tests/studio-sdk.test.mjs": {
+      "bytes": 3278,
+      "sha256": "e35ca0da128de4e5056755592d80d97a33e34a60527e7eaad847b85eba595187"
+    },
+    "zuri-web/tests/supabase-mock.mjs": {
+      "bytes": 4416,
+      "sha256": "d79ddd2a158a7245c2eb7d5783fcf3bacd8d4fedb2585341420cbe83ff7af1e7"
+    },
+    "zuri-web/tests/website.test.mjs": {
+      "bytes": 1501,
+      "sha256": "34033768780435903b2ea6547022b4bf7fc4f59557bd87a4bcac211fbac6ec83"
+    },
+    "zuri-web/tests/zuri-app-target.test.mjs": {
+      "bytes": 1747,
+      "sha256": "c46b00d6937c09dba93811181f412eec474b639589e879bd64548a156b4e585d"
+    },
+    "zuri-app-prototype/.gitattributes": {
+      "bytes": 7728,
+      "sha256": "fdd53ecc7bf79a69d3ef228ec98e0151f10e02702b90b553f04785b61db68354"
+    },
+    "zuri-app-prototype/.gitignore": {
+      "bytes": 400,
+      "sha256": "eee6568c404ffb70b9e32300fe6f08ffc8defd139e4a4c1d973c85701904322d"
+    },
+    "zuri-app-prototype/.mise.toml": {
+      "bytes": 43,
+      "sha256": "6d2834ef5f78a7dc4c384570a62b895137fdf63df171d237f0747932bd001435"
+    },
+    "zuri-app-prototype/AGENTS.md": {
+      "bytes": 7212,
+      "sha256": "d78244962c73219412e28c1ea0106768da9e2f40dd8e07fe745608fa0387819f"
+    },
+    "zuri-app-prototype/CLAUDE.md": {
+      "bytes": 11,
+      "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49"
+    },
+    "zuri-app-prototype/README.md": {
+      "bytes": 7825,
+      "sha256": "c3830eb4dfcd06a6591e82994b88233bc11498803e8851b3aef8aecf93feecfe"
+    },
+    "zuri-app-prototype/index.html": {
+      "bytes": 776,
+      "sha256": "13a2782c461a64f728009f74921dc2091759061573daf68ccc1c27427794bba5"
+    },
+    "zuri-app-prototype/package-lock.json": {
+      "bytes": 57989,
+      "sha256": "ae5e5ba7628257a58fee2fa1fb5e0f3e96ae0c1075f7fdbe61da445c1ae0c42c"
+    },
+    "zuri-app-prototype/package.json": {
+      "bytes": 876,
+      "sha256": "291c25dce03f2cb28f8256b0bd83fdd70245b3644d8d14787189421fac7696c8"
+    },
+    "zuri-app-prototype/tsconfig.json": {
+      "bytes": 556,
+      "sha256": "9a1e96d63eaccd5416b2f78ecaccf2b3a27ca71e213fa5859cf5349c66123bf9"
+    },
+    "zuri-app-prototype/vite.config.ts": {
+      "bytes": 12180,
+      "sha256": "7b7e983ef6af44699bc58741cc4918473dc1f1925732b158e27e00877ea5908c"
+    },
+    "zuri-app-prototype/vite.website.config.ts": {
+      "bytes": 1290,
+      "sha256": "e448e690b5fc36c8a0ce16b35f2d452a3c80b645f0205d9ad51c4c3be3fdb078"
+    },
+    "zuri-app-prototype/.figma/make/site.json": {
+      "bytes": 283,
+      "sha256": "807a3ce83f8efbc9cce856bcf7392c37f9f3e3372cddf56a3934e24b37d129ee"
+    },
+    "zuri-app-prototype/docs/APP-V2-MILESTONE.md": {
+      "bytes": 4004,
+      "sha256": "c059e367f8ef4609b1e76b0d80bbbc43a6f2b71ef5f84268b38185da57b397fc"
+    },
+    "zuri-app-prototype/docs/CHANNELS-ORGANISED.md": {
+      "bytes": 2479,
+      "sha256": "41f022ebf2bc432d7b886df4d9e357a59c4b92bc601c66b6f8dc5678c3432d5c"
+    },
+    "zuri-app-prototype/docs/CHAPTER-CLARITY.md": {
+      "bytes": 1873,
+      "sha256": "3094be7eaa8d12e3256e5333f5d50a526a06e6f048b0e4e20422741c331a4a35"
+    },
+    "zuri-app-prototype/docs/CONNECTED-WORLDS.md": {
+      "bytes": 2669,
+      "sha256": "3fd35603bcc72c2605863af59f1c8aaa7b5be8db7a2fd5f7af33b7f027573179"
+    },
+    "zuri-app-prototype/docs/CREATION-INTERFACES.md": {
+      "bytes": 2241,
+      "sha256": "025b491b0a9e3f6bc07a742060e1e8f9cd5f4e37ba6b7ca67d60b3b41e4e5348"
+    },
+    "zuri-app-prototype/docs/DIGITAL-PRESENCE-AUDIT.md": {
+      "bytes": 1693,
+      "sha256": "03a34ad5e2d865453d0409728a8fe9ef3185099b357933312eaf76d83f1a1d78"
+    },
+    "zuri-app-prototype/docs/EXPORT-STATUS.md": {
+      "bytes": 6847,
+      "sha256": "c65fdc56ffe4baa8032bf8b4f0fccf73ca9678d02c3eb9ce66419a9c2d78668e"
+    },
+    "zuri-app-prototype/docs/HEADER-CREATION-AND-PREVIEW.md": {
+      "bytes": 1592,
+      "sha256": "2eff86deee660bdc4799d26902be075a753d03efebdf795dee285b403b9343fe"
+    },
+    "zuri-app-prototype/docs/LORE-TIMELINE.md": {
+      "bytes": 1687,
+      "sha256": "c9a572106e2d8afeca69b658742b165bf9dfccff33aefa5475ccda8d37de4fa5"
+    },
+    "zuri-app-prototype/docs/MOBILE-APP-REWORK.md": {
+      "bytes": 3338,
+      "sha256": "ad942eb10caadea9356bbaeae6013f4febd6612f09ab131efc88f4e2c79aa0c7"
+    },
+    "zuri-app-prototype/docs/PAMOJA-SPEC-COVERAGE.md": {
+      "bytes": 8844,
+      "sha256": "34248b9be696d5b95b72a62a0d54e27b997f241f7ee90e19a88f8c0b9e9bfab4"
+    },
+    "zuri-app-prototype/docs/PROFILE-AND-SURFACES.md": {
+      "bytes": 1039,
+      "sha256": "2240477450ae4185fb989c2384a0ad317c5416521265300e544a13e2d5bc84e9"
+    },
+    "zuri-app-prototype/docs/REQUESTS-AND-SERVICE-FORMS.md": {
+      "bytes": 1505,
+      "sha256": "8b13355e32bf0d44e5086e042accf3227f60387b20c2b91b66e26bdaedc5054d"
+    },
+    "zuri-app-prototype/docs/SOCIETY-FEED-REFRESH.md": {
+      "bytes": 1450,
+      "sha256": "40e5132fb3eca39211ca62b4e2bb11406aa7330a023a4cebb6b17316932e1c83"
+    },
+    "zuri-app-prototype/docs/SPACE-EXPERIENCE-FIXES.md": {
+      "bytes": 1864,
+      "sha256": "cae31a8ab336a8d2c222377b4600ccde955708a69d419933c23bdabbe1393580"
+    },
+    "zuri-app-prototype/docs/STUDENT-PING-USABILITY-AUDIT.md": {
+      "bytes": 10517,
+      "sha256": "2bde5eb77386f2302ed517dc44886c0252fa7c006e2e2978c9c2f95d65adc282"
+    },
+    "zuri-app-prototype/docs/VIOLA-WORKBOX.md": {
+      "bytes": 3908,
+      "sha256": "d4421b69161f1d35708414c0e6f655967ecadecc313b4df7fe32ec5893abb703"
+    },
+    "zuri-app-prototype/docs/WEDDING-COUPLE-USABILITY-AUDIT.md": {
+      "bytes": 8111,
+      "sha256": "f915e76db9d23569acddbc9429514837934f3f9996fc51e7b1aca6711e2d12a6"
+    },
+    "zuri-app-prototype/docs/ZURI-CORE-SDK.md": {
+      "bytes": 3108,
+      "sha256": "ad97b9d715a72dfda9e491b847016214d0eb1c34044ad83bcfda06725dc7cbfe"
+    },
+    "zuri-app-prototype/docs/ZURI-NOTIFICATIONS.md": {
+      "bytes": 5642,
+      "sha256": "f4b9cb05dc53ab5068b1d7fd991637757c32fbccd23db3ca63a5bb8fe2b10fe1"
+    },
+    "zuri-app-prototype/docs/privacy/CORE-PRIVACY-DESIGN.md": {
+      "bytes": 7164,
+      "sha256": "ccd0d55c52d5e225efb686376bd9609da08dc76ddb5a4b135ef8ca359d12389f"
+    },
+    "zuri-app-prototype/docs/privacy/DATA-LIFECYCLE.md": {
+      "bytes": 3199,
+      "sha256": "835070f8a5c701a455b9755d1d0ad85583919639f43af30cb530bca708cd1216"
+    },
+    "zuri-app-prototype/docs/privacy/LEGAL-REQUEST-RUNBOOK.md": {
+      "bytes": 2896,
+      "sha256": "69be690ff13ae4f66c4683aa8f04d6b0b2324dd061b8de15448d96c82721782f"
+    },
+    "zuri-app-prototype/docs/privacy/README.md": {
+      "bytes": 824,
+      "sha256": "721fc0af96dc1db7812105e5cd6273821b5680e44eadbca069298f1c83976e9c"
+    },
+    "zuri-app-prototype/docs/privacy/THREAT-MODEL.md": {
+      "bytes": 2645,
+      "sha256": "6c8b1c98427ac59742eff063ff40405f9ae3761ed7326529b9085a8534b2a0bb"
+    },
+    "zuri-app-prototype/public/icon.svg": {
+      "bytes": 281,
+      "sha256": "cb93028290c0fc47586d7a2091b90e32668c53faa2751be4bee9faf3716a72d7"
+    },
+    "zuri-app-prototype/public/lounge-wallpaper.svg": {
+      "bytes": 1120,
+      "sha256": "2596f872b7883aa6f29644162d04d4b23d9a6386c585a10c7a1f24cf79d6a1f9"
+    },
+    "zuri-app-prototype/public/manifest.webmanifest": {
+      "bytes": 376,
+      "sha256": "f97d28b5967ca8ae0a7424efa1aa84842b6264db06328b1c79a299046245f91d"
+    },
+    "zuri-app-prototype/public/sw.js": {
+      "bytes": 1875,
+      "sha256": "8050443dbb384d8fd328c2b8ec2f09126c11a5bf64a95716cf29f7b3e9bbf3fe"
+    },
+    "zuri-app-prototype/public/brand/aura.svg": {
+      "bytes": 803,
+      "sha256": "37b2a03fb9f2058eac2a7aba269cc78fc55603813c5e5e285bc5058a11b8d1ec"
+    },
+    "zuri-app-prototype/public/brand/lore.svg": {
+      "bytes": 766,
+      "sha256": "7f8a6e547f1e97d492951f8d828c58de1e4e90d9f355472117929473c9f2b9ef"
+    },
+    "zuri-app-prototype/public/brand/motion.svg": {
+      "bytes": 727,
+      "sha256": "45f7ccc9d549790b263ba926377524971e2934c528fbab7f87623dd75a51c64f"
+    },
+    "zuri-app-prototype/public/brand/rizz.svg": {
+      "bytes": 672,
+      "sha256": "cd1be68478a2fca297383e7620c1448431a9f98e982c6522300b2fe45ef3e995"
+    },
+    "zuri-app-prototype/src/App.tsx": {
+      "bytes": 192,
+      "sha256": "b2ac3264420ed6be834b0523c185fe27ab8ce5df3c21049cbb37709b69a1b55f"
+    },
+    "zuri-app-prototype/src/LegacyApp.tsx": {
+      "bytes": 46531,
+      "sha256": "efcb1ff52f702b81429d42d3b1709038a8f223cc748628e8ed3254ca65548e85"
+    },
+    "zuri-app-prototype/src/index.css": {
+      "bytes": 6331,
+      "sha256": "d9724fb084a9cab895475483100b486e5b52cdb410b196de569dad1737352612"
+    },
+    "zuri-app-prototype/src/main.tsx": {
+      "bytes": 1849,
+      "sha256": "334814d330dc447ebccbc1d1fbb53c2e0215cd8cfcb63f363381c9a445585585"
+    },
+    "zuri-app-prototype/src/vite-env.d.ts": {
+      "bytes": 39,
+      "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92"
+    },
+    "zuri-app-prototype/src/apps/aura/AuraApp.tsx": {
+      "bytes": 136795,
+      "sha256": "2805d44c15ce0aca28b6095bbbcab0c4df9b8a6863f3c4b46bc4e2d2f73bd990"
+    },
+    "zuri-app-prototype/src/apps/motion/MotionApp.tsx": {
+      "bytes": 60877,
+      "sha256": "82d2a737525becf7cd257ebb23c2a5ca71297d92318c275b19bebaf7c89a9f9a"
+    },
+    "zuri-app-prototype/src/apps/rizz/RizzApp.tsx": {
+      "bytes": 62068,
+      "sha256": "00db230e3f6a9268dec642ec20673a58873e954dbff9cb192c8e8e6819af7c36"
+    },
+    "zuri-app-prototype/src/apps/xp/XpApp.tsx": {
+      "bytes": 36024,
+      "sha256": "cb2bc05f8bba7220d01773967ead151359c969a682117066a14432f41bfa7b51"
+    },
+    "zuri-app-prototype/src/components/ErrorBoundary.tsx": {
+      "bytes": 783,
+      "sha256": "b23f0ff5bed969b06e402ba6600e8eacda4883ccec92a962938a44f25512c3ab"
+    },
+    "zuri-app-prototype/src/components/Unavailable.tsx": {
+      "bytes": 516,
+      "sha256": "27bf88e8be8bba4d2f7950ff3f03424a333d00894bcdf41f6b24fe86baca409b"
+    },
+    "zuri-app-prototype/src/core/index.ts": {
+      "bytes": 112,
+      "sha256": "62f4fcf0cd0bb0cef1f0905f0172da830c86af8161022af0f376a63e85e3d7b9"
+    },
+    "zuri-app-prototype/src/core/intents.ts": {
+      "bytes": 5616,
+      "sha256": "3077680dc4c7afacb58d9e2ec51b36237eb9b4ee561d3a8c50da49bcf04f62dd"
+    },
+    "zuri-app-prototype/src/core/knowledge.ts": {
+      "bytes": 1348,
+      "sha256": "83c0e15be926c2a138ec093f8d6ab4a122ddb5b2b91d812c2493280c47f7c00c"
+    },
+    "zuri-app-prototype/src/core/manifest.ts": {
+      "bytes": 799,
+      "sha256": "5e5099ad3e8dee41728c8f399ca83e84cc3d961150971fc958a740ec848e103f"
+    },
+    "zuri-app-prototype/src/core/privacy.ts": {
+      "bytes": 2982,
+      "sha256": "f4d87447e22c033408008da9223aff1e25608afff4638e959ae71f6e22ea0cae"
+    },
+    "zuri-app-prototype/src/core/sdk.ts": {
+      "bytes": 4415,
+      "sha256": "0f6e17afd237f9d5e0378e7a65f6f96a7296f43a2afc3e225917e8da2645c509"
+    },
+    "zuri-app-prototype/src/data/catalog.ts": {
+      "bytes": 5122,
+      "sha256": "be673b77762d4d2ffdbc671fd9eebb545344029864e0ef86b138b0e859a338e6"
+    },
+    "zuri-app-prototype/src/data/mockData.ts": {
+      "bytes": 119,
+      "sha256": "9a14f6ea86389f36bccdb248e1a4552c9319c2276c2b0cbe802d7d5fbada9ee1"
+    },
+    "zuri-app-prototype/src/data/publicBackend.json": {
+      "bytes": 119,
+      "sha256": "300124ef206544cc7c5bcda02c2a46d4187017831addfe2bb2ecc356fd174e10"
+    },
+    "zuri-app-prototype/src/experience/AppGlyph.tsx": {
+      "bytes": 4545,
+      "sha256": "392192ed203e0624267277add50a38b62f8f4e6889c45798b040e00326cb4207"
+    },
+    "zuri-app-prototype/src/experience/ChannelExperience.tsx": {
+      "bytes": 15772,
+      "sha256": "158cda7d069276b838954a4678d5bc8f20e088f9c38f11d9b8957270c73614ca"
+    },
+    "zuri-app-prototype/src/experience/ChapterOverview.tsx": {
+      "bytes": 3207,
+      "sha256": "3fa36ebff913d49bea7142283bf21958b989b6ed4335fc3d2e8cf4f59c413b82"
+    },
+    "zuri-app-prototype/src/experience/ChapterTimeline.tsx": {
+      "bytes": 4767,
+      "sha256": "5409437791a941299de79248a038b9cd679dd8e7571996224ed3c2e0d0ecffdb"
+    },
+    "zuri-app-prototype/src/experience/ChatOptions.tsx": {
+      "bytes": 2657,
+      "sha256": "3189a3dad34eaac4e85867bc09844c9a7cf3fdb3e851bca152232356cf23b909"
+    },
+    "zuri-app-prototype/src/experience/CloudAccount.tsx": {
+      "bytes": 14190,
+      "sha256": "c80d64c0071d148db88097128bea04865df11bd9e10ce42bc00d65aca446bf49"
+    },
+    "zuri-app-prototype/src/experience/CloudWorld.tsx": {
+      "bytes": 28932,
+      "sha256": "9c055658bb5505babaaf78fd91115d0fd31256c210267fedb728c876de78332c"
+    },
+    "zuri-app-prototype/src/experience/ConnectedActions.tsx": {
+      "bytes": 5345,
+      "sha256": "f563dc4de2c8fa4a11a167a82b0b5a945880ffde9771e2a239247bde77770a2e"
+    },
+    "zuri-app-prototype/src/experience/ContextBrowser.tsx": {
+      "bytes": 2555,
+      "sha256": "99bded773957d757416b54a1210e50205d089dc33ef3317367647e3ea23d01e1"
+    },
+    "zuri-app-prototype/src/experience/ContextPicker.tsx": {
+      "bytes": 2180,
+      "sha256": "c6ef70b803a41667e812fadfbeae487e5bb5937e67d2ba8fdcb725cf4b59e40d"
+    },
+    "zuri-app-prototype/src/experience/ConversationNextStep.tsx": {
+      "bytes": 2051,
+      "sha256": "546330eb582dfa9b11d2d4af4cac84c8ba8f1c4b635008bde0ac3e4803e60397"
+    },
+    "zuri-app-prototype/src/experience/DesktopWorkspace.tsx": {
+      "bytes": 3463,
+      "sha256": "646d992aa75c5395c03b8eeb599e72dfc5738acf94dd6dc6341c03c5e4456249"
+    },
+    "zuri-app-prototype/src/experience/Experience.tsx": {
+      "bytes": 46262,
+      "sha256": "ccd8bc4a6c0d79b8a0db5012d6fedaf04ce144ca9bcf864a5ce52f377fa078c7"
+    },
+    "zuri-app-prototype/src/experience/ExperienceFlows.tsx": {
+      "bytes": 33802,
+      "sha256": "c66a29d9df3c2c73826cb436e30f89b4f50bf14a9c0de9950e845570968e9fa6"
+    },
+    "zuri-app-prototype/src/experience/GoalAI.tsx": {
+      "bytes": 3605,
+      "sha256": "201b5b291c373849e7e815e42f5b705b7eeafda16b0b3712cf9b3cb689f3eea2"
+    },
+    "zuri-app-prototype/src/experience/IdentityEditor.tsx": {
+      "bytes": 1822,
+      "sha256": "b46dec8ca7f49debde4b09ed706796ddb69d23674651560235dc733e499d1f2f"
+    },
+    "zuri-app-prototype/src/experience/IntentWorkspace.tsx": {
+      "bytes": 11065,
+      "sha256": "53e52db5307cc1da2eb37d6c1dcb8f32f043bc2cc797ad15933885f1bdfc2b22"
+    },
+    "zuri-app-prototype/src/experience/MobileWorlds.tsx": {
+      "bytes": 35927,
+      "sha256": "105411ce7b7c580823df0081f309f89b877b01b04136f6502103e1c7797768c0"
+    },
+    "zuri-app-prototype/src/experience/MomentActions.tsx": {
+      "bytes": 2392,
+      "sha256": "40765402f144b39b9d39e09382332db232e35900a39337b5517364d1ad03d741"
+    },
+    "zuri-app-prototype/src/experience/MomentsLibrary.tsx": {
+      "bytes": 1123,
+      "sha256": "6488824a73c78ea9220bada90d7fd5ac43800861b6d3945d89435bfc94091bfd"
+    },
+    "zuri-app-prototype/src/experience/NotificationCenter.tsx": {
+      "bytes": 10104,
+      "sha256": "ab956d5834d423b917f842b036446415a11556b829c4bbcdf5969fffdbeb3745"
+    },
+    "zuri-app-prototype/src/experience/OpportunityDiscovery.tsx": {
+      "bytes": 5840,
+      "sha256": "5091858144db16b4f8759df2c204b73e03609d8def1cea8b2dd8cc7a7ee6a7eb"
+    },
+    "zuri-app-prototype/src/experience/PamojaScreens.tsx": {
+      "bytes": 56886,
+      "sha256": "ebe7c55a2449d02f0966e73f9a6bb1c4e77d2352e67a8ff281437abec2ea477a"
+    },
+    "zuri-app-prototype/src/experience/PersonProfile.tsx": {
+      "bytes": 5446,
+      "sha256": "1bd6b643c8d68c82cef1d1c7766829fd9caf467eca6835e8475388e9c9075c02"
+    },
+    "zuri-app-prototype/src/experience/PhotoField.tsx": {
+      "bytes": 2570,
+      "sha256": "f0920c970dbfbf54498f2843dcf356c7fe48ee30b75f86214074211cb22ed1ab"
+    },
+    "zuri-app-prototype/src/experience/PostMeta.tsx": {
+      "bytes": 735,
+      "sha256": "b7e10469e307e7111401ee62218d30426f0faddf9cff60e0251ceaea3138fc36"
+    },
+    "zuri-app-prototype/src/experience/PrivacyCore.tsx": {
+      "bytes": 3227,
+      "sha256": "6159c61b409f0bcdce40c7f2c73eb7ca082c34b8389a437d31d994a1d93fa168"
+    },
+    "zuri-app-prototype/src/experience/RequestsExperience.tsx": {
+      "bytes": 10549,
+      "sha256": "292828ae7b782c1390c6469b1d621765a2b582f376255c0fa26be499134311d8"
+    },
+    "zuri-app-prototype/src/experience/SocietyExperience.tsx": {
+      "bytes": 6139,
+      "sha256": "1d57ebbe0e4b1d9156d7f198e981a9b82151824629469e1c4d84dad99534db7e"
+    },
+    "zuri-app-prototype/src/experience/SpaceOverview.tsx": {
+      "bytes": 3222,
+      "sha256": "0b6bead89bcfcbb1bdb027e361a197d14e13048966bb1a759c81e9380ba3d2d7"
+    },
+    "zuri-app-prototype/src/experience/ToolsHub.tsx": {
+      "bytes": 6754,
+      "sha256": "d8939cc1cfbb484fc8f0042aa969224d04b50ff74905f5699c8dc956bb255743"
+    },
+    "zuri-app-prototype/src/experience/TopicThread.tsx": {
+      "bytes": 4658,
+      "sha256": "cb9017ebe7e1d227300b006ca6b7fb7ad983ab831f9d4130d71487824e672ccf"
+    },
+    "zuri-app-prototype/src/experience/ViolaWorkbox.tsx": {
+      "bytes": 13922,
+      "sha256": "3c5e94100e41abd7f4aa998cb631e15fd1bc1d319c4cbdd69bd48d9ee0d7ceae"
+    },
+    "zuri-app-prototype/src/experience/WorldPulse.tsx": {
+      "bytes": 1073,
+      "sha256": "daf8326c35adaa8cf66ce8d82c472fb4258399d0659d9a3318effaf5198c21f6"
+    },
+    "zuri-app-prototype/src/experience/activity.ts": {
+      "bytes": 8888,
+      "sha256": "f95925d6053faf5b1be6534de273af59c5d505c38101679182cc05c0d6da4c90"
+    },
+    "zuri-app-prototype/src/experience/backup.ts": {
+      "bytes": 3639,
+      "sha256": "79f021423fb8b1dd795884a15c24c07cb6cb6c73ff56281cdba9e3330426bc63"
+    },
+    "zuri-app-prototype/src/experience/bottom-navigation.css": {
+      "bytes": 2893,
+      "sha256": "82d8af03a2d6aa6eae7e13568a40c23df1053cc02d10e14342b405db0e8c2223"
+    },
+    "zuri-app-prototype/src/experience/channelModel.ts": {
+      "bytes": 2301,
+      "sha256": "54d91f8948a0ecefab049e5e4f0d44cb6b22febebd3cd3b8f2ce1aea6bff064f"
+    },
+    "zuri-app-prototype/src/experience/channels.css": {
+      "bytes": 6334,
+      "sha256": "3d075f621d5259c66bef980dcba20a860c384e29661cff4a31d4d0bce50097ce"
+    },
+    "zuri-app-prototype/src/experience/chapter-planning.css": {
+      "bytes": 3537,
+      "sha256": "2087824e680df9168630f6cf24718ee420dd2550300e7098be0ec9003c78d0c4"
+    },
+    "zuri-app-prototype/src/experience/chat-beauty.css": {
+      "bytes": 4403,
+      "sha256": "c98f55a3485c03f83ce790dfd4912456f0104ecaf962fa294bf9a739d8f15cc4"
+    },
+    "zuri-app-prototype/src/experience/chat-options.css": {
+      "bytes": 2164,
+      "sha256": "13914bbe15ca168d8d1f8fd0830c1542c39390e302704477f3bae793ebe94acf"
+    },
+    "zuri-app-prototype/src/experience/chatSettings.ts": {
+      "bytes": 702,
+      "sha256": "a5e7224475a9846ff55dfb4988e36c407b43fe4bf94fa4baa34a149407a11a93"
+    },
+    "zuri-app-prototype/src/experience/cloud-account.css": {
+      "bytes": 1956,
+      "sha256": "18c7e9ab5c84c64e71779e863ec3c006517267efd11f3030f9b871f746f0d29e"
+    },
+    "zuri-app-prototype/src/experience/cloud-world.css": {
+      "bytes": 5324,
+      "sha256": "e95a63493d31c610226f29ab58a8582272a818a041ea30ad3e23a2cd872b24df"
+    },
+    "zuri-app-prototype/src/experience/cloudClient.ts": {
+      "bytes": 7523,
+      "sha256": "8cc7d99d870fec587bfc549eb78bc8942397cd7322b8dff7b28c9e58fe87667b"
+    },
+    "zuri-app-prototype/src/experience/cloudModel.ts": {
+      "bytes": 996,
+      "sha256": "0d082726f9cdd7d5b8273c8779e258d48acdcbc5c3312a928baa55f771a6f59b"
+    },
+    "zuri-app-prototype/src/experience/connections.css": {
+      "bytes": 1521,
+      "sha256": "52b5239aee6c9b3ee522c031fcb73f33a872b75397aa819951e4eaa47e5b6aac"
+    },
+    "zuri-app-prototype/src/experience/connections.ts": {
+      "bytes": 3389,
+      "sha256": "e64aa3ca93ba79ad0bd32695e68c90e7319271c5e5c75c0d299130362a24d29c"
+    },
+    "zuri-app-prototype/src/experience/contextFilter.ts": {
+      "bytes": 253,
+      "sha256": "3ef1a71861c237b4fec24396f0b5e2797b8490be281b6f9ee24162f075f227d3"
+    },
+    "zuri-app-prototype/src/experience/creation.css": {
+      "bytes": 840,
+      "sha256": "cef0da0c6e5037e2ddbce3a49406b523196115957a594dc9d4382f80351bc5c0"
+    },
+    "zuri-app-prototype/src/experience/creationModel.ts": {
+      "bytes": 1048,
+      "sha256": "70bcc9b14debf67acd299dfdb3890955f3e32e9d85f32f0f29c617795f92da34"
+    },
+    "zuri-app-prototype/src/experience/day.css": {
+      "bytes": 5743,
+      "sha256": "4475b2f7d3af40da98d3591915cb6070ba1fe41b92ffae3544b5841373d59aec"
+    },
+    "zuri-app-prototype/src/experience/experience.css": {
+      "bytes": 20272,
+      "sha256": "eca90632ac79db9795ea9dbb842ab2e8effc8de508637cea33d658f282253156"
+    },
+    "zuri-app-prototype/src/experience/flows.css": {
+      "bytes": 19048,
+      "sha256": "774300f9b17a646c8cae97e96b202d1060272f0be7c2ef81457fe11384c5f360"
+    },
+    "zuri-app-prototype/src/experience/freshSocieties.ts": {
+      "bytes": 100,
+      "sha256": "5215774be0ad1a74cf6a10d9d62a904712cb9a27593e82fca015592c3b184f5f"
+    },
+    "zuri-app-prototype/src/experience/icon-theme.css": {
+      "bytes": 395,
+      "sha256": "edc2ce930554ce74fe99819ab5eb8b54ece738ebfd8f604a2cbc70d0d07ea2a9"
+    },
+    "zuri-app-prototype/src/experience/intents.css": {
+      "bytes": 8284,
+      "sha256": "01d7be9b89c1302ef67183a6877a2a4936851fb0b6219ba0ab9c84332fe4e4d2"
+    },
+    "zuri-app-prototype/src/experience/ios.css": {
+      "bytes": 6609,
+      "sha256": "7829f65f55c1012e659abeb857b60fc92954cb362f37014d7ff444ae7bc62afe"
+    },
+    "zuri-app-prototype/src/experience/lore-timeline.css": {
+      "bytes": 3062,
+      "sha256": "6f0eb23f3c532d8ae1190231ec83ec28353ef926af7f0087b5f26ac98bdea86e"
+    },
+    "zuri-app-prototype/src/experience/loreTimeline.ts": {
+      "bytes": 1840,
+      "sha256": "29deb7cc3c29d724065888ca827ac90ba4ea3495f459ebc3c60794bddefd2084"
+    },
+    "zuri-app-prototype/src/experience/mobile.css": {
+      "bytes": 25854,
+      "sha256": "8f6d122217375ab285009f8d3e3c1a3e338acf3d6e9253dce9d36a9e6131d991"
+    },
+    "zuri-app-prototype/src/experience/model.ts": {
+      "bytes": 18732,
+      "sha256": "a6fc590b2f1007dbae93664e0f1a6d4a0c15a3340f6df306c1cb14ef4378e3de"
+    },
+    "zuri-app-prototype/src/experience/navigation.ts": {
+      "bytes": 1154,
+      "sha256": "97a262124a7c874c0839b92612302c3fc06e1969d476454f0fd41b21233a4f1e"
+    },
+    "zuri-app-prototype/src/experience/notifications.css": {
+      "bytes": 5581,
+      "sha256": "222050cff7b707d18d04faa9bdf933c6dc2b4facd40db8b95624bcbc48164020"
+    },
+    "zuri-app-prototype/src/experience/notifications.ts": {
+      "bytes": 5003,
+      "sha256": "2c01be3f425b90b36ca335d71c98c5cdd1a53b66e12fa4f78d430c3e6c320e13"
+    },
+    "zuri-app-prototype/src/experience/opportunities.css": {
+      "bytes": 1598,
+      "sha256": "46781e18773dbb5fc2b1c039a2703f0d7fe11136c414beca7d62d860c14c693a"
+    },
+    "zuri-app-prototype/src/experience/opportunityModel.ts": {
+      "bytes": 4314,
+      "sha256": "0e3e6a60900f1e06086dafe09ecb98963c41ac932ad1ef0279d55629b2b9b1a6"
+    },
+    "zuri-app-prototype/src/experience/pamoja.css": {
+      "bytes": 8589,
+      "sha256": "4759f5a25649a99856a6147d0113354106aee3e0a91ac8d36a45023543059fd2"
+    },
+    "zuri-app-prototype/src/experience/pamojaModel.ts": {
+      "bytes": 11822,
+      "sha256": "58c4287dd7bece390327aa5284ea314c5ab6a5ab84ccec7b7ecd52b315a489b5"
+    },
+    "zuri-app-prototype/src/experience/pamojaRoutes.ts": {
+      "bytes": 2922,
+      "sha256": "a949f2211152fbcf1521d514ba6bf5fd40423caf2261c560290aef8b6d60a139"
+    },
+    "zuri-app-prototype/src/experience/person-profile.css": {
+      "bytes": 1677,
+      "sha256": "62f066e8411f2cba37b6be118f72fcf60f05df49ace6484aad7b102e6c60858f"
+    },
+    "zuri-app-prototype/src/experience/personality.css": {
+      "bytes": 7456,
+      "sha256": "88f32aaca1b4166710dc9928075adc41523cebab149c70d2f476eca160a34e41"
+    },
+    "zuri-app-prototype/src/experience/polish.css": {
+      "bytes": 22175,
+      "sha256": "fd832f200127dfa6f0db6e036a390f5dc40b857bf1d223cccdb27fc4cf4268a2"
+    },
+    "zuri-app-prototype/src/experience/presenceModel.ts": {
+      "bytes": 870,
+      "sha256": "7b4e83b4b7f959b80b5eb97f85c96c2efd2299ec48e9beaa84834839c253dad4"
+    },
+    "zuri-app-prototype/src/experience/readability.css": {
+      "bytes": 9920,
+      "sha256": "cde385446566d8826726c4820c2e7c261090d6721ae86678970a24f539825795"
+    },
+    "zuri-app-prototype/src/experience/requestModel.ts": {
+      "bytes": 3599,
+      "sha256": "a48c087d0da10dcaf965858aaa1fdc1ed5a9ceb1f119ac38bb781039817a0183"
+    },
+    "zuri-app-prototype/src/experience/requests.css": {
+      "bytes": 1274,
+      "sha256": "4069f0294fa200aad04664dee28af94d44adaf247b11aabe375370413009cce0"
+    },
+    "zuri-app-prototype/src/experience/services.ts": {
+      "bytes": 2969,
+      "sha256": "25caf14587fe84ec5b65837e02f344be105833da94f906af4930816303524d3b"
+    },
+    "zuri-app-prototype/src/experience/spaceExperience.ts": {
+      "bytes": 3470,
+      "sha256": "bb1fe5a07062609cb7af6fba568de9e0b95081bba514276c1572569c72d5f7c6"
+    },
+    "zuri-app-prototype/src/experience/spaces.css": {
+      "bytes": 1227,
+      "sha256": "524008ac43fc09e834877e482c9a8d403b097eaee6e6b1900a6e147f2491e878"
+    },
+    "zuri-app-prototype/src/experience/surfaces.css": {
+      "bytes": 24529,
+      "sha256": "7aa6ff7dc643dab154b202d54038ddf039a5a5026c32301314095f9214941632"
+    },
+    "zuri-app-prototype/src/experience/taskPlanning.ts": {
+      "bytes": 1693,
+      "sha256": "e3cc9159a1a1665b90bf7745cd4f890925f5f2bf8196f131ee42a9e15386a9d9"
+    },
+    "zuri-app-prototype/src/experience/threadModel.ts": {
+      "bytes": 952,
+      "sha256": "4eebfee2f9fda7fa34ec5ce983dbe3de6e6b53956ba9b974f6f69c2a82e97fe2"
+    },
+    "zuri-app-prototype/src/experience/useFormMemory.ts": {
+      "bytes": 2342,
+      "sha256": "a6a716970eecf284a71a4037bf8b11b460f3a37ee49fd8c311ece5e184f14b17"
+    },
+    "zuri-app-prototype/src/experience/viola-workbox.css": {
+      "bytes": 15625,
+      "sha256": "e61da3232b4d182463cce4827919992441e016f39cfc3a2090ec1a6656db4ccc"
+    },
+    "zuri-app-prototype/src/experience/web-materials.css": {
+      "bytes": 9209,
+      "sha256": "33632f196dba5894f34bd738a5cd8ee7a2bb8bdf0667f045bbfb3869c2ecef59"
+    },
+    "zuri-app-prototype/src/experience/website-layout.css": {
+      "bytes": 9373,
+      "sha256": "32c3fba855b8bf024f83eb936e2eb7e4e08cdf29d2d363811005ba9a9b99865b"
+    },
+    "zuri-app-prototype/src/state/core.ts": {
+      "bytes": 8601,
+      "sha256": "2a98c1e060a31b8fea57fde5d7411046ac0f4d2c4bfbc32317b6176547f4a1f5"
+    },
+    "zuri-app-prototype/src/state/navigation.ts": {
+      "bytes": 4399,
+      "sha256": "f89534d5c034a237640e382fdbf003bacd2f945f1dce948155679a137bc4f417"
+    },
+    "zuri-app-prototype/src/state/store.ts": {
+      "bytes": 1578,
+      "sha256": "85c2f2267d69a9d364a0e8ee80fd6e168788ec0391bbabfef30b16e1dd0c3b79"
+    },
+    "zuri-app-prototype/tests/audit-fixes.test.mjs": {
+      "bytes": 1799,
+      "sha256": "1bad33a96a3bc28c5711922f2e0aa301d56b38e3753c7b3935f4dac904b6da47"
+    },
+    "zuri-app-prototype/tests/browser-legacy.cjs": {
+      "bytes": 9049,
+      "sha256": "7d4fa0a28761c8c6efb4f0bb9e77db797329766a5676bfb9c53e0d82229f5b7e"
+    },
+    "zuri-app-prototype/tests/browser-smoke.cjs": {
+      "bytes": 6315,
+      "sha256": "2b4a7bfa34a709f25573b50cff9bba8bee406de585006a61d1ef56d49e3f6aa6"
+    },
+    "zuri-app-prototype/tests/channels.test.mjs": {
+      "bytes": 2531,
+      "sha256": "297551d57e4899c0227f53f777dc8cfe49a24c29c3ed71ce94b79e1a2454d9db"
+    },
+    "zuri-app-prototype/tests/chapter-planning.test.mjs": {
+      "bytes": 2427,
+      "sha256": "186b18927075d715466ce79063545b6e913c2f1fe286b5f1a301c7ed90a22db1"
+    },
+    "zuri-app-prototype/tests/chat-settings.test.mjs": {
+      "bytes": 1461,
+      "sha256": "58ec5aa3ae9eab2fc2571015c679aea88ab39c264acada4e3d18dc4a82642205"
+    },
+    "zuri-app-prototype/tests/cloud-client.test.mjs": {
+      "bytes": 3507,
+      "sha256": "0b2589aa6dc509806a969c75db080fd99339bba2cb3c3d07bb9a03b0a6662912"
+    },
+    "zuri-app-prototype/tests/connections.test.mjs": {
+      "bytes": 3193,
+      "sha256": "643a149266b7742cd0730bba0f5a23ac50f672b57240e73238622201a7e75d20"
+    },
+    "zuri-app-prototype/tests/context-filter.test.mjs": {
+      "bytes": 756,
+      "sha256": "c96f081333b88d013148e9d378b597811ea0ab9737517b68c024da576b03453b"
+    },
+    "zuri-app-prototype/tests/context-flows.test.mjs": {
+      "bytes": 4069,
+      "sha256": "957463590da66be6c9f8896bd1066ec30918b9138f696b8dd25ce1bf0d63e2ca"
+    },
+    "zuri-app-prototype/tests/conversation-intent.test.mjs": {
+      "bytes": 1470,
+      "sha256": "82f86b05ecd714cb89950fafcdebcf321c8ab8c07b3037918e5904412bfb9ec1"
+    },
+    "zuri-app-prototype/tests/core-sdk.test.mjs": {
+      "bytes": 2174,
+      "sha256": "ffb28fe21b5c797529d0f3d7445e3a8609a8156672b6fa43a364bb0dd8d5752e"
+    },
+    "zuri-app-prototype/tests/creation-return-media.test.mjs": {
+      "bytes": 1940,
+      "sha256": "127e4d19996c7835c1ba1edaf7650ee0951c561639ad5a30c0ec365b2a077162"
+    },
+    "zuri-app-prototype/tests/creation.test.mjs": {
+      "bytes": 2075,
+      "sha256": "1ac435bfb2981b1548dc7d393e93b6ec70a2f82b0f1dd71ec491a8b14af8228e"
+    },
+    "zuri-app-prototype/tests/experience.test.mjs": {
+      "bytes": 6214,
+      "sha256": "8f0847e46b664db7cdda9f17f904fd77dbf51a0765f03ef26585cbc751442334"
+    },
+    "zuri-app-prototype/tests/intents.test.mjs": {
+      "bytes": 3083,
+      "sha256": "93e06ddb30ce3cc806d58dd2d0f94b59fab8f8c8366100eb0be2561963bc5de8"
+    },
+    "zuri-app-prototype/tests/knowledge.test.mjs": {
+      "bytes": 891,
+      "sha256": "844e7ff091c9b1153e259d4c71e6a21009b368adcc4892468c98af3d960d7a1e"
+    },
+    "zuri-app-prototype/tests/live-runtime.test.mjs": {
+      "bytes": 2040,
+      "sha256": "b36c7892ad836bc817919ba09a3153dd9077588efac0121c57de61c685f5b3d3"
+    },
+    "zuri-app-prototype/tests/lore-timeline.test.mjs": {
+      "bytes": 2057,
+      "sha256": "fc4abb7109361a83496212465a44f3acc29e42b9f627b90a127c03a48974b5f0"
+    },
+    "zuri-app-prototype/tests/mobile-rework.test.mjs": {
+      "bytes": 2227,
+      "sha256": "a4326cff9db09f49df9bd7ba6e903920357fd29bf83833eee695d2446d107d80"
+    },
+    "zuri-app-prototype/tests/navigation.test.mjs": {
+      "bytes": 1226,
+      "sha256": "416bbe48209063934e5a1f18d33b21c648cc197ea692bfdf0d4998ffa6dbad1d"
+    },
+    "zuri-app-prototype/tests/notifications.test.mjs": {
+      "bytes": 2617,
+      "sha256": "ba0babdf638e42d26a43a28b0607b7b674ac5bea1a6a56c8a39a9c22ea877aa9"
+    },
+    "zuri-app-prototype/tests/offline-shell.test.mjs": {
+      "bytes": 2279,
+      "sha256": "46170cf9bc8357c295a5bc78a96b88d421423aabab02479095b40a60a7fa2600"
+    },
+    "zuri-app-prototype/tests/opportunities.test.mjs": {
+      "bytes": 985,
+      "sha256": "2a7c74164cadefbc9271a394e086409726889d35a9468abc217798fb71b60a63"
+    },
+    "zuri-app-prototype/tests/pamoja.test.mjs": {
+      "bytes": 7169,
+      "sha256": "80faf3e4709e08b7a4794dc83bcc161b94c7bc56e78194304b78bb9d8f381b70"
+    },
+    "zuri-app-prototype/tests/presence.test.mjs": {
+      "bytes": 2330,
+      "sha256": "ac38a349cccd9085130df970e48e5861c4aeac976948da88627f130deecdf704"
+    },
+    "zuri-app-prototype/tests/privacy-core.test.mjs": {
+      "bytes": 1651,
+      "sha256": "0b1d2c5ded662f397a01eba7da1b5a9fb5d4eecefe8ac8e1329550ab8a7f63c3"
+    },
+    "zuri-app-prototype/tests/register-loader.mjs": {
+      "bytes": 94,
+      "sha256": "51c41a7d7652460a975c85af7453612699c1fe58116dd4b313398a2ff162472a"
+    },
+    "zuri-app-prototype/tests/regressions.test.mjs": {
+      "bytes": 6103,
+      "sha256": "91079fd4b8324b1290db06429a118e04a1e5200ce660196f75fb9c289861acf5"
+    },
+    "zuri-app-prototype/tests/requests.test.mjs": {
+      "bytes": 4165,
+      "sha256": "e825ed3302ba9b3daacb31e3a16a7016c29e37d4be80d7b80465c00306dd36ca"
+    },
+    "zuri-app-prototype/tests/society-feed.test.mjs": {
+      "bytes": 894,
+      "sha256": "663b9c0073c12ed7cb2c0f2133f569906ba7b3554bbb26c4261d8ff924a6756a"
+    },
+    "zuri-app-prototype/tests/space-experience.test.mjs": {
+      "bytes": 2713,
+      "sha256": "558ffa2db9a927109782b5ac28c315c57373c7ea2c65508b9acfec8f67f4471a"
+    },
+    "zuri-app-prototype/tests/thread.test.mjs": {
+      "bytes": 1239,
+      "sha256": "5dbc0e710aceabcc18d3dbedee2e29c93a9548582f634e24efe7c12d3ddee47a"
+    },
+    "zuri-app-prototype/tests/typescript-loader.mjs": {
+      "bytes": 1203,
+      "sha256": "8e49767e6036a1aa187a1d2b03eb17342e2dd9b4b289adeb094a1ee697b7510a"
+    },
+    "zuri-app-prototype/tests/fixtures/catalog.ts": {
+      "bytes": 46878,
+      "sha256": "5d31f480fa4b370d30ef98a98741a287c46e8e4b1a2857c42ffaf8fa86d32cef"
+    },
+    "zuri-app-prototype/tests/fixtures/freshSocieties.ts": {
+      "bytes": 2563,
+      "sha256": "407fed0f32671b24ff5349a8a2d10458bbf3eda3a54a95d4f313bebdcbafad91"
+    },
+    "zuri-app-prototype/tutorials/spaces/README.md": {
+      "bytes": 255,
+      "sha256": "fd86353f967ff7e35e146db73cb5f9d44382367f8ab92a0c22fca349aca2984b"
+    },
+    "zuri-app-prototype/tutorials/spaces/ZURI-Spaces-Guide.srt": {
+      "bytes": 948,
+      "sha256": "25ab8634e5fc8904c3634c6af8ea6d1dde35c94f76ac0d0a2d78dac05dc08fef"
+    },
+    "zuri-app-prototype/tutorials/spaces/ZURI-Spaces-Guide.webm": {
+      "bytes": 5256261,
+      "sha256": "464e541059a3054a7c41ca7136328d736bf11557096f2dfcfbfdb5beabd5e7d3"
+    },
+    "zuri-app-prototype/tutorials/spaces/codec-H264.mp4": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "zuri-app-prototype/tutorials/spaces/codec-avc1.mp4": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "zuri-app-prototype/tutorials/spaces/codec-mp4v.mp4": {
+      "bytes": 258,
+      "sha256": "7817119d388f19407bdacbd714686f779bc1cf19bf9fb8e7438fde492f502be2"
+    },
+    "zuri-app-prototype/tutorials/spaces/codec-speed.webm": {
+      "bytes": 107017,
+      "sha256": "c746e7f5d41bf6f5ed2fe5787db3c59ed6c858ae50e113193be8284db952833c"
+    },
+    "zuri-app-prototype/tutorials/spaces/codec-vp9.webm": {
+      "bytes": 647,
+      "sha256": "f8a99d75382415bde5525395b9015c65b53216c9aa8c2fab3a79928af545e33e"
+    },
+    "zuri-app-prototype/tutorials/spaces/render.py": {
+      "bytes": 8403,
+      "sha256": "a3293ce8c55cd2e4583de08b07b3a852aaee72bfd45023f354ff532419a30b8c"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-01.png": {
+      "bytes": 46219,
+      "sha256": "58aa01927c5b8c8e64f81df7e3389afd2bc1fbffe156e4d5c83fa9cbaa591523"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-02.png": {
+      "bytes": 49200,
+      "sha256": "8e7cf8c5a1e9a581e6ce2de4d972d0d92dc7c64ebf70ab19cdc6c17615172fc8"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-03.png": {
+      "bytes": 56222,
+      "sha256": "a9328691b1adff36cb1ecab6db962e64e54a0abab6ae888893a47e7e877e5223"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-04.png": {
+      "bytes": 51520,
+      "sha256": "da7e043655bec16fd7fd9305e5e38d79bc0b731178cc4d641e88f8b364fb5ae0"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-05.png": {
+      "bytes": 64043,
+      "sha256": "cdb1c2e02407d09c17cc02450531c8bf2de5cc3603408961b56c9de3e4399ae8"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-06.png": {
+      "bytes": 58195,
+      "sha256": "a9047c5e4f20586d67db188170469dd8085207ea32f7b399b3dbde95a7ab54eb"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-07.png": {
+      "bytes": 61821,
+      "sha256": "fbfaa5ef51ed4c67e346ef34ef42a2dd8747d071f1c5399ba2e3bd46c024179e"
+    },
+    "zuri-app-prototype/tutorials/spaces/scene-08.png": {
+      "bytes": 52422,
+      "sha256": "c7890da6f995f8e660edf49ffa514fc60e07d815021e95e005fa942427c13bf2"
+    },
+    "zuri-app-prototype/tutorials/spaces/verification.json": {
+      "bytes": 177,
+      "sha256": "dd7a39141c2c2bdd0730157c8c48c4e6ce97f9a766352972aa315fed9621fdc5"
+    },
+    "zuri-app-prototype/vendor/zuri-intent-engine-0.1.0.tgz": {
+      "bytes": 8082,
+      "sha256": "0dd885ea2012412fcdc6d2837808c9846ec4e448d367e80c3bfd1bf27b8bc80a"
+    },
+    "zuri-app-prototype/vendor/zuri-intent-engine-0.2.0.tgz": {
+      "bytes": 9312,
+      "sha256": "e840cdc8b36e62d9b977bc7e35fad86dee1370a33811144aa44be26d3ccd0655"
+    },
+    "API-SETUP.md": {
+      "bytes": 9043,
+      "sha256": "3557e28859ce04acbeb4cdee7835746e9eace82759f1acd8461f015ae297aa63"
+    },
+    "START-HERE.md": {
+      "bytes": 3632,
+      "sha256": "11875616513d924d9055358b738b146bc425a677f3881164320981c8c4619697"
+    },
+    "VERIFICATION.json": {
+      "bytes": 1093,
+      "sha256": "ef5b1ff0cd755a47deac4334df9b6e0ecacafbc3793fb0c78e2d030f495d57c6"
+    },
+    "package.json": {
+      "bytes": 571,
+      "sha256": "b0cc379063a86b56d50b8d17499e96224c7f6840729bfd1d8670f9952b3479b1"
+    },
+    "scripts/check-apis.mjs": {
+      "bytes": 2283,
+      "sha256": "8c034adf9471a432590c46c7c623362de8982e56c0e6832fc2d6a74b567bdca8"
+    },
+    "scripts/run.mjs": {
+      "bytes": 1452,
+      "sha256": "b7cf8d43f868c979b1de2772537dcfbf5164a74b478558e44b234f3cc09e0d37"
+    },
+    "zuri-web/.env.testing.example": {
+      "bytes": 674,
+      "sha256": "36934d47d18e2eb87f35b4df5bfac9c97f5c05a7229e5200a4c5e2e809bb2511"
+    },
+    ".gitignore": {
+      "bytes": 142,
+      "sha256": "53936e182068475e9c6ba804d964dfb71b2b52fa5ff7ba002371f40352aa7a9b"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+import {AppGlyph} from './AppGlyph';
+import {pj} from './pamojaModel';
+import {enquiryDrafts} from './requestModel';
+import type {MobileProps} from './MobileWorlds';
+export function WorldPulse({data,go,open}:Pick<MobileProps,'data'|'go'|'open'>){const stats=[{icon:'Planner',label:'Open tasks',count:data.tasks.filter(t=>!t.done).length,action:()=>go({world:'motion',tab:'Planner'})},{icon:'Channels',label:'Your channels',count:data.customChannels?.filter(c=>c.ownerId==='me'&&!c.archived).length||0,action:()=>go({world:'rizz',tab:'Channels'})},{icon:'Chapters',label:'Chapters',count:data.chapters.length,action:()=>go({world:'lore',tab:'Chapters'})},{icon:'note',label:'Request drafts',count:pj(data).orders.filter(o=>o.status==='draft').length+enquiryDrafts(data).filter(e=>!e.cancelled).length,action:()=>open('orders','home')}];return <section className="cn-pulse" aria-label="Your connected world">{stats.map(s=><button key={s.label} onClick={s.action}><AppGlyph name={s.icon} size={21}/><strong>{s.count}</strong><span>{s.label}</span></button>)}</section>;}

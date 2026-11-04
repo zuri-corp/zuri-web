@@ -1,0 +1,1 @@
+export default function Loading() { return <main id="main" aria-busy="true" style={{padding: 48, background: '#090b13', color: '#f4f2fa', minHeight:'100vh'}}><p role="status">Opening your ZURI workspace…</p></main>; }

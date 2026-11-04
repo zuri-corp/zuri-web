@@ -1,0 +1,50 @@
+import {House} from '@phosphor-icons/react/dist/csr/House';
+import {ArrowLeft} from '@phosphor-icons/react/dist/csr/ArrowLeft';
+import {Camera} from '@phosphor-icons/react/dist/csr/Camera';
+import {Tag} from '@phosphor-icons/react/dist/csr/Tag';
+import {CaretRight} from '@phosphor-icons/react/dist/csr/CaretRight';
+import {CaretDown} from '@phosphor-icons/react/dist/csr/CaretDown';
+import {Plus} from '@phosphor-icons/react/dist/csr/Plus';
+import {Note} from '@phosphor-icons/react/dist/csr/Note';
+import {CalendarCheck} from '@phosphor-icons/react/dist/csr/CalendarCheck';
+import {Check} from '@phosphor-icons/react/dist/csr/Check';
+import {ArrowUp} from '@phosphor-icons/react/dist/csr/ArrowUp';
+import {SlidersHorizontal} from '@phosphor-icons/react/dist/csr/SlidersHorizontal';
+import {Newspaper} from '@phosphor-icons/react/dist/csr/Newspaper';
+import {MapPin} from '@phosphor-icons/react/dist/csr/MapPin';
+import {UsersThree} from '@phosphor-icons/react/dist/csr/UsersThree';
+import {MagnifyingGlass} from '@phosphor-icons/react/dist/csr/MagnifyingGlass';
+import {CalendarDots} from '@phosphor-icons/react/dist/csr/CalendarDots';
+import {Ticket} from '@phosphor-icons/react/dist/csr/Ticket';
+import {Broadcast} from '@phosphor-icons/react/dist/csr/Broadcast';
+import {PencilSimple} from '@phosphor-icons/react/dist/csr/PencilSimple';
+import {Megaphone} from '@phosphor-icons/react/dist/csr/Megaphone';
+import {ChatCircle} from '@phosphor-icons/react/dist/csr/ChatCircle';
+import {Images} from '@phosphor-icons/react/dist/csr/Images';
+import {Compass} from '@phosphor-icons/react/dist/csr/Compass';
+import {BookOpen} from '@phosphor-icons/react/dist/csr/BookOpen';
+import {UserCircle} from '@phosphor-icons/react/dist/csr/UserCircle';
+import {Sparkle} from '@phosphor-icons/react/dist/csr/Sparkle';
+import {ShieldCheck} from '@phosphor-icons/react/dist/csr/ShieldCheck';
+import {Palette} from '@phosphor-icons/react/dist/csr/Palette';
+import {Flag} from '@phosphor-icons/react/dist/csr/Flag';
+import {Briefcase} from '@phosphor-icons/react/dist/csr/Briefcase';
+import {Wallet} from '@phosphor-icons/react/dist/csr/Wallet';
+import {Storefront} from '@phosphor-icons/react/dist/csr/Storefront';
+import {LinkSimple} from '@phosphor-icons/react/dist/csr/LinkSimple';
+import {DotsThree} from '@phosphor-icons/react/dist/csr/DotsThree';
+import {Microphone} from '@phosphor-icons/react/dist/csr/Microphone';
+import {X} from '@phosphor-icons/react/dist/csr/X';
+import {Trash} from '@phosphor-icons/react/dist/csr/Trash';
+import {Heart} from '@phosphor-icons/react/dist/csr/Heart';
+import {Bell} from '@phosphor-icons/react/dist/csr/Bell';
+import {Gear} from '@phosphor-icons/react/dist/csr/Gear';
+import {Circle} from '@phosphor-icons/react/dist/csr/Circle';
+const icons:Record<string,typeof House>={home:House,back:ArrowLeft,camera:Camera,tag:Tag,chevron:CaretDown,next:CaretRight,plus:Plus,note:Note,event:CalendarDots,check:Check,send:ArrowUp,options:SlidersHorizontal,more:DotsThree,microphone:Microphone,close:X,delete:Trash,heart:Heart,bell:Bell,settings:Gear,lounge:Sparkle,Feed:Newspaper,Spaces:MapPin,Societies:UsersThree,Find:MagnifyingGlass,Planner:CalendarCheck,Events:Ticket,Pings:Broadcast,Create:PencilSimple,Channels:Megaphone,Chats:ChatCircle,Moments:Images,Discover:Compass,Chapters:BookOpen,Profile:UserCircle,shield:ShieldCheck,palette:Palette,flag:Flag,work:Briefcase,wallet:Wallet,store:Storefront,link:LinkSimple};
+export function SectionGlyph({name,active=false}:{name:string;active?:boolean}){const Icon=icons[name]||Circle;return <Icon size={24} weight={active?'fill':'regular'} aria-hidden="true" className="zuri-ui-icon"/>;}
+export function AppGlyph({name,size=24}:{name:string;size?:number}){
+ if(['aura','motion','rizz','lore'].includes(name))return <img className="zuri-app-logo" src={'/brand/'+name+'.svg'} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;
+ const Icon=icons[name]||Circle;return <Icon size={size} weight="regular" aria-hidden="true" className="zuri-ui-icon"/>;
+}
+const marks:Record<string,string>={'✦':'lounge','◇':'store','▱':'wallet','▧':'Moments','⌖':'Spaces','♧':'Societies','◒':'Chapters','✓':'check','◈':'Channels','◐':'palette','◉':'shield','↗':'Discover','◎':'Societies','◷':'event','✎':'note','⚑':'flag','⚙':'settings','⌘':'link','⌕':'Find','♡':'heart','☰':'note'};
+export function MarkGlyph({mark}:{mark:string}){return <AppGlyph name={marks[mark]||'note'} size={22}/>;}

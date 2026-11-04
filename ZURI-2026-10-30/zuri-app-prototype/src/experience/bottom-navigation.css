@@ -1,0 +1,23 @@
+/* Lounge owns the app dock; each app owns its own bottom section dock. */
+.zuri-exp[data-detail=""] .zx-body{padding-bottom:0}
+.zuri-exp[data-detail=""] .zx-content{padding-bottom:115px}
+.zuri-exp .zx-tabs.zn-app-dock{position:absolute;inset:auto 14px max(16px,env(safe-area-inset-bottom));z-index:25;margin:0;padding:7px;height:76px;display:flex;align-items:stretch;gap:3px;border-radius:25px;border:1px solid var(--zi-border);background:var(--zi-surface,#292333)!important;box-shadow:0 9px 30px #14203026;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.zuri-exp .zx-tabs.zn-app-dock button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex:1;min-width:0;min-height:48px;padding:6px 2px;border-radius:17px;font-size:12px;line-height:1.2;font-weight:750;background:transparent;box-shadow:none;color:var(--zi-secondary)!important}
+.zuri-exp .zx-tabs.zn-app-dock button[aria-current]{background:var(--zi-raised,#48384e)!important;color:var(--zi-text)!important;box-shadow:inset 0 0 0 1px var(--zi-border)}
+.zuri-exp .zx-tabs.zn-app-dock svg{flex-shrink:0;width:23px;height:23px}
+.zuri-exp :is(.zn-app-dock,.zx-mobile-nav){transition:transform .22s ease,opacity .18s ease}
+.zuri-exp[data-nav-hidden=true] :is(.zn-app-dock,.zx-mobile-nav){transform:translateY(125%);opacity:0;pointer-events:none}
+/* Keyboard focus can always reveal and operate the dock. */
+.zuri-exp[data-nav-hidden=true] :is(.zn-app-dock,.zx-mobile-nav):has(:focus-visible){transform:none;opacity:1;pointer-events:auto}
+.zuri-exp .zm-viola-orb{bottom:104px}
+.zuri-exp[data-nav-hidden=true] .zm-viola-orb{bottom:20px}
+.zn-friends-widget h3{display:flex;align-items:center;gap:9px}
+.zuri-exp[data-world=lounge] .zn-friends-widget{background:#413354c9!important}
+.zn-friend-list{display:flex;gap:10px;justify-content:flex-start;padding:5px 0 10px}
+.zn-friend-list button{display:flex;flex-direction:column;align-items:center;gap:7px;flex:1;min-width:0;color:var(--zi-text);min-height:80px;padding:5px 0}
+.zn-friend-list img,.zn-friend-list .zm-photo-fallback{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #d9bdf64d}
+.zn-friend-list span{font-size:13px;font-weight:650;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.zn-friends-open{display:flex;align-items:center;justify-content:space-between;width:100%;font-size:15px;font-weight:750;min-height:44px;color:#f3dcff;border-top:1px solid #ffffff20;margin-top:6px;padding-top:7px}
+.zuri-exp .zn-friends-empty{font-size:14px;line-height:1.55;margin:4px 0 13px;color:var(--zi-secondary)!important}
+@media(max-width:360px){.zuri-exp .zx-tabs.zn-app-dock{inset-inline:9px}.zuri-exp .zx-tabs.zn-app-dock button{font-size:11px}.zn-friend-list{gap:6px}.zn-friend-list img{width:40px;height:40px}}
+@media(prefers-reduced-motion:reduce){.zuri-exp :is(.zn-app-dock,.zx-mobile-nav){transition:none}}

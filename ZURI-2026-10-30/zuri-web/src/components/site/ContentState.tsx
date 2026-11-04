@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function ContentState({available,label}:{available:boolean;label:string}){return <div className="empty-state"><h2>{available?`No ${label} published yet.`:`${label[0].toUpperCase()+label.slice(1)} are temporarily unavailable.`}</h2><p>{available?'Check back as ZURI adds new content.':'We couldn’t load this content. Please try again later.'}</p><Link href="/contact" className="text-link">Get in touch with ZURI →</Link></div>;}

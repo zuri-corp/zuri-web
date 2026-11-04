@@ -1,0 +1,62 @@
+/* Each destination owns a colour family, across its chrome and surfaces. */
+.zuri-exp[data-world=aura]{--zi-hue:167;--zi-sat:38%;--zi-ink:#123d36;--zi-muted:#315f55}
+.zuri-exp[data-world=motion]{--zi-hue:24;--zi-sat:65%;--zi-ink:#542f1b;--zi-muted:#785037}
+.zuri-exp[data-world=rizz]{--zi-hue:333;--zi-sat:43%;--zi-ink:#54233b;--zi-muted:#75475d}
+.zuri-exp[data-world=lore]{--zi-hue:225;--zi-sat:48%;--zi-ink:#25365f;--zi-muted:#4a5c81}
+.zuri-exp:not([data-world=lounge]){--zi-surface:hsl(var(--zi-hue) var(--zi-sat) 19%);--zi-raised:hsl(var(--zi-hue) var(--zi-sat) 24%);--zi-canvas:hsl(var(--zi-hue) var(--zi-sat) 12%);background:var(--zi-canvas)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]){--zi-surface:hsl(var(--zi-hue) var(--zi-sat) 83%);--zi-raised:hsl(var(--zi-hue) var(--zi-sat) 76%);--zi-canvas:hsl(var(--zi-hue) var(--zi-sat) 89%);--zx-muted:var(--zi-muted);color:var(--zi-ink)}
+.zuri-exp:not([data-world=lounge]) :is(.zx-panel,.zx-card,.xf-feed-post,.xf-create,.xf-chapter-body,.xf-chapter-entry,.xf-chapter-add,.pj-section,.pj-list-card,.pj-links,.pj-wallet,.pj-summary,.pj-result,.zm-organizer,.xf-ping-card,.xf-channel-card){background:var(--zi-surface)!important;border-color:color-mix(in srgb,var(--zx-accent) 15%,transparent);box-shadow:0 4px 18px #15203008}
+.zuri-exp:not([data-world=lounge]) :is(.zx-topbar,.zx-tabs,.zm-local-tabs,.zm-message-compose,.zm-event-price,.xf-channel-info){background:var(--zi-canvas)!important}
+.zuri-exp:not([data-world=lounge]) :is(.zx-tabs button[aria-current],.zm-filter-strip button,.xf-segment>button,.pj-facts,.pj-status){background:var(--zi-raised)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(input:not([type=checkbox]):not([type=range]),textarea,select,.zm-search,.xf-context-search){background:hsl(var(--zi-hue) var(--zi-sat) 91%)!important;color:var(--zi-ink)}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.xf-thread,.zm-chat,.xf-channel-room,.xf-thread-body,.xf-channel-posts,.zm-chat-wall,.zm-broadcast){background:var(--zi-canvas)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.xf-thread-entry>div,.zm-bubble,.zm-broadcast-post,.pj-note,.pj-disclosure,.xf-chapter .pj-links){background:var(--zi-surface)!important}
+.zuri-exp[data-mode=day]:not([data-world=lounge]) :is(.zx-muted,.pj-note,.pj-field,.pj-check,.pj-intro>p,.pj-section>p,.zm-inbox-row p,.zm-inbox-row small,.zm-topic-row p,.xf-chapter-prompt,.zi-post-meta summary){color:var(--zi-muted)!important}
+/* Lounge is a room: a persistent illustrated wallpaper behind translucent objects. */
+.zuri-exp[data-world=lounge]{background:#252b48 url('/lounge-wallpaper.svg') center/cover no-repeat!important;color:#f6f0ff;--zx-muted:#d6d2e5;--zx-accent:#e1c6ff!important}
+.zuri-exp[data-world=lounge] .zx-main{background:transparent!important}
+.zuri-exp[data-world=lounge] .zx-topbar{background:#27243d80!important;color:#fff;border-color:#ffffff18}
+.zuri-exp[data-world=lounge] :is(.zm-widget,.zm-viola-bar,.zx-panel){background:#242a46bd!important;border-color:#e4d9ff26;backdrop-filter:blur(24px);box-shadow:0 7px 24px #0a0c2026;color:#f6f0ff}
+.zuri-exp[data-world=lounge] .zm-planner-widget{background:#493445c9!important}
+.zuri-exp[data-world=lounge] .zm-ping-widget{background:#1e4949c9!important}
+.zuri-exp[data-world=lounge] .zm-lore-widget{background:#303f68ce!important}
+.zuri-exp[data-world=lounge] :is(.zm-widget small,.zm-widget p,.zm-viola-bar small,.zm-voice-note,.pj-world-entry small,.zx-tasks small,.zx-page-heading>div>small){color:#d6d2e5!important}
+.zuri-exp[data-world=lounge] :is(.pj-world-entry,.pj-world-entry strong,.pj-world-entry span,.zm-home-button){color:#f6f0ff!important}
+.zuri-exp[data-world=lounge] .zx-mobile-nav{background:#272b47d9!important;border-color:#e4d9ff30;box-shadow:0 8px 25px #10142640}
+.zuri-exp[data-world=lounge] .zx-mobile-nav button{color:#e6deef}
+.zuri-exp[data-world=lounge] :is(input:not([type=checkbox]):not([type=range]),textarea,select){background:#f2eaff18!important;color:#fff!important}
+.zuri-exp[data-world=lounge] input::placeholder{color:#ded5ea}
+.zuri-exp[data-world=lounge] .zx-primary{background:#e1c6ff;color:#312544}
+.zuri-exp[data-world=lounge] .zm-widget .zx-text{color:#f1d5ff}
+.zuri-exp[data-world=lounge] .zm-viola-bar form{background:#ffffff12!important;border-color:#ffffff20}
+.zuri-exp[data-world=lounge] .zm-viola-bar form input{background:transparent!important}
+.zuri-exp[data-world=lounge] input::placeholder{color:#ded5ea!important}
+.zuri-exp[data-world=lounge] .zm-widget .zx-primary{color:#312544!important}
+.zuri-exp[data-world=lounge] .zm-section-line button{color:#efd5ff!important}
+.zuri-exp[data-world=lounge] .zm-viola-bar :is(.zm-mic,div>span,div>button){color:#e1c6ff}
+/* Bigger type, less surrounding furniture. Keep full touch targets. */
+.zuri-exp .zx-content{padding:14px 16px 24px}
+.zuri-exp .zx-topbar{min-height:58px;padding:9px 16px}
+.zuri-exp .xf-header-title strong{font-size:22px;font-weight:750}
+.zuri-exp .zx-tabs{margin:5px 14px 8px;padding:3px;min-height:46px}
+.zuri-exp .zx-tabs button{font-size:14px;font-weight:750;min-height:40px;padding:8px 5px}
+.zuri-exp :is(.zx-primary,.zx-secondary,.xf-soft-button,.zx-text,.zm-section-line button,.zm-filter-strip button){font-size:14px!important;font-weight:700;min-height:44px}
+.zuri-exp :is(input:not([type=checkbox]),textarea,select){font-size:16px!important;font-weight:550}
+.zuri-exp :is(.zm-widget h3,.zm-section-line h3,.xf-section-heading h3){font-size:21px;font-weight:750}
+.zuri-exp :is(.zm-widget .zx-tasks label,.zx-tasks label,.pj-links>button,.zm-topic-row strong,.zm-inbox-row strong){font-size:16px;font-weight:650}
+.zuri-exp :is(.zm-widget small,.zx-tasks small,.zm-ping-row small,.zm-inbox-row small){font-size:12px}
+.zuri-exp .zm-widget{padding:16px;border-radius:23px}
+.zuri-exp .zm-home-widgets{gap:12px}.zuri-exp .zm-section-line{margin:15px 0 10px}
+.zuri-exp .zm-viola-bar{padding:14px;margin-bottom:15px}
+.zuri-exp .zm-viola-bar strong{font-size:19px;font-weight:750}
+.zuri-exp .zx-panel{padding:16px}.zuri-exp .zm-society-row{padding:13px 0}
+.zuri-exp .zi-caption summary{font-size:14px;font-weight:550;min-height:32px}.zuri-exp .zi-context summary{font-size:12px;font-weight:650}
+.zuri-exp .zi-caption p{font-size:15px!important}.zuri-exp .zi-context-items button{font-size:12px!important;min-height:36px}
+.zuri-exp .zx-page-heading>div>p,.zuri-exp .zx-page-heading>div>small,.zuri-exp .zx-quiet-tag,.zuri-exp .xf-feed-heading,.zuri-exp .xf-editor-intro>p,.zuri-exp .pj-world-entry small,.zuri-exp .zm-viola-bar>div>small{display:none}
+.zuri-exp:not([data-world=lounge]) .zx-page-heading{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0;padding:0}
+.zuri-exp[data-world=lounge] .zx-page-heading{margin:4px 0 9px}.zuri-exp[data-world=lounge] .zx-page-heading h1{font-size:30px;margin:5px 0}
+.zuri-exp .pj-world-entry{margin:2px 0 10px;min-height:40px}.zuri-exp .pj-world-entry strong{font-size:16px}
+.zuri-exp .zm-space-tile{height:210px;margin-bottom:13px}.zuri-exp .zm-event-tile{height:245px;margin-bottom:13px}
+.zuri-exp .zi-icon-button{display:inline-grid;place-items:center;min-width:44px;min-height:44px;border-radius:13px;color:var(--zx-accent)}
+.zuri-exp .xf-chapter-add .xf-segment>button{font-size:12px!important;font-weight:750;min-height:54px}
+@media(max-width:360px){.zuri-exp .zx-tabs button{font-size:13px}.zuri-exp .zx-content{padding-inline:12px}}

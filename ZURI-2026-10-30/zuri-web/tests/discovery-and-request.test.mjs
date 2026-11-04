@@ -1,0 +1,13 @@
+import './hooks.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+const{profileSchema,safeJsonLd,siteOrigin}=await import('../src/lib/discovery/profiles.ts');
+const{validateEnquiry}=await import('../src/lib/enquiries/validation.ts');
+const{enquiryFromForm}=await import('../src/lib/enquiries/form.ts');
+const base={slug:'example',kind:'person',sample:false,name:'A person',description:'Useful work',category:'Design',initials:'AP',about:'Hello',location:'Kampala',offerings:['Design']};
+test('discovery describes public offerings, never private account data',()=>{const value=profileSchema({...base,email:'private@example.test',consent_reference:'private evidence',author_id:'private-id'},'https://zuri.example');const text=JSON.stringify(value);assert.equal(value.mainEntity['@type'],'Person');assert.match(text,/Design/);assert.doesNotMatch(text,/private/);assert.equal(value.url,'https://zuri.example/pamoja/people/example')});
+test('fictional profiles are never emitted as discoverable entities',()=>assert.equal(profileSchema({...base,sample:true},'https://zuri.example'),null));
+test('JSON-LD cannot terminate its enclosing script',()=>{const text=safeJsonLd({name:'</script><script>alert(1)</script>'});assert.equal(text.includes('<'),false);assert.equal(JSON.parse(text).name,'</script><script>alert(1)</script>')});
+test('canonical origin rejects credentials and unsafe protocols',()=>{assert.equal(siteOrigin('javascript:alert(1)'),null);assert.equal(siteOrigin('https://user:password@example.test'),null);assert.equal(siteOrigin('http://example.test'),null);assert.equal(siteOrigin('https://example.test/path'),'https://example.test');assert.equal(siteOrigin('http://127.0.0.1:3015'),'http://127.0.0.1:3015')});
+test('a direct Tech request needs only goal, name and reply email',()=>{const data=new FormData();data.set('name','A customer');data.set('email','customer@example.test');data.set('message','Make my shop records easier');const saved=validateEnquiry(enquiryFromForm(data,'tech'));assert.equal(saved.phone,'');assert.match(saved.message,/Make my shop/)});
+test('optional phone is still validated when supplied and Invites retains its required phone',()=>{assert.throws(()=>validateEnquiry({enquiryType:'tech',name:'A',email:'a@example.test',message:'Help',phone:'bad'}));assert.throws(()=>validateEnquiry({name:'A',email:'a@example.test',message:'Wedding',phone:''}))});

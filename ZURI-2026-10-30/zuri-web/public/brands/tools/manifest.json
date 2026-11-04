@@ -1,0 +1,202 @@
+[
+  {
+    "id": "1password",
+    "site": "https://1password.com/",
+    "source": "https://1password.com/favicon/icon-v2.svg",
+    "file": "/brands/tools/1password.svg",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "adobe-express",
+    "site": "https://www.adobe.com/express/",
+    "source": "https://www.adobe.com/favicon.ico",
+    "file": null,
+    "kind": "plain-text reference; Adobe requires a logo licence",
+    "reviewed": "2026-10-19",
+    "policy": "https://www.adobe.com/legal/permissions/trademarks.html"
+  },
+  {
+    "id": "asana",
+    "site": "https://asana.com/",
+    "source": "https://asana.com/assets/img/brand/asana-logo-favicon.ico",
+    "file": "/brands/tools/asana.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "bitwarden",
+    "site": "https://bitwarden.com/",
+    "source": "https://bitwarden.com/icons/icon-48x48.png",
+    "file": "/brands/tools/bitwarden.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "brevo",
+    "site": "https://www.brevo.com/",
+    "source": "https://corp-backend.brevo.com/wp-content/uploads/2025/07/Brevo_logo.svg",
+    "file": "/brands/tools/brevo.svg",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "buffer",
+    "site": "https://buffer.com/",
+    "source": "https://buffer.com/icons/apple-touch-icon.png",
+    "file": "/brands/tools/buffer.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "canva",
+    "site": "https://www.canva.com/",
+    "source": "https://static.canva.com/domain-assets/canva/static/images/apple-touch-120x120-1.png",
+    "file": "/brands/tools/canva.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "chatgpt",
+    "site": "https://chatgpt.com/",
+    "source": "https://chatgpt.com/cdn/assets/favicon-180x180-od45eci6.webp",
+    "file": "/brands/tools/chatgpt.webp",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "claude",
+    "site": "https://claude.com/",
+    "source": "https://assets.claude.com/95a868946ac8a31e5ff832e2899f294aa368b836.png?w=32&h=32",
+    "file": "/brands/tools/claude.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "cloudflare",
+    "site": "https://www.cloudflare.com/",
+    "source": "https://www.cloudflare.com/favicon.ico",
+    "file": "/brands/tools/cloudflare.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "figma",
+    "site": "https://www.figma.com/",
+    "source": "https://static.figma.com/app/icon/2/touch-76.png",
+    "file": "/brands/tools/figma.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "freshbooks",
+    "site": "https://www.freshbooks.com/",
+    "source": "https://www.freshbooks.com/favicon.ico",
+    "file": "/brands/tools/freshbooks.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "gemini",
+    "site": "https://gemini.google/about/",
+    "file": "/brands/tools/gemini.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19",
+    "source": "https://gemini.google/images/spark_4c.png"
+  },
+  {
+    "id": "notion",
+    "site": "https://www.notion.com/",
+    "source": "https://www.notion.com/front-static/logo-ios.png",
+    "file": "/brands/tools/notion.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "perplexity",
+    "site": "https://www.perplexity.ai/",
+    "source": "https://www.perplexity.ai/favicon.ico",
+    "file": "/brands/tools/perplexity.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "quickbooks",
+    "site": "https://quickbooks.intuit.com/global/accounting-software/",
+    "file": null,
+    "kind": "plain-text reference; Intuit requires a written logo licence",
+    "policy": "https://www.intuit.com/legal/trademark/"
+  },
+  {
+    "id": "shopify",
+    "site": "https://www.shopify.com/",
+    "source": "https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png",
+    "file": "/brands/tools/shopify.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "slack",
+    "site": "https://slack.com/",
+    "source": "https://a.slack-edge.com/9cc0056/img/icons/favicon-32.png",
+    "file": "/brands/tools/slack.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "trello",
+    "site": "https://trello.com/",
+    "source": "https://trello.com/favicon.ico",
+    "file": "/brands/tools/trello.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "wave",
+    "site": "https://www.waveapps.com/",
+    "source": "https://cdn.prod.website-files.com/62446230dcb514b828a6e237/627e0a14ff7686635f162d06_favicon-large.png",
+    "file": "/brands/tools/wave.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "wordpress",
+    "site": "https://wordpress.org/",
+    "source": "https://s.w.org/images/wmark.png",
+    "file": "/brands/tools/wordpress.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "workspace",
+    "site": "https://workspace.google.com/",
+    "source": "https://www.gstatic.com/images/branding/googleg_gradient/1x/googleg_gradient_standard_20dp.png",
+    "file": "/brands/tools/workspace.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "xero",
+    "site": "https://www.xero.com/",
+    "source": "https://www.xero.com/content/dam/xero/pilot-images/admin/icons/favicon/apple-touch-icon.png",
+    "file": "/brands/tools/xero.png",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "zapier",
+    "site": "https://zapier.com/",
+    "source": "https://zapier.com/favicon.ico",
+    "file": "/brands/tools/zapier.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  },
+  {
+    "id": "zoho-books",
+    "site": "https://www.zoho.com/books/",
+    "source": "https://www.zoho.com/favicon.ico",
+    "file": "/brands/tools/zoho-books.ico",
+    "kind": "official-site icon",
+    "reviewed": "2026-10-19"
+  }
+]

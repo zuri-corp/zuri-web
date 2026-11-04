@@ -1,0 +1,3 @@
+import Link from 'next/link';
+import type {PublicStory} from '@/lib/publishing/model';
+export default function StoryCard({story,lead=false}:{story:PublicStory;lead?:boolean}){return <article className={`story-card ${lead?'story-lead':''}`}><Link href={`/select/${story.slug}`} className="story-photo" style={{backgroundImage:`url(${JSON.stringify(story.image)})`}} aria-label={`Read ${story.title}`}>{story.sample&&<span className="sample-label">Illustrative story</span>}</Link><p className="eyebrow red mt-6">{story.category}</p><h2><Link href={`/select/${story.slug}`}>{story.title} <span aria-hidden="true">↗</span></Link></h2><p>{story.standfirst}</p></article>;}

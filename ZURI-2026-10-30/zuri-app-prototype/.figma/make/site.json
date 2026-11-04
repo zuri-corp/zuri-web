@@ -1,0 +1,11 @@
+{
+  "description": "The ZURI app: Lounge, Aura, Motion, Rizz and Lore. One identity, a world of possibility.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  },
+  "title": "ZURI — Your world, connected"
+}

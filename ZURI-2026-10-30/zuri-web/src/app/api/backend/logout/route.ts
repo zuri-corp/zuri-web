@@ -1,0 +1,2 @@
+import {sameOrigin} from '@/lib/http/origin';import {createServerSupabaseClient} from '@/lib/supabase/server';
+export async function POST(request:Request){if(!sameOrigin(request))return Response.json({error:'Use ZURI.'},{status:403});try{const client=await createServerSupabaseClient();const {error}=await client.auth.signOut();return Response.json(error?{error:'Sign-out was not confirmed.'}:{signedOut:true},{status:error?503:200,headers:{'Cache-Control':'private, no-store'}});}catch{return Response.json({error:'Sign-out unavailable.'},{status:503});}}

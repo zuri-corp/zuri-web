@@ -1,0 +1,834 @@
+# ZURI Strategy Handoff
+
+## 1. The big idea
+
+ZURI should not position itself as simply another company that builds software.
+
+There is already enormous amounts of technology in the world. The problem for many people and businesses is not the absence of technology; it is knowing **which technology is right for them and making it actually work**.
+
+ZURI's opportunity is to become the trusted layer between people and technology.
+
+The core proposition is:
+
+**ZURI helps people and businesses find, buy, build, implement, protect and manage the right technology.**
+
+ZURI can build technology where necessary, but it does not need to build everything itself.
+
+---
+
+# 2. ZURI brand architecture
+
+ZURI is the parent.
+
+Underneath it are three distinct destinations:
+
+- **ZURI Tech**
+- **ZURI Select**
+- **ZURI Pamoja**
+
+They share one foundation and one philosophy, but they should not feel like sections of the same website.
+
+Each should have its own interface, navigation, tone and purpose.
+
+### ZURI Corporate
+
+The main ZURI landing page remains a scrollable journey through the company.
+
+Its purpose is orientation and handoff.
+
+Someone can learn what ZURI is and then enter Tech, Select or Pamoja.
+
+Once they enter one of those destinations, they enter that destination's own experience rather than continuing through one giant ZURI website.
+
+A subtle persistent ZURI identity can connect the three worlds.
+
+### Visual distinction
+
+**ZURI Tech:** blue, calm, useful, practical.
+
+**ZURI Select:** red, editorial and expressive.
+
+**ZURI Pamoja:** black and white, warm, quiet and human.
+
+Shared ZURI foundation; distinct experiences.
+
+---
+
+# 3. ZURI Select
+
+Select becomes ZURI's editorial destination.
+
+Its strongest editorial territory is:
+
+**Technology, products and the people shaping what's next.**
+
+It does not need to become a generic technology-news website.
+
+It can cover:
+
+- technology;
+- AI;
+- products;
+- phones and devices;
+- cars;
+- fashion and interesting physical products;
+- cybersecurity;
+- African technology adoption;
+- local builders;
+- companies;
+- creators;
+- people doing interesting work;
+- how technology affects ordinary life.
+
+Products expand Select beyond pure technology journalism and create commercial opportunities around launches, access, partnerships and sponsorships.
+
+However, editorial integrity is essential.
+
+Commercial relationships with a company must never require Select to praise that company's products.
+
+If something is bad, Select should be able to say so.
+
+### Select's standard
+
+ZURI is not looking for cheap stories or content volume.
+
+It is looking for **the select stories**.
+
+Pamoja Moments may reveal that something interesting is happening somewhere, but Select should not simply scrape people's contributions and turn them into content.
+
+Moments can provide signals.
+
+Select still does the journalism.
+
+---
+
+# 4. ZURI Tech
+
+## Positioning
+
+ZURI Tech is not merely a software-development agency.
+
+Its proposition is:
+
+**The right technology for what you need.**
+
+Or, in a warmer consumer expression:
+
+**Good technology, without the headache.**
+
+A person should not need to know whether they require a CRM, AI product, accounting platform, website, cybersecurity service or custom application.
+
+They should be able to tell ZURI what they are trying to accomplish.
+
+ZURI figures out the technology.
+
+That may mean:
+
+- building something;
+- recommending existing software;
+- implementing someone else's technology;
+- integrating several products;
+- managing technology;
+- securing it;
+- maintaining it;
+- or simply advising the customer.
+
+ZURI therefore becomes a **technology partner**, rather than merely a software vendor.
+
+---
+
+# 5. Who ZURI Tech serves
+
+ZURI Tech serves both individuals and organizations.
+
+There does not need to be a separate consumer company and enterprise company.
+
+The same promise scales.
+
+An individual may need:
+
+- privacy or cybersecurity assistance;
+- AI setup;
+- a portfolio;
+- a personal website;
+- creative software;
+- productivity software;
+- device/software assistance;
+- digital products.
+
+A small business may need:
+
+- a Pamoja Space;
+- accounting software;
+- business email;
+- a website;
+- cybersecurity;
+- productivity software;
+- simple automation;
+- ongoing support.
+
+A larger organization may need:
+
+- custom software;
+- integrations;
+- cybersecurity;
+- infrastructure;
+- deployment;
+- consulting;
+- dedicated support;
+- managed technology services.
+
+The principle is:
+
+**Right technology. Right scale. Right level of support.**
+
+For small businesses in particular, ZURI can provide a **soft entrance into technology**—little jargon, little complexity, and no expectation that the customer already understands software.
+
+---
+
+# 6. ZURI Tech's three commercial pillars
+
+We settled on three primary commercial pillars.
+
+## A. Services
+
+ZURI expertise and implementation.
+
+Examples include:
+
+- websites;
+- software development;
+- applications;
+- integrations;
+- automation;
+- AI implementation;
+- cybersecurity;
+- technology consulting;
+- deployment;
+- maintenance;
+- technical support;
+- managed technology.
+
+This produces project revenue and recurring service revenue.
+
+---
+
+## B. Marketplace
+
+A simple section within ZURI Tech.
+
+It does **not** need to become a giant standalone product.
+
+The Marketplace is ZURI's curated shelf of good technology.
+
+Possible categories include:
+
+- AI;
+- business;
+- productivity;
+- cybersecurity;
+- creative software;
+- accounting;
+- communications;
+- games;
+- other useful digital products.
+
+The Marketplace should be **curated rather than exhaustive**.
+
+ZURI's value is not listing 50,000 applications.
+
+Its value is saying:
+
+**These are the products we genuinely think are good for this job.**
+
+Depending on commercial agreements, ZURI may earn through:
+
+- referral commissions;
+- reseller margins;
+- implementation fees;
+- setup fees;
+- support;
+- recurring management.
+
+Not every technology provider will permit direct resale. Where ZURI cannot sell a subscription itself, it can still recommend the product and potentially implement or support it.
+
+The Marketplace belongs inside **ZURI Tech**, not Pamoja.
+
+Pamoja may surface relevant capabilities, but ZURI Tech owns the commercial technology relationship.
+
+---
+
+## C. ZURI Products
+
+Technology ZURI builds and owns.
+
+ZURI Invites is an example.
+
+Future ZURI products can emerge when repeated customer problems justify building reusable software.
+
+This produces an important development loop:
+
+**Service problem → repeated pattern → internal system → reusable product → ZURI Product**
+
+ZURI therefore does not need to guess every product it should build.
+
+Its services can reveal what deserves to become a product.
+
+---
+
+# 7. ZURI Tech revenue model
+
+The principal revenue sources are:
+
+- project fees;
+- implementation fees;
+- consulting;
+- recurring technology-management contracts;
+- maintenance and support subscriptions;
+- marketplace commissions;
+- reseller margins;
+- ZURI-owned product revenue.
+
+The most strategically valuable relationship may eventually be:
+
+**“ZURI, handle our technology.”**
+
+Instead of selling isolated projects, ZURI becomes the customer's ongoing technology partner.
+
+The relationship can progress naturally:
+
+**Need → Recommend → Buy → Implement → Manage → Support**
+
+---
+
+# 8. Technology partnerships and distribution
+
+ZURI can partner with global technology companies rather than attempting to reproduce their products.
+
+Potential categories include:
+
+- AI;
+- cybersecurity;
+- cloud infrastructure;
+- accounting;
+- productivity;
+- collaboration;
+- business management.
+
+The long-term ambition is bigger than Uganda.
+
+ZURI can become an **African technology distribution and implementation network**.
+
+That creates two sides to the business:
+
+1. African people and organizations that need good technology.
+2. Technology companies that need distribution, implementation and customer support in African markets.
+
+ZURI sits between them.
+
+But ZURI should begin with a small number of technologies it genuinely understands rather than collecting dozens of superficial partnerships.
+
+Prove implementation capability first.
+
+Then expand.
+
+---
+
+# 9. Recommendation independence
+
+There is an important ethical and commercial principle:
+
+**ZURI should recommend the technology that best serves the customer, not whichever company pays ZURI the largest commission.**
+
+If Product B is genuinely better for a customer than Product A, ZURI should recommend Product B even if Product A has the more profitable partnership.
+
+Sponsored placement, if introduced later, must be visibly distinguishable from genuine recommendations.
+
+The long-term asset is trust.
+
+---
+
+# 10. The invisible intelligence layer
+
+ZURI will eventually need sophisticated recommendation intelligence.
+
+But it should **not feel like an AI product**.
+
+Do not lead with:
+
+“Talk to our AI assistant.”
+
+Instead, the interface can simply ask:
+
+**What are you trying to do?**
+
+Someone might say:
+
+> I run a restaurant and I'm struggling to keep track of expenses.
+
+ZURI understands the intent and asks only useful follow-up questions.
+
+For example:
+
+> Sounds like you need a simpler way to manage your business finances. Are you mainly struggling with expenses, invoices, or both?
+
+Behind that interaction can be:
+
+- intent understanding;
+- customer context;
+- structured product and capability data;
+- suitability rules;
+- recommendation logic;
+- AI;
+- human escalation.
+
+But the customer experiences **ZURI being helpful**, not an AI demonstration.
+
+The intelligence should become increasingly invisible.
+
+---
+
+# 11. AI and service delivery
+
+AI is also important operationally.
+
+ZURI should use AI to reduce the cost of delivering repeatable services.
+
+Wedding websites are an immediate example.
+
+Instead of every wedding requiring a designer and developer to begin from zero:
+
+**Client request → structured information → ZURI system + AI → human review → launch**
+
+AI can assist with:
+
+- copy;
+- content organization;
+- layout selection;
+- configuration;
+- repetitive development;
+- first-pass QA.
+
+Humans remain responsible for judgment, unusual requirements, quality and final approval.
+
+This creates another important ZURI loop:
+
+**Services generate patterns → patterns become systems → systems lower service costs → reusable systems may become products.**
+
+Wedding websites can be an early proof of this model.
+
+---
+
+# 12. Pamoja's long-term role
+
+Pamoja remains the long-term vision.
+
+Its underlying idea is:
+
+**Everybody's goodness should be discoverable.**
+
+Pamoja exists to make the useful things inside people, businesses, places and institutions legible and discoverable.
+
+It is not simply another marketplace.
+
+It is ultimately a living opportunity network.
+
+However, the current ZURI website should **not attempt to ship the entire historic Pamoja vision**.
+
+V1 should preserve the spine and prove the fundamental idea.
+
+---
+
+# 13. Pamoja V1
+
+For the initial website, Pamoja should focus on:
+
+- people;
+- businesses;
+- places;
+- offerings;
+- requests;
+- discovery.
+
+The fundamental questions are:
+
+**Who are you?**
+
+**What do you do / offer?**
+
+**What might you need?**
+
+**How can someone find or connect with you?**
+
+Do not ship Aura, Motion, Rizz or the broader historical ecosystem merely because those concepts exist.
+
+V1 should prove the core opportunity-network thesis first.
+
+---
+
+# 14. Warmth is a design principle
+
+Pamoja must not feel like a harsh transactional marketplace.
+
+The earlier framing:
+
+**“What do you need?”**
+
+felt too mechanical.
+
+The interface should be warmer.
+
+Potential language includes:
+
+**Find something good.**
+
+**What are you looking for?**
+
+**Mind sharing what you need right now?**
+
+Requests should feel like expressions of need, not promises that ZURI will fulfill them.
+
+Offerings are more concrete because they describe something a person or organization already does or provides.
+
+Warmth is not decorative copy added after the product is built.
+
+**Warmth is a system-level design principle for ZURI.**
+
+---
+
+# 15. Pamoja Spaces
+
+A major practical opportunity is giving businesses a home online without building an individual website for every business.
+
+A Pamoja Space can provide:
+
+- name;
+- description;
+- location;
+- opening information;
+- contact information;
+- photographs;
+- products/services;
+- useful structured information;
+- search-engine-readable pages.
+
+The promise is not:
+
+“We guarantee customers.”
+
+The honest promise is:
+
+**We give you a proper home on the internet and make it possible to be found.**
+
+ZURI should never guarantee Google rankings merely because a business has a Space.
+
+---
+
+# 16. Pamoja addresses
+
+For V1, use clean URL paths.
+
+For example:
+
+`zuri.com/chadondo`
+
+That becomes the business's digital ZURI address.
+
+It is simple enough to say aloud:
+
+**“Find us at ZURI dot com slash Chadondo.”**
+
+This is preferable initially to creating a complicated proprietary domain system.
+
+Reserve important ZURI routes such as:
+
+- `/tech`
+- `/select`
+- `/pamoja`
+- `/search`
+- `/about`
+
+and other system routes so that businesses cannot claim them.
+
+Subdomains and custom domains can come later.
+
+If a business eventually wants its own domain, ZURI Tech can provide that as an additional service.
+
+---
+
+# 17. Business onboarding
+
+Do not require every small business to begin with a large registration form.
+
+Where appropriate, ZURI can **pre-create a basic Space** using legitimate public or directly gathered information.
+
+Then approach the business with:
+
+**We made you a home.**
+
+They see the page first.
+
+Then:
+
+**Is this yours?**
+
+They claim and verify it.
+
+After verification, onboarding asks only the information necessary to improve the Space:
+
+- What should people know about you?
+- Where can people find you?
+- How should people contact you?
+- Add a photo.
+- Correct anything we got wrong.
+
+The philosophy is:
+
+**ZURI does the first bit of work for them.**
+
+That is a much warmer onboarding model than demanding effort before demonstrating value.
+
+---
+
+# 18. Moments
+
+Pamoja V1 can introduce a lightweight contribution mechanism called:
+
+**Moments**
+
+Moments are not reviews.
+
+They are closer to a digital guestbook.
+
+Someone who knows a place can contribute:
+
+- a photograph;
+- a short note;
+- a memory;
+- a small piece of useful context.
+
+The invitation could be:
+
+**Share a moment from here.**
+
+Avoid:
+
+- star ratings;
+- aggressive review mechanics;
+- long comment threads;
+- engagement farming.
+
+A place may optionally use a QR code in the physical location.
+
+Someone scans it and lands directly on:
+
+**Share a moment at [Place].**
+
+Businesses should control whether and how Moments are enabled.
+
+---
+
+# 19. Relationship between Moments and Select
+
+Moments can help ZURI notice that something interesting is happening.
+
+But they should not automatically become Select content.
+
+A pattern in Moments might lead Select to investigate.
+
+Then Select reports the story properly.
+
+This protects both editorial quality and people's contributions.
+
+---
+
+# 20. Relationship between Pamoja and ZURI Tech
+
+The two products reinforce each other without becoming the same thing.
+
+Pamoja gives someone or a business a **home and discoverability**.
+
+ZURI Tech helps them **use technology**.
+
+A small business may begin with a free or simple Pamoja Space.
+
+Later it needs:
+
+- accounting;
+- email;
+- payments;
+- security;
+- a custom website;
+- automation;
+- AI;
+- software management.
+
+That becomes a natural ZURI Tech relationship.
+
+The progression is therefore not an aggressive sales funnel.
+
+It is:
+
+**Presence → need → help → deeper technology relationship**
+
+---
+
+# 21. Relationship between Select, Tech and Pamoja
+
+The three now have distinct jobs.
+
+### Select
+
+**Understand what's worth knowing.**
+
+Stories, products, technology and people.
+
+### Tech
+
+**Use the right technology.**
+
+Services, Marketplace and ZURI Products.
+
+### Pamoja
+
+**Make goodness discoverable.**
+
+People, businesses, places, needs and capabilities.
+
+Together:
+
+**Select helps people understand what exists.**
+
+**Tech helps people use it.**
+
+**Pamoja helps people find and interact with the people, businesses, places and capabilities around it.**
+
+---
+
+# 22. ZURI's overall strategic loop
+
+The wider ecosystem now has a coherent flow.
+
+Select can discover and explain interesting technology and products.
+
+ZURI Tech can distribute, implement and manage good technology.
+
+Pamoja can provide the network where people, businesses, places, needs and capabilities are discoverable.
+
+ZURI Tech's customer work teaches ZURI what problems repeatedly exist.
+
+AI and internal systems make those services increasingly efficient.
+
+Repeated solutions can become ZURI Products.
+
+Pamoja provides increasingly rich understanding of real needs and capabilities.
+
+That can inform what ZURI should recommend, distribute and eventually build.
+
+---
+
+# 23. What the current website should communicate
+
+The corporate website should **not attempt to explain the entire future ecosystem at once**.
+
+It should make the current proposition understandable.
+
+The visitor should quickly understand:
+
+### ZURI Tech
+
+**Good technology for people and businesses.**
+
+Services · Marketplace · ZURI Products
+
+### ZURI Select
+
+**Technology, products and the people shaping what's next.**
+
+### ZURI Pamoja
+
+A warm network where people, businesses and places can have a home, be discovered, share what they offer and express what they need.
+
+---
+
+# 24. What not to build right now
+
+Do not overbuild:
+
+- the historic full Pamoja ecosystem;
+- Aura;
+- Motion;
+- Rizz;
+- complicated social feeds;
+- huge dashboards;
+- a massive app store;
+- a proprietary domain system;
+- elaborate AI characters;
+- unnecessary marketplace mechanics;
+- speculative features merely because they may matter later.
+
+Build enough foundation that these possibilities remain open.
+
+But build the current product for the current proposition.
+
+---
+
+# 25. Core principles established in this conversation
+
+**1. The right technology matters more than more technology.**
+
+**2. ZURI can build, distribute, implement and manage technology.**
+
+**3. ZURI Tech should be useful to both individuals and organizations.**
+
+**4. Services, Marketplace and ZURI Products are the three commercial pillars.**
+
+**5. The Marketplace should be curated, not enormous.**
+
+**6. ZURI's recommendations must remain trustworthy even when commissions are involved.**
+
+**7. AI should usually be invisible; the experience should simply feel helpful.**
+
+**8. AI should reduce the cost of repeatable ZURI services.**
+
+**9. Repeated service patterns can eventually become ZURI Products.**
+
+**10. Select covers technology, products and people with genuine editorial independence.**
+
+**11. Pamoja V1 should be dramatically simpler than the complete historical vision.**
+
+**12. Pamoja starts with people, businesses, places, offerings, requests and discovery.**
+
+**13. A Pamoja Space can give a business a real digital home without ZURI designing a separate website for it.**
+
+**14. Clean URLs such as `zuri.com/name` are sufficient for V1.**
+
+**15. Business onboarding should feel like “we made you a home,” followed by claiming and verification.**
+
+**16. Moments provide lightweight human contribution without turning Pamoja into a review platform.**
+
+**17. Select may notice stories through Pamoja, but journalism remains deliberate and editorially selected.**
+
+**18. ZURI Corporate, Tech, Select and Pamoja need distinct surfaces rather than one blended interface.**
+
+**19. The corporate landing page can remain the scrollable guided introduction connecting the ecosystem.**
+
+**20. Warmth is a fundamental ZURI product principle.**
+
+---
+
+# 26. The clearest statement of what we are building
+
+**ZURI is building infrastructure for discovering and using what is good.**
+
+**ZURI Select** finds and tells the stories worth knowing.
+
+**ZURI Tech** helps people and organizations find, buy, build, implement, protect and manage the right technology.
+
+**ZURI Pamoja** gives people, businesses and places a home where who they are, what they offer and what they need can be discovered.
+
+Across all three, ZURI should feel warm, useful, trustworthy and human.
+
+Technology—including AI—exists underneath to make that experience possible.
+
+It does not need to be the thing shouting for attention.

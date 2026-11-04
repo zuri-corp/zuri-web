@@ -1,0 +1,29 @@
+{
+  "generatedBy": "scripts/build-edge-functions.mjs",
+  "files": {
+    "supabase/functions/zuri-api/index.ts": "71b46f1eb153fb04e98331310d72827aadb7a061787152d601210e377ee545e4",
+    "supabase/functions/_shared/auth.ts": "025262073c9076e942f2af51618b0330b839f457ae31e61fa92f6f1d77fbbeaa",
+    "supabase/functions/_shared/intake.ts": "48d9223acf7b7aaa3917e884ba533971c45cc1538ef56438908dcc0dd1a76042",
+    "src/lib/backend/edge.ts": "453e33f671a6290be6326d79e56d29fc39d189e69da9c9c070c2c6e5b19aec42",
+    "src/lib/pamoja/intake.ts": "799b129d297318716aa76702277cdd49ba5180863afa0f89e07b50a53c618479",
+    "src/lib/enquiries/validation.ts": "fa1c184a8413ae4831ad19a24ad75d1257ada3d76d7f7951aa2a4b4fdfcfb64d",
+    "supabase/functions/zuri-media/index.ts": "1837419b917239c7b421abab85255fa03fa65b74f0dadba40ab7db79b347a8a6",
+    "supabase/functions/zuri-ai/index.ts": "f9d79e0f0531f83f2298845cb687c4661b4c32dac8ee0fee1aecbcd852aecaf5",
+    "supabase/generated/ai-gateway.ts": "49c8388e7e2ff27aa3b03e894ffda5661af7bec3b6ca6f3a69aa97131a8a5347",
+    "src/lib/intent/engine.ts": "0b70b387d8c1871bc7b33980649f6efffb3f30f9e6c692a03035d6039e2dfcca",
+    "src/lib/ai/provider.ts": "1dcb35fb0a8e0d03cd5ae6d8334576ec8d9a9332ca0a785747e3b72366e0d7ed",
+    "src/lib/ai/knowledge/retrieve.ts": "263765e4ba4fb30a10007eb61bffcba1b081547e858bd0538ca8370898a6d7ad",
+    "src/lib/ai/knowledge/context.ts": "272e85b59815e9ac370d8fa0c4530d8b683166b8782919cb4246c39f41b6b9b1",
+    "src/lib/ai/contracts.ts": "8593859438acfdc1c6a108f1dd35c1848fac70e07b8a8d324209340fddd82214",
+    "src/lib/chat/conversation.ts": "d4ef0e0262617636bbed6585517b737a1fc6fd7db7489777d0e3e7e1b44269e1",
+    "src/lib/experience/viola.ts": "53e763feb73e6bfd39f015561e68a90cce3bf70325647daa623688fa47a56b27",
+    "src/lib/http/body.ts": "d384b991c99cd5fd7054df66365177f8d076198b4e31a8e4eb48654b47111173",
+    "packages/intent-engine/index.mjs": "28b2712d29b4d132ef40cf832578df72576b8632f2da35c40444cd74cf096223",
+    "src/lib/ai/knowledge/catalog.ts": "f04ef40a755cb70b2a71b617c7bd9b5f0c290eab0d8fa67fea759b785121be74",
+    "src/lib/ai/knowledge/search.ts": "f2c3aeb1f286535cec594c1f7f9c423f9336ec7e5f1081d7efa1fd24dd54b36d",
+    "src/lib/ai/knowledge/types.ts": "30edcca8d683760f002ce67063667f81940c6cb6bb73ee2d8ce64f76fac0464a",
+    "src/lib/content/website.ts": "dc3f39f42395a5c64536ee84073011ca1b9efec782b681780f03950aaa3f3fe1",
+    "src/lib/commerce/offers.ts": "dadf2a876250c37a9a026ed212b936404b53519d2504d8b600e45f65789b864d",
+    "src/lib/navigation/routes.ts": "ef0dfa6a3cae3af71aba508f22a2d7a50d18f3de7c3acc6b998d716132efa82f"
+  }
+}

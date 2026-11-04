@@ -1,0 +1,60 @@
+{
+  "recordedDate": "2026-10-29",
+  "projectRef": "eghtvbqzytyxsdgvwkge",
+  "applicationMethod": "Authenticated Supabase SQL Editor; no CLI migration-history registration",
+  "applied": "001-010",
+  "sourceSha256": {
+    "006_zuri_ai_gateway.sql": "1447b11f0ef9b48b2fbf79895eb0447cf3e73367e4da09f4820c4ba1db01966a",
+    "003_basic_accounts_and_contributions.sql": "c49bd9420cb16f15c37fec67bdb595a3fabd36c12b73cca6d2f80b2544217717",
+    "010_backend_hardening.sql": "f4b539522e642b5c6938ccfea2ef3a045a3e2e820b23623968684377d7e10e5b",
+    "004-pamoja-intake-photos.sql": "9f4ed7e141cbb94a4e39c3cd39a9668b5f61ec4ba1af614549967829a4b16c92",
+    "009_storage_and_account_bootstrap.sql": "832616b40734dafe1e7d01f7794e35e742575b2a3a1393e48006de86487d5f4c",
+    "002_verified_management_and_moments.sql": "2624d613095b6dc9f43ec3d34521440a8161b3bde847a77e96343b76f929c297",
+    "001_curated_website_content.sql": "e1cb65eb93edb0a29b37b471db485c5779d744aa18855143dc3e506c3c27c91b",
+    "005_developer_studio.sql": "84b50131cbd9a8376bc7d13e4d915d630996123a58a07d15920f318d5e7aa262",
+    "007_opportunity_engine.sql": "36258744737a6e1f305091539b0cab90ce8d80ee08675881a43e340819983a3a",
+    "008_app_backend.sql": "b8c1f9ac51209a0c48f45911ed81824097a9154e211e1c6136d6b384d09dbf9c"
+  },
+  "verification": {
+    "privateApiHttp": 401,
+    "healthHttp": 200,
+    "zuriTablesWithoutRls": 0,
+    "zuriTables": 56,
+    "malformedIntakeHttp": 400,
+    "unapprovedOriginHttp": 403,
+    "privateBuckets": 3,
+    "privateAiHttp": 401,
+    "hardeningFunctionPresent": true,
+    "privateMediaHttp": 401
+  },
+  "functions": {
+    "legacyJwtSetting": "unchanged-enabled",
+    "verifiedAccountEndToEnd": "pending",
+    "apiLatestPublicIntakeBundle": true,
+    "deployed": [
+      "zuri-api",
+      "zuri-media",
+      "zuri-ai"
+    ]
+  },
+  "local": {
+    "appTypecheck": "passed",
+    "nextVersion": "16.4.3",
+    "productionBuild": "passed",
+    "previewPort": 3015,
+    "edgeForwardingFlags": "enabled with explicit owner approval; AI execution stays disabled",
+    "websiteTestsPassed": 274,
+    "appTestsPassed": 114,
+    "forwardingRegressionTestsPassed": 63,
+    "forwardingLiveVerification": "localhost and 127.0.0.1 both reach Edge invalid-intake validator with HTTP 400; signed-out AI status execution:false; no customer writes or AI calls"
+  },
+  "ai": {
+    "providerCallsMade": false,
+    "ownerVerifiedAccount": "pending",
+    "bootstrapGrantsAdmin": false,
+    "automaticTrialMicroUsd": 0,
+    "fleetDailyMicroUsd": 5000000,
+    "ownerMonthlyMicroUsd": 3000000,
+    "providerEnabled": false
+  }
+}

@@ -1,0 +1,12 @@
+import {useEffect,useRef,useState} from 'react';
+export function PhotoField({name='image',label='Cover photo',initial='',onChange}:{name?:string;label?:string;initial?:string;onChange?:(value:string)=>void}){
+ const [image,setImage]=useState(initial),[busy,setBusy]=useState(false),[error,setError]=useState('');const input=useRef<HTMLInputElement>(null),root=useRef<HTMLFieldSetElement>(null);
+ useEffect(()=>{onChange?.(image)},[image,onChange]);
+ useEffect(()=>{const form=root.current?.closest('form');const guard=(e:Event)=>{if(busy){e.preventDefault();e.stopImmediatePropagation();setError('Wait for the photo to finish preparing.');}};form?.addEventListener('submit',guard,true);return()=>form?.removeEventListener('submit',guard,true);},[busy]);
+ async function choose(file?:File){if(!file)return;setError('');setBusy(true);try{
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Choose a JPEG, PNG or WebP photo.');
+  if(file.size>10_000_000)throw Error('Choose a photo below 10 MB.');
+  const bitmap=await createImageBitmap(file);const scale=Math.min(1,1200/Math.max(bitmap.width,bitmap.height));const canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);const ctx=canvas.getContext('2d');if(!ctx)throw Error('Photo preparation is unavailable.');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();const result=canvas.toDataURL('image/jpeg',.78);if(result.length>800_000)throw Error('This photo is too detailed to save here. Choose a smaller photo.');setImage(result);
+ }catch(e){setError(e instanceof Error?e.message:'This photo could not be read.');}finally{setBusy(false);if(input.current)input.current.value='';}}
+ return <fieldset ref={root} className="zf-photo"><legend>{label} · optional</legend><input type="hidden" name={name} value={image}/>{image&&<img src={image} alt={label+' preview'}/>}<div><label className="zx-secondary">{busy?'Preparing photo…':image?'Change photo':'＋ Add photo'}<input ref={input} type="file" aria-label={label} accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={e=>void choose(e.currentTarget.files?.[0])}/></label>{image&&<button type="button" className="zx-text" onClick={()=>setImage('')}>Remove photo</button>}</div>{busy&&<p role="status">Preparing your photo…</p>}{error&&<p className="zx-alert" role="alert">{error}</p>}<small>Photos are resized and saved on this device.</small></fieldset>;
+}

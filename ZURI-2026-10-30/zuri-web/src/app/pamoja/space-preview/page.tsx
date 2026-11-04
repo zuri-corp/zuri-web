@@ -1,0 +1,4 @@
+import Link from 'next/link';
+import SpacePreview from '@/components/pamoja/SpacePreview';
+export const metadata={title:'Inside a Space — Pamoja business walkthrough',description:'Explore a studio and café Space: identity, offerings, updates, enquiries, community and chosen contact routes.',robots:{index:false,follow:true}};
+export default function Page(){return <main id="main" className="pamoja-page pamoja-opportunity"><div className="page-wrap pn-section"><Link href="/pamoja#spaces" className="pn-inline">← Back to Pamoja</Link><header className="space-tour-page-heading"><p className="eyebrow">YOUR BUSINESS / INSIDE PAMOJA</p><h1>Inside a Space.</h1><p>Explore a living café through customer moments, creator stories and the business’s own updates. Two fictional establishments show how people, offerings and enquiries connect.</p></header><SpacePreview/></div></main>}

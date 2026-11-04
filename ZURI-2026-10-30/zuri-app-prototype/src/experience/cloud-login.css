@@ -1,0 +1,10 @@
+.cw-login-form{display:grid;gap:14px;margin-top:16px}
+.cw-login-form label{display:grid;gap:8px;font-size:13px;font-weight:650}
+.cw-login-form input{min-height:44px;padding:11px 13px;border:1px solid #ffffff25;border-radius:12px;background:#ffffff08;color:inherit;font:inherit}
+.cw-login-form p,.cw-login-help,.cw-login-status{font-size:12px;line-height:1.7;color:var(--zi-secondary,#c6c1d7)}
+.cw-login-status{overflow-wrap:anywhere}
+.cw-login-options{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px}
+.cw-login-options .cw-link{padding-inline:0}
+.ca-account .cw-login-form{max-width:520px}
+.ca-account .cw-login-form input{background:#8198ad0f;border-color:#9db0c958}
+.ca-account .cw-login-options{max-width:520px}
