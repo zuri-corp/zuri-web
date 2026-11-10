@@ -1,11 +1,5 @@
 
 import { createClient } from '@supabase/supabase-js'
+import publicConfig from '../data/publicBackend.json'
 
-const url = import.meta.env.VITE_SUPABASE_URL
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
-
-if (!url || !key) {
-  throw new Error('Missing Supabase environment configuration')
-}
-
-export const supabase = createClient(url, key)
+export const supabase = createClient(publicConfig.url, publicConfig.publishableKey)
