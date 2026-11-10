@@ -39,9 +39,11 @@ The daily focus helper runs once per Kampala calendar day when the app opens and
 
 ## Genuine services still to connect
 
-Shared Supabase account identity, cloud object persistence, realtime message delivery, media/video processing, real memberships, event bookings, payments, background automations and live Viola are pending app backend work. The current preview labels its device-local actions and sample content. Writing a local conversation does not deliver it to a recipient. Adding an event to Planner does not buy a ticket or reserve a seat.
+Cloud object persistence, realtime message delivery, media/video processing, real memberships, event bookings, payments and background automations are pending app backend work. The current preview labels its device-local actions and sample content. Writing a local conversation does not deliver it to a recipient. Adding an event to Planner does not buy a ticket or reserve a seat.
 
-There is deliberately no default API request to an imaginary backend. An actual app service can be connected with the public build-time setting `VITE_ZURI_API_BASE`, for example `/api` when a deployment reverse proxy serves the app API on the same origin. This is an API base, not an API key. The app calls `GET <base>/viola` and `POST <base>/viola`. Provider keys must remain on the server. A separate origin additionally needs intentional CORS, session and CSRF configuration. The existing website's `/api/viola` is a server reference, not an automatically connected standalone-app service.
+Viola connects to the configured Supabase `zuri-ai` Edge Function using the signed-in, verified user's session and the public project settings in `src/data/publicBackend.json`. The function must be deployed, configured with the provider key, model and positive per-mode token rates, and enabled under the existing AI account and cost policies. The app never contains or receives a provider key. A cross-origin deployment also requires the app's exact origin in `ZURI_ALLOWED_ORIGINS`. If those server-side prerequisites are missing, Viola reports that live AI is unavailable; it does not invent an on-device conversational answer.
+
+An alternate same-origin service can be selected with the public build-time setting `VITE_ZURI_API_BASE`, for example `/api` when a deployment reverse proxy serves the account API. This is an API base, not an API key. The app then calls `GET <base>/viola` and `POST <base>/viola`; provider keys remain server-side.
 
 ## Source layout
 

@@ -33,7 +33,7 @@ import { allPings, contextHeader, tagLabel } from './activity';
 import OpportunityDiscovery from './OpportunityDiscovery';
 import {opportunityEndpoint} from './services';
 import { HomeDashboard, MobileDestination } from './MobileWorlds';
-import { getViolaStatus, askViola, violaDestination } from './services';
+import { getViolaStatus, askViola } from './aiService';
 import { mergeBackup, migrateLegacy } from './backup';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { worlds, home, parseRoute, routeHash, objectRoute, initialData, readData, runFocus, today, type World, type Route, type LocalData } from './model';
@@ -292,6 +292,5 @@ export default function Experience() {
     {import.meta.env.MODE==='website'&&introductionOpen&&<AppIntroduction onClose={()=>setIntroductionOpen(false)} launch={launch}/>}
   </div>;
 }
-
 
 
