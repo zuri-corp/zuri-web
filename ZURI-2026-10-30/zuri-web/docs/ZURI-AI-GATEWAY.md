@@ -19,21 +19,21 @@ Assistant experiences: website chat returns a normal reply with intent:null unti
 2. Authenticate using Supabase `auth.getUser()`. Request actors and prototype local profiles cannot establish identity. Verified email required; database checks bans/deletion too.
 3. Select a configured server model by mode. Callers cannot choose a model, endpoint, system prompt, credentials or private context.
 4. Atomically reserve estimated costs against the account's UTC monthly allowance and gateway's UTC daily cap. Enforce six requests per account per minute across modes. No in-memory spending limit.
-5. Call the fixed OpenAI Responses endpoint with `store:false`, a 45-second timeout, bounded output, no Tools and no private retrieval. Intent mode uses a strict JSON schema.
+5. Call the fixed endpoint for the configured provider with a 45-second timeout, bounded output, no Tools and no private retrieval. OpenAI uses Responses with `store:false`; Gemini uses `generateContent` with JSON response schema. Intent mode uses a strict JSON schema.
 6. Validate completion, refusal, usage and proposal. Rebuild proposed actions through the canonical engine. Preserve blocked outcomes, explicit choices and missing details. AI prose is not execution evidence.
 7. Settle usage at stored rates and recheck account authority before returning a result. No mode executes actions.
 
 ## Setup
 
-1. Revoke the key shared in conversation. Store a replacement in server hosting secrets as `OPENAI_API_KEY`. Never put provider/Supabase secret keys in client, Vite or NEXT_PUBLIC variables.
+1. Choose `ZURI_AI_PROVIDER=openai` or `gemini`. Store its private key server-side as `OPENAI_API_KEY` or `GEMINI_API_KEY`. For Gemini, set `GEMINI_MODEL` (for example `gemini-2.5-flash-lite`). Never put provider/Supabase secret keys in client, Vite or NEXT_PUBLIC variables.
 2. Configure existing Supabase public and server credentials, verified-account sign-in and matching site origin. The app's device identity is not a server account: sign in through the website. The proxy refreshes gateway-route sessions.
 3. Stage and review `database/proposals/006_zuri_ai_gateway.sql`. It is independent of Studio proposal 005 and needs standard Supabase `auth.users` columns. Starts disabled; tables have RLS with no client policies; RPCs are service-role-only.
-4. Set `ZURI_AI_INTENT_MODEL`, `ZURI_AI_CHAT_MODEL` and their `INPUT_MICROS_PER_MILLION` / `OUTPUT_MICROS_PER_MILLION` rates. See `.env.example`. Evaluation candidates: GPT-6 Luna for interpretation, GPT-6.1 Sol for conversation. Verify project access and standard prices. No fallback/escalation is automatic.
+4. Set `ZURI_AI_INTENT_MODEL`, `ZURI_AI_CHAT_MODEL` (or `GEMINI_MODEL` for both Gemini modes) and their `INPUT_MICROS_PER_MILLION` / `OUTPUT_MICROS_PER_MILLION` rates. See `.env.example`. Verify model access and current provider prices before setting rates. Rates drive quota reservations and settlement. No fallback/escalation is automatic.
 5. Provision allowances through trusted database operations. One USD is 1,000,000 micro-USD. `zuri_ai_policy` holds the daily gateway cap and default monthly trial allowance; `zuri_ai_accounts` provides per-account limits/revocation. Defaults are zero. Existing account limits do not automatically change when the default trial changes. These are internal cost limits, not retail prices or payment confirmation. Subscriptions are not synchronized yet.
 6. Review purposes, provider agreement, overseas transfers, retention, privacy notice and registration requirements for launch jurisdictions. `store:false` does not eliminate abuse-monitoring retention or all caching. `/ai-privacy` explains this pilot, not a complete organization privacy policy.
 7. Enable the database policy and `ZURI_AI_ENABLED=true` after staging acceptance. Begin with small allowances and the fresh key.
 
-Implementation does not apply a live migration, configure a key or perform a real OpenAI request.
+Implementation does not apply a live migration, configure a key or perform a real provider request. When `ZURI_AI_EDGE_ENABLED=true`, configure the selected provider, model and rates as Supabase Edge Function secrets; a website `.env.local` is not read by the deployed Edge runtime.
 
 ## Costs and retries
 

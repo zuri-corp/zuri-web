@@ -6,15 +6,16 @@ Tech now invites visitors to explain what they want to build, fix, improve or se
 
 ## Live AI status
 
-The implementation uses OpenAI's Responses API on the server. Both `OPENAI_API_KEY` and `ZURI_CHAT_MODEL` must be configured in the server environment. No key or model is configured in the supplied local workspace, so the preview explicitly offers fixed planning questions, not simulated AI answers. No real OpenAI calls were made during verification; API behavior was exercised with mocked responses. Restart the server after configuring credentials and an available Responses text model. Never put the API key in a `NEXT_PUBLIC_` setting or paste it into the public UI.
+The implementation supports OpenAI Responses and Gemini `generateContent` on the server. Set `ZURI_AI_PROVIDER` plus the matching private provider key, model and metering rates. No key is included in the local workspace, so AI remains disabled until configured. Never put the API key in a `NEXT_PUBLIC_` setting or paste it into the public UI.
 
 The integration sends bounded user/assistant message history, owned ZURI context, `store: false` and a bounded response length. No browser execution, publishing, orders, external tools or autonomous enquiry submission are available to the model. Provider response storage is disabled through `store: false`; this is not a claim of zero provider retention. The interface discloses the provider and that a human confirms scope and price.
 
 The chat route uses same-origin checks, signed HTTP-only session cookies, input validation, timeouts, and per-session and global process limits. These limits are per process, not a shared production quota. Configure provider spending controls and shared edge rate limits before public high-volume use. Conversation messages remain in component memory; only an explicitly prepared brief is carried to the review form.
 
-Official references checked:
+Official references:
 - https://developers.openai.com/api/docs/guides/conversation-state
 - https://developers.openai.com/api/reference/resources/responses/methods/create
+- https://ai.google.dev/gemini-api/docs/structured-output
 
 ## Pamoja setup
 

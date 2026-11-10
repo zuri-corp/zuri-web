@@ -6,15 +6,20 @@ import {zuriInstructions} from '@/lib/chat/conversation';
 import {violaInstructions} from '@/lib/experience/viola';
 import {intentCatalog,type IntentRequest} from '@/lib/intent/engine';
 import {intentOutputSchema,conversationOutputSchema,websiteConversationSchema,interpretConversationReply,interpretAIIntent,validateAIInput,type AIMode} from 'C:/Users/L23/Downloads/ZURI-website-and-app-2026-10-30/ZURI-2026-10-30/zuri-web/src/lib/ai/contracts.ts';
-import {openAIResponse,type ProviderConfig,type ProviderPayload} from 'C:/Users/L23/Downloads/ZURI-website-and-app-2026-10-30/ZURI-2026-10-30/zuri-web/src/lib/ai/provider.ts';
+import {providerResponse,type AIProvider,type ProviderConfig,type ProviderPayload} from 'C:/Users/L23/Downloads/ZURI-website-and-app-2026-10-30/ZURI-2026-10-30/zuri-web/src/lib/ai/provider.ts';
 import {retrieveKnowledge} from 'C:/Users/L23/Downloads/ZURI-website-and-app-2026-10-30/ZURI-2026-10-30/zuri-web/src/lib/ai/knowledge/retrieve.ts';
 import {knowledgeInstructions,knowledgeContext,knowledgeSchema,citedReply} from 'C:/Users/L23/Downloads/ZURI-website-and-app-2026-10-30/ZURI-2026-10-30/zuri-web/src/lib/ai/knowledge/context.ts';
 const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
 function configuration(mode:AIMode):ProviderConfig|null {
+  const provider=(process.env.ZURI_AI_PROVIDER||'openai').toLowerCase();
+  if(provider!=='openai'&&provider!=='gemini')return null;
   const prefix=mode==='intent'?'ZURI_AI_INTENT':'ZURI_AI_CHAT';
-  const model=process.env[`${prefix}_MODEL`],inputRate=Number(process.env[`${prefix}_INPUT_MICROS_PER_MILLION`]),outputRate=Number(process.env[`${prefix}_OUTPUT_MICROS_PER_MILLION`]);
-  if(process.env.ZURI_AI_ENABLED!=='true' || !process.env.OPENAI_API_KEY || !model || !/^[a-z0-9._-]{1,100}$/i.test(model) || ![inputRate,outputRate].every(n=>Number.isSafeInteger(n)&&n>0&&n<=1000000000) || !process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY)return null;
-  return {model,inputRate,outputRate};
+  const configuredProvider=provider as AIProvider;
+  const key=configuredProvider==='gemini'?process.env.GEMINI_API_KEY:process.env.OPENAI_API_KEY;
+  const model=process.env[`${prefix}_MODEL`]||(configuredProvider==='gemini'?process.env.GEMINI_MODEL:undefined);
+  const inputRate=Number(process.env[`${prefix}_INPUT_MICROS_PER_MILLION`]),outputRate=Number(process.env[`${prefix}_OUTPUT_MICROS_PER_MILLION`]);
+  if(process.env.ZURI_AI_ENABLED!=='true' || !key || !model || !/^[a-z0-9._-]{1,100}$/i.test(model) || ![inputRate,outputRate].every(n=>Number.isSafeInteger(n)&&n>0&&n<=1000000000) || !process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY)return null;
+  return {provider:configuredProvider,key,model,inputRate,outputRate};
 }
 export async function aiStatus(mode:AIMode='intent',actor:string,client:any) {
   // Availability and allowances must be evaluated per request, even when disabled.
@@ -24,7 +29,7 @@ export async function aiStatus(mode:AIMode='intent',actor:string,client:any) {
     if(!actor)return json({enabled:false,reason:'Sign in and verify your ZURI account to use AI.',login:'/pamoja/login',execution:false});
     const {data,error}=await client.rpc('zuri_ai_status',{actor});
     if(error || !data)return json({enabled:false,reason:'AI allowances are not available yet.',execution:false});
-    return json({enabled:data.enabled===true,allowance:data,provider:'OpenAI',execution:false,reason:data.enabled?'Only your reviewed request is sent.':'Your AI allowance is unavailable or exhausted.'});
+    return json({enabled:data.enabled===true,allowance:data,provider:configuration(mode)?.provider,execution:false,reason:data.enabled?'Only your reviewed request is sent.':'Your AI allowance is unavailable or exhausted.'});
   }catch{return json({enabled:false,reason:'AI is temporarily unavailable. On-device planning is available.',execution:false});}
 }
 /** Advisory only. No private retrieval, action execution, payments or Tool credentials. */
@@ -46,7 +51,7 @@ ${input.mode==='guide'?'Return JSON with reply and intent:null. Have a normal he
   // Conservative UTF-8 text token bound plus protocol margin; abnormal usage is withheld.
   const inputCap=Buffer.byteLength(JSON.stringify(payload),'utf8')+2048;
   const reserve=Math.ceil((inputCap*config.inputRate+payload.max_output_tokens*config.outputRate)/1000000);
-  const fingerprint=createHmac('sha256',process.env.OPENAI_API_KEY!).update(JSON.stringify({input,model:config.model,knowledgeVersion:knowledge?.version})).digest('hex');
+  const fingerprint=createHmac('sha256',config.key).update(JSON.stringify({input,provider:config.provider,model:config.model,knowledgeVersion:knowledge?.version})).digest('hex');
 
   let reserved;
   try{reserved=await client.rpc('zuri_ai_reserve',{actor,request_id:input.requestId,fingerprint,mode:input.mode,model:config.model,reserved_micros:reserve,input_rate:config.inputRate,output_rate:config.outputRate});}
@@ -56,13 +61,13 @@ ${input.mode==='guide'?'Return JSON with reply and intent:null. Have a normal he
     return json({error:status===429?'Your AI allowance or the service limit has been reached.':status===409?'This request was already submitted. It will not be charged or sent again.':status===403?'AI access is not enabled for this account.':'AI allowances are unavailable. No AI request was sent.',code:status===409?'already_submitted':'allowance_unavailable'},status);
   }
   try{
-    const result=await openAIResponse(payload);
+    const result=await providerResponse(config,payload);
     if(result.inputTokens>inputCap || result.outputTokens>payload.max_output_tokens)throw Error('Usage exceeded reservation.');
     const grounded=knowledge?citedReply(JSON.parse(result.text),knowledge):null;
     const answer=input.mode==='intent'?interpretAIIntent(JSON.parse(result.text),input.input as IntentRequest):interpretConversationReply(grounded!.answer,conversation.messages,conversation.surface,input.mode!=='guide');
     const actual=Math.ceil((result.inputTokens*config.inputRate+result.outputTokens*config.outputRate)/1000000);
     const settled=await client.rpc('zuri_ai_settle',{actor,request_id:input.requestId,input_tokens:result.inputTokens,output_tokens:result.outputTokens,actual_micros:actual});
     if(settled.error || settled.data?.settled!==true)throw Error('Settlement failed.');
-    return json({...answer,...(knowledge?{sources:grounded!.sources,knowledge:{version:knowledge.version,status:knowledge.status,scope:knowledge.scope}}:{}),requestId:input.requestId,provider:'OpenAI',usage:{inputTokens:result.inputTokens,outputTokens:result.outputTokens,estimatedCostMicros:actual},execution:false});
+    return json({...answer,...(knowledge?{sources:grounded!.sources,knowledge:{version:knowledge.version,status:knowledge.status,scope:knowledge.scope}}:{}),requestId:input.requestId,provider:config.provider==='gemini'?'Gemini':'OpenAI',usage:{inputTokens:result.inputTokens,outputTokens:result.outputTokens,estimatedCostMicros:actual},execution:false});
   }catch{return json({error:'AI could not finish safely. This request’s allowance remains reserved for review; it will not be automatically retried. On-device planning is still available.',code:'reconciliation_required',requestId:input.requestId},503);}
 }

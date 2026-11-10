@@ -550,11 +550,12 @@ function interpretAIIntent(raw, request) {
 
 //#endregion
 //#region src/lib/ai/provider.ts
-async function openAIResponse(payload) {
+async function openAIResponse(payload, key = process.env.OPENAI_API_KEY) {
+	if (!key) throw Error("AI provider unavailable.");
 	const response = await fetch("https://api.openai.com/v1/responses", {
 		method: "POST",
 		headers: {
-			Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+			Authorization: `Bearer ${key}`,
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify(payload),
@@ -572,6 +573,96 @@ async function openAIResponse(payload) {
 		inputTokens: input,
 		outputTokens: output
 	};
+}
+function objectValue(value) {
+	if (!value || typeof value !== "object" || Array.isArray(value)) throw Error("Invalid Gemini response schema.");
+	return value;
+}
+function geminiSchema(value) {
+	const schema = objectValue(value);
+	let type = schema.type, nullable = false;
+	if (Array.isArray(type)) {
+		const types = type.filter((item) => typeof item === "string");
+		nullable = types.includes("null");
+		type = types.find((item) => item !== "null");
+	}
+	if (schema.anyOf !== void 0) {
+		if (!Array.isArray(schema.anyOf)) throw Error("Invalid Gemini response schema.");
+		const branches = schema.anyOf.map(objectValue), nonNull = branches.filter((branch) => branch.type !== "null");
+		if (nonNull.length !== 1 || branches.length !== 2) throw Error("Unsupported Gemini response schema.");
+		nullable = true;
+		return {
+			...geminiSchema(nonNull[0]),
+			nullable: true
+		};
+	}
+	if (type === "null") return {
+		type: "STRING",
+		nullable: true
+	};
+	if (typeof type !== "string") throw Error("Invalid Gemini response schema.");
+	const result = { type: type.toUpperCase() };
+	if (nullable) result.nullable = true;
+	for (const key of [
+		"description",
+		"format",
+		"enum",
+		"minimum",
+		"maximum",
+		"minItems",
+		"maxItems"
+	]) {
+		const item = schema[key];
+		if (item !== void 0) result[key] = key === "enum" && Array.isArray(item) ? item.filter((entry) => entry !== null) : item;
+	}
+	if (Array.isArray(schema.required)) result.required = schema.required;
+	if (schema.properties !== void 0) {
+		const properties = objectValue(schema.properties);
+		result.properties = Object.fromEntries(Object.entries(properties).map(([key, item]) => [key, geminiSchema(item)]));
+	}
+	if (schema.items !== void 0) result.items = geminiSchema(schema.items);
+	return result;
+}
+async function geminiResponse(payload, key) {
+	const schema = geminiSchema(objectValue(objectValue(payload.text).format).schema);
+	const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(payload.model)}:generateContent`, {
+		method: "POST",
+		headers: {
+			"x-goog-api-key": key,
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			systemInstruction: { parts: [{ text: payload.instructions }] },
+			contents: [{
+				role: "user",
+				parts: [{ text: typeof payload.input === "string" ? payload.input : JSON.stringify(payload.input) }]
+			}],
+			generationConfig: {
+				maxOutputTokens: payload.max_output_tokens,
+				responseMimeType: "application/json",
+				responseSchema: schema
+			}
+		}),
+		signal: AbortSignal.timeout(45e3),
+		redirect: "error",
+		cache: "no-store"
+	});
+	if (!response.ok) throw Error("AI provider unavailable.");
+	const data = await response.json();
+	if (data.promptFeedback?.blockReason) throw Error("AI did not complete.");
+	const candidate = data.candidates?.[0], finishReason = candidate?.finishReason;
+	if (!candidate || finishReason !== "STOP") throw Error("AI did not complete.");
+	const text = candidate.content?.parts?.map((part) => part.text ?? "").join("").trim();
+	const input = data.usageMetadata?.promptTokenCount, candidates = data.usageMetadata?.candidatesTokenCount, thoughts = data.usageMetadata?.thoughtsTokenCount ?? 0;
+	if (!text || !Number.isSafeInteger(input) || input < 0 || !Number.isSafeInteger(candidates) || candidates < 0 || !Number.isSafeInteger(thoughts) || thoughts < 0) throw Error("AI usage unavailable.");
+	return {
+		text,
+		inputTokens: input,
+		outputTokens: candidates + thoughts
+	};
+}
+function providerResponse(config, payload) {
+	return config.provider === "gemini" ? geminiResponse(payload, config.key) : openAIResponse(payload, config.key);
 }
 
 //#endregion
@@ -1275,10 +1366,17 @@ const json = (value, status = 200) => Response.json(value, {
 	}
 });
 function configuration(mode) {
+	const provider = (process.env.ZURI_AI_PROVIDER || "openai").toLowerCase();
+	if (provider !== "openai" && provider !== "gemini") return null;
 	const prefix = mode === "intent" ? "ZURI_AI_INTENT" : "ZURI_AI_CHAT";
-	const model = process.env[`${prefix}_MODEL`], inputRate = Number(process.env[`${prefix}_INPUT_MICROS_PER_MILLION`]), outputRate = Number(process.env[`${prefix}_OUTPUT_MICROS_PER_MILLION`]);
-	if (process.env.ZURI_AI_ENABLED !== "true" || !process.env.OPENAI_API_KEY || !model || !/^[a-z0-9._-]{1,100}$/i.test(model) || ![inputRate, outputRate].every((n) => Number.isSafeInteger(n) && n > 0 && n <= 1e9) || !process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+	const configuredProvider = provider;
+	const key = configuredProvider === "gemini" ? process.env.GEMINI_API_KEY : process.env.OPENAI_API_KEY;
+	const model = process.env[`${prefix}_MODEL`] || (configuredProvider === "gemini" ? process.env.GEMINI_MODEL : void 0);
+	const inputRate = Number(process.env[`${prefix}_INPUT_MICROS_PER_MILLION`]), outputRate = Number(process.env[`${prefix}_OUTPUT_MICROS_PER_MILLION`]);
+	if (process.env.ZURI_AI_ENABLED !== "true" || !key || !model || !/^[a-z0-9._-]{1,100}$/i.test(model) || ![inputRate, outputRate].every((n) => Number.isSafeInteger(n) && n > 0 && n <= 1e9) || !process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
 	return {
+		provider: configuredProvider,
+		key,
 		model,
 		inputRate,
 		outputRate
@@ -1306,7 +1404,7 @@ async function aiStatus(mode = "intent", actor, client) {
 		return json({
 			enabled: data.enabled === true,
 			allowance: data,
-			provider: "OpenAI",
+			provider: configuration(mode)?.provider,
 			execution: false,
 			reason: data.enabled ? "Only your reviewed request is sent." : "Your AI allowance is unavailable or exhausted."
 		});
@@ -1373,8 +1471,9 @@ ${input.mode === "guide" ? "Return JSON with reply and intent:null. Have a norma
 	};
 	const inputCap = Buffer.byteLength(JSON.stringify(payload), "utf8") + 2048;
 	const reserve = Math.ceil((inputCap * config.inputRate + payload.max_output_tokens * config.outputRate) / 1e6);
-	const fingerprint = createHmac("sha256", process.env.OPENAI_API_KEY).update(JSON.stringify({
+	const fingerprint = createHmac("sha256", config.key).update(JSON.stringify({
 		input,
+		provider: config.provider,
 		model: config.model,
 		knowledgeVersion: knowledge?.version
 	})).digest("hex");
@@ -1404,7 +1503,7 @@ ${input.mode === "guide" ? "Return JSON with reply and intent:null. Have a norma
 		}, status);
 	}
 	try {
-		const result = await openAIResponse(payload);
+		const result = await providerResponse(config, payload);
 		if (result.inputTokens > inputCap || result.outputTokens > payload.max_output_tokens) throw Error("Usage exceeded reservation.");
 		const grounded = knowledge ? citedReply(JSON.parse(result.text), knowledge) : null;
 		const answer = input.mode === "intent" ? interpretAIIntent(JSON.parse(result.text), input.input) : interpretConversationReply(grounded.answer, conversation.messages, conversation.surface, input.mode !== "guide");
@@ -1428,7 +1527,7 @@ ${input.mode === "guide" ? "Return JSON with reply and intent:null. Have a norma
 				}
 			} : {},
 			requestId: input.requestId,
-			provider: "OpenAI",
+			provider: config.provider === "gemini" ? "Gemini" : "OpenAI",
 			usage: {
 				inputTokens: result.inputTokens,
 				outputTokens: result.outputTokens,

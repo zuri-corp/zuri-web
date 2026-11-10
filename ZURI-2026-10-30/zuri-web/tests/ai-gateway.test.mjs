@@ -11,7 +11,7 @@ const nativeFetch=globalThis.fetch;
 let env;
 beforeEach(()=>{
  env={...process.env};reset();state.user={id:randomUUID(),email_confirmed_at:'2026-01-01'};
- Object.assign(process.env,{ZURI_AI_ENABLED:'true',OPENAI_API_KEY:'test-only-never-a-real-secret',NEXT_PUBLIC_SUPABASE_URL:'https://example.test',NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'test-public',SUPABASE_URL:'https://example.test',SUPABASE_SECRET_KEY:'test-server'});
+ Object.assign(process.env,{ZURI_AI_ENABLED:'true',ZURI_AI_PROVIDER:'openai',OPENAI_API_KEY:'test-only-never-a-real-secret',NEXT_PUBLIC_SUPABASE_URL:'https://example.test',NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'test-public',SUPABASE_URL:'https://example.test',SUPABASE_SECRET_KEY:'test-server'});
  for(const prefix of ['ZURI_AI_INTENT','ZURI_AI_CHAT'])Object.assign(process.env,{[prefix+'_MODEL']:'test-model',[prefix+'_INPUT_MICROS_PER_MILLION']:'1000000',[prefix+'_OUTPUT_MICROS_PER_MILLION']:'1000000'});
  state.rpcData={reserved:true,settled:true,enabled:true};
 });
@@ -19,6 +19,7 @@ afterEach(()=>{globalThis.fetch=nativeFetch;for(const key of Object.keys(process
 const body=(changes={})=>({mode:'intent',consent:true,requestId:randomUUID(),input:{text:'Help me plan my study tasks',surface:'website',details:{}},...changes});
 const req=(data=body(),headers={})=>new Request('http://localhost/api/ai',{method:'POST',headers:{Origin:'http://localhost','Content-Type':'application/json',...headers},body:JSON.stringify(data)});
 const provider=(text=JSON.stringify({goal:'personal.plan',explanation:'Organise a study goal.',question:null}),extra={})=>Response.json({status:'completed',output:[{type:'message',role:'assistant',content:[{type:'output_text',text}]}],usage:{input_tokens:100,output_tokens:100},...extra});
+const geminiProvider=(text=JSON.stringify({goal:'personal.plan',explanation:'Organise a study goal.',question:null}),extra={})=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text}]}}],usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:0},...extra});
 test('unconfigured service makes no provider call or database write',async()=>{
  delete process.env.OPENAI_API_KEY;globalThis.fetch=()=>{throw Error('Must not call');};assert.equal((await (await GET()).json()).enabled,false);assert.equal((await POST(req())).status,503);assert.equal(state.calls.length,0);
 });
@@ -49,6 +50,31 @@ test('OpenAI sees only approved input and server catalogue; returned actions alw
  };
  const response=await POST(req(request)),result=await response.json();assert.equal(response.status,200);assert.equal(result.execution,false);assert.equal(result.plan.intentId,'personal.plan');assert.equal(result.plan.status,'ready');assert.equal(result.plan.request.text,request.input.text);assert.equal(state.calls[1].rpc,'zuri_ai_settle');assert.equal(state.calls[1].args.actual_micros,200);assert.ok(result.plan.steps.every(s=>s.state==='proposed'));
  assert.ok(!JSON.stringify(result).includes(process.env.OPENAI_API_KEY));assert.ok(!JSON.stringify(state.calls).includes(request.input.text));
+});
+test('Gemini uses the private key header, strict JSON schema and the same verified budgeted gateway',async()=>{
+ process.env.ZURI_AI_PROVIDER='gemini';process.env.GEMINI_API_KEY='test-gemini-private-key';process.env.GEMINI_MODEL='gemini-2.5-flash-lite';
+ for(const prefix of ['ZURI_AI_INTENT','ZURI_AI_CHAT'])process.env[`${prefix}_MODEL`]='gemini-2.5-flash-lite';
+ const request=body({actor:'forged',spaceId:randomUUID(),context:{private:'NEVER SEND'},model:'attacker-model'});
+ globalThis.fetch=async(url,options)=>{
+  assert.equal(state.calls[0].rpc,'zuri_ai_reserve');assert.equal(state.calls[0].args.actor,state.user.id);
+  assert.equal(url,'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent');
+  assert.equal(options.headers['x-goog-api-key'],'test-gemini-private-key');assert.equal(options.redirect,'error');
+  const p=JSON.parse(options.body);assert.equal(p.generationConfig.responseMimeType,'application/json');assert.equal(p.generationConfig.maxOutputTokens,1024);assert.equal(p.generationConfig.responseSchema.properties.goal.type,'STRING');assert.equal(p.generationConfig.responseSchema.properties.question.nullable,true);assert.ok(!options.body.includes('NEVER SEND'));assert.ok(!options.body.includes('forged'));return geminiProvider(undefined,{usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,thoughtsTokenCount:5}});
+ };
+ const response=await POST(req(request)),result=await response.json();assert.equal(response.status,200);assert.equal(result.provider,'Gemini');assert.equal(result.execution,false);assert.equal(result.plan.intentId,'personal.plan');assert.equal(result.plan.status,'ready');assert.equal(state.calls[1].rpc,'zuri_ai_settle');assert.equal(state.calls[1].args.actual_micros,205);assert.ok(!JSON.stringify(result).includes(process.env.GEMINI_API_KEY));
+});
+test('Gemini safety blocks and missing token usage withhold the reserved response',async()=>{
+ process.env.ZURI_AI_PROVIDER='gemini';process.env.GEMINI_API_KEY='test-gemini-private-key';
+ for(const response of [
+  ()=>Response.json({promptFeedback:{blockReason:'SAFETY'},usageMetadata:{promptTokenCount:10,candidatesTokenCount:0}}),
+  ()=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text:'{}'}]}}],usageMetadata:{promptTokenCount:10}}),
+ ]){
+  state.calls=[];globalThis.fetch=async()=>response();const result=await (await POST(req())).json();assert.equal(result.code,'reconciliation_required');assert.ok(!('plan'in result));assert.equal(state.calls[0].rpc,'zuri_ai_reserve');
+ }
+});
+test('Gemini requires its own key and never falls back to the OpenAI key',async()=>{
+ process.env.ZURI_AI_PROVIDER='gemini';delete process.env.GEMINI_API_KEY;globalThis.fetch=()=>{throw Error('Must not call');};
+ assert.equal((await (await GET()).json()).enabled,false);assert.equal((await POST(req())).status,503);assert.equal(state.calls.length,0);
 });
 test('refusal, malformed proposals, incomplete output, missing usage, timeout and unsettled usage withhold results',async()=>{
  for(const response of [()=>provider('not JSON'),()=>provider(JSON.stringify({goal:'personal.plan',explanation:'Okay',question:null,execute:true})),()=>provider(JSON.stringify({goal:'chats.read',explanation:'Okay',question:null})),()=>provider('x',{status:'incomplete'}),()=>provider('x',{usage:null}),()=>provider('x',{output:[{type:'message',role:'assistant',content:[{type:'refusal',refusal:'No'}]}]}),()=>provider('x',{usage:{input_tokens:100,output_tokens:99999}})]){
