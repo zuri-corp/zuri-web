@@ -148,3 +148,4 @@ vendor/*.tgz         -filter -diff -merge text
 
 vendor/zuri-intent-engine-*.tgz -filter -diff -merge -text
 public/brand/zuri.png -filter -diff -merge -text
+public/brand/zuri-dark.png -filter -diff -merge -text

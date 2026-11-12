@@ -319,7 +319,7 @@ export default function Experience() {
       <header className="zx-topbar zs-topbar">
         <div className="zs-header-context">
           {route.kind&&<button className="zs-icon-button zs-back" aria-label="Back" onClick={back}><AppGlyph name="back" size={21}/></button>}
-          {route.world==='lounge'&&!route.kind?<span className="zs-lounge-logo"><img src={import.meta.env.BASE_URL+'brand/zuri.png'} alt="ZURI"/></span>:<>
+          {route.world==='lounge'&&!route.kind?<span className="zs-lounge-logo"><img src={import.meta.env.BASE_URL+(isDayMode?'brand/zuri.png':'brand/zuri-dark.png')} alt="ZURI"/></span>:<>
           <button className="zs-world-home" aria-label="Return to Lounge" onClick={()=>launch('lounge')}><AppGlyph name={route.world} size={32}/></button>
           <strong className="zs-screen-title">{contextTitle||screenTitle(route)}</strong></>}
         </div>

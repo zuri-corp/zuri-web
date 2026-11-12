@@ -24,8 +24,8 @@
 
 .zuri-exp .ux-entity-card.ux-rect-entity{display:grid;grid-template-columns:35% minmax(0,1fr) auto;gap:12px;min-height:112px;padding:0 10px 0 0;overflow:hidden;text-align:left}
 .zuri-exp .ux-entity-card.ux-rect-entity.ux-society-card{min-height:145px}
-.ux-rect-photo{height:100%;display:grid;min-height:112px;overflow:hidden;background:var(--zs-raised)}
-.zuri-exp .ux-rect-photo .sr-context-avatar{width:100%;height:100%;border:0;border-radius:0;object-fit:cover;aspect-ratio:auto}
+.ux-rect-photo{position:relative;align-self:stretch;display:grid;place-items:center;min-height:112px;overflow:hidden;background:var(--zs-raised)}
+.zuri-exp .ux-rect-photo>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;border:0;border-radius:0;object-fit:cover}
 .ux-rect-entity .ux-entity-copy{padding:9px 0;gap:5px;min-width:0}.ux-rect-bio{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.85em}
 .oc-discovery .oc-post{padding:11px 13px;margin:0 0 8px;border-radius:14px}.oc-discovery .oc-post header{gap:8px;margin-bottom:6px}.oc-discovery .oc-post p{margin:6px 0;line-height:1.45}.oc-discovery .oc-post :is(img,video).oc-media{max-height:340px}
 .oc-space-field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}.oc-space-field-grid label{display:flex!important;align-items:center;gap:8px}

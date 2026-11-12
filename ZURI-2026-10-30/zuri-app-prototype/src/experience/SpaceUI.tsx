@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {cloudRequest,browseEntities,type CloudEntity} from './cloudClient';
 import EntityEditor from './EntityScreens';
 import EntityCard from './EntityCard';
@@ -30,21 +30,88 @@ export function SpaceConnections({space,kind,owner,onOpen}:{space:CloudEntity;ki
 }
 
 export function CropPhotoInput({label,onChange,ratio=1,video=false}:{label:string;video?:boolean;onChange:(file:File|null)=>void;ratio?:number}){
- const [draft,setDraft]=useState<{file:File;url:string}|null>(null),[zoom,setZoom]=useState(1),[x,setX]=useState(50),[y,setY]=useState(50),[error,setError]=useState('');
+ const [draft,setDraft]=useState<{file:File;url:string}|null>(null);
+ const [image,setImage]=useState<HTMLImageElement|null>(null);
+ const [zoom,setZoom]=useState(1),[x,setX]=useState(50),[y,setY]=useState(50);
+ const [error,setError]=useState(''),[saving,setSaving]=useState(false);
+ const drag=useRef<{id:number;left:number;top:number;x:number;y:number}|null>(null);
  useEffect(()=>()=>{if(draft)URL.revokeObjectURL(draft.url);},[draft]);
+ const width=image?Math.min(image.naturalWidth,image.naturalHeight*ratio)/zoom:0;
+ const height=width/ratio;
+ const excessX=image?image.naturalWidth-width:0,excessY=image?image.naturalHeight-height:0;
+ const clamp=(value:number)=>Math.max(0,Math.min(100,value));
+
+ function close(){setDraft(null);setImage(null);drag.current=null;}
  async function crop(){
-  if(!draft)return;
+  if(!draft||!image||saving)return;
+  setSaving(true);setError('');
   try{
-   const image=new Image();image.src=draft.url;await image.decode();
-   const w=Math.min(image.naturalWidth,image.naturalHeight*ratio)/zoom,h=w/ratio;
-   const canvas=document.createElement('canvas');canvas.width=Math.min(1600,Math.round(w));canvas.height=Math.round(canvas.width/ratio);
-   const context=canvas.getContext('2d');if(!context)throw Error('Photo crop unavailable.');
-   context.drawImage(image,(image.naturalWidth-w)*x/100,(image.naturalHeight-h)*y/100,w,h,0,0,canvas.width,canvas.height);
-   const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,'image/webp',0.88));if(!blob)throw Error('Could not crop this photo.');
-   onChange(new File([blob],draft.file.name.replace(/\.[^.]+$/,'.webp'),{type:'image/webp'}));setDraft(null);
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.max(1,Math.min(1600,Math.round(width)));
+   canvas.height=Math.max(1,Math.round(canvas.width/ratio));
+   const context=canvas.getContext('2d');
+   if(!context)throw Error('Photo cropping is unavailable.');
+   context.drawImage(image,excessX*x/100,excessY*y/100,width,height,0,0,canvas.width,canvas.height);
+   const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,'image/webp',0.88));
+   if(!blob)throw Error('Could not crop this photo.');
+   const extension=blob.type==='image/webp'?'webp':'png';
+   onChange(new File([blob],draft.file.name.replace(/\.[^.]+$/,'')+'.'+extension,{type:blob.type}));
+   close();
   }catch(e){setError(e instanceof Error?e.message:'Could not crop this photo.');}
+  finally{setSaving(false);}
  }
- return <><label>{label}<input type="file" accept={video?"image/jpeg,image/png,image/webp,video/mp4":"image/jpeg,image/png,image/webp"} onChange={e=>{const file=e.target.files?.[0];e.target.value='';if(file?.type==='video/mp4'&&video){onChange(file);return;}if(file){setZoom(1);setX(50);setY(50);setError('');setDraft({file,url:URL.createObjectURL(file)});}}}/></label>
-  {draft&&<Modal label="Crop photo" onClose={()=>setDraft(null)}><h3>Crop photo</h3><div className="oc-crop-preview" style={{aspectRatio:ratio}}><img src={draft.url} alt="Crop preview" style={{objectPosition:`${x}% ${y}%`,transformOrigin:`${x}% ${y}%`,transform:`scale(${zoom})`}}/></div><label>Zoom<input type="range" min="1" max="3" step=".05" value={zoom} onChange={e=>setZoom(Number(e.target.value))}/></label><label>Horizontal position<input type="range" value={x} onChange={e=>setX(Number(e.target.value))}/></label><label>Vertical position<input type="range" value={y} onChange={e=>setY(Number(e.target.value))}/></label>{error&&<p role="alert">{error}</p>}<button type="button" className="zs-primary" onClick={()=>void crop()}>Use crop</button><button type="button" className="zs-text-button" onClick={()=>{onChange(draft.file);setDraft(null);}}>Keep original</button></Modal>}
+ return <>
+  <label className="oc-photo-picker">{label}<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{
+   const file=e.currentTarget.files?.[0];e.currentTarget.value='';
+   if(!file)return;
+   setError('');
+   if(file.type==='video/mp4'&&video){onChange(file);return;}
+   setImage(null);setZoom(1);setX(50);setY(50);setDraft({file,url:URL.createObjectURL(file)});
+  }}/></label>
+  {draft&&<Modal label="Crop photo" onClose={()=>{if(!saving)close();}}><div className="oc-crop-dialog">
+   <h3>Crop photo</h3>
+   <div className="oc-crop-preview" style={{aspectRatio:ratio,width:`min(100%, ${36*ratio}dvh)`}}
+    onPointerDown={e=>{
+     if(!image||saving||!e.isPrimary||e.button!==0)return;
+     e.currentTarget.setPointerCapture(e.pointerId);
+     drag.current={id:e.pointerId,left:e.clientX,top:e.clientY,x,y};
+    }}
+    onPointerMove={e=>{
+     const start=drag.current;
+     if(start?.id!==e.pointerId)return;
+     if(excessX>0)setX(clamp(start.x-(e.clientX-start.left)*width/e.currentTarget.clientWidth/excessX*100));
+     if(excessY>0)setY(clamp(start.y-(e.clientY-start.top)*height/e.currentTarget.clientHeight/excessY*100));
+    }}
+    onLostPointerCapture={()=>{drag.current=null;}}>
+    <img src={draft.url} alt="Crop preview" draggable={false}
+     onLoad={e=>setImage(e.currentTarget)}
+     onError={()=>setError('This photo could not be opened. Try JPEG, PNG or WebP.')}
+     style={image?{width:`${image.naturalWidth/width*100}%`,height:`${image.naturalHeight/height*100}%`,left:(-excessX*x/width)+'%',top:(-excessY*y/height)+'%'}:{visibility:'hidden'}}/>
+   </div>
+   <label>Zoom<input type="range" min="1" max="3" step=".05" value={zoom} onChange={e=>setZoom(Number(e.currentTarget.value))}/></label>
+   <details><summary>Adjust position</summary>
+    <label>Horizontal position<input type="range" value={x} onChange={e=>setX(Number(e.currentTarget.value))}/></label>
+    <label>Vertical position<input type="range" value={y} onChange={e=>setY(Number(e.currentTarget.value))}/></label>
+   </details>
+   {error&&<p role="alert">{error}</p>}
+   <div className="oc-crop-actions">
+    <button type="button" className="zs-text-button" disabled={saving||!image||!['image/jpeg','image/png','image/webp'].includes(draft.file.type)} onClick={()=>{onChange(draft.file);close();}}>Keep original</button>
+    <button type="button" className="zs-primary" disabled={!image||saving} onClick={()=>void crop()}>{saving?'Preparing…':'Use crop'}</button>
+   </div>
+  </div></Modal>}
  </>;
+}
+
+export function AttachmentPreview({file,onRemove,disabled=false}:{file:File;onRemove:()=>void;disabled?:boolean}){
+ const [preview,setPreview]=useState<{file:File;url:string}|null>(null);
+ useEffect(()=>{
+  const url=URL.createObjectURL(file);
+  setPreview({file,url});
+  return()=>URL.revokeObjectURL(url);
+ },[file]);
+ const url=preview?.file===file?preview.url:'';
+ return <figure className="oc-attachment-preview">
+  {url&&(file.type.startsWith('video/')?<video src={url} controls playsInline preload="metadata"/>:<img src={url} alt="Attachment preview"/>)}
+  <button type="button" className="zs-text-button" disabled={disabled} onClick={onRemove}>Remove attachment</button>
+ </figure>;
 }
