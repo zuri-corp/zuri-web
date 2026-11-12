@@ -39,8 +39,10 @@ import {Trash} from '@phosphor-icons/react/dist/csr/Trash';
 import {Heart} from '@phosphor-icons/react/dist/csr/Heart';
 import {Bell} from '@phosphor-icons/react/dist/csr/Bell';
 import {Gear} from '@phosphor-icons/react/dist/csr/Gear';
+import {Moon} from '@phosphor-icons/react/dist/csr/Moon';
+import {Sun} from '@phosphor-icons/react/dist/csr/Sun';
 import {Circle} from '@phosphor-icons/react/dist/csr/Circle';
-const icons:Record<string,typeof House>={home:House,back:ArrowLeft,camera:Camera,tag:Tag,chevron:CaretDown,next:CaretRight,plus:Plus,note:Note,event:CalendarDots,check:Check,send:ArrowUp,options:SlidersHorizontal,more:DotsThree,microphone:Microphone,close:X,delete:Trash,heart:Heart,bell:Bell,settings:Gear,lounge:Sparkle,Feed:Newspaper,Spaces:MapPin,Societies:UsersThree,Find:MagnifyingGlass,Planner:CalendarCheck,Events:Ticket,Pings:Broadcast,Create:PencilSimple,Channels:Megaphone,Chats:ChatCircle,Moments:Images,Discover:Compass,Chapters:BookOpen,Profile:UserCircle,shield:ShieldCheck,palette:Palette,flag:Flag,work:Briefcase,wallet:Wallet,store:Storefront,link:LinkSimple};
+const icons:Record<string,typeof House>={home:House,back:ArrowLeft,camera:Camera,tag:Tag,chevron:CaretDown,next:CaretRight,plus:Plus,note:Note,event:CalendarDots,check:Check,send:ArrowUp,options:SlidersHorizontal,more:DotsThree,microphone:Microphone,close:X,delete:Trash,heart:Heart,bell:Bell,settings:Gear,sun:Sun,moon:Moon,lounge:Sparkle,Feed:Newspaper,Spaces:MapPin,Societies:UsersThree,Find:MagnifyingGlass,Planner:CalendarCheck,Events:Ticket,Pings:Broadcast,Create:PencilSimple,Channels:Megaphone,Chats:ChatCircle,Moments:Images,Discover:Compass,Chapters:BookOpen,Profile:UserCircle,shield:ShieldCheck,palette:Palette,flag:Flag,work:Briefcase,wallet:Wallet,store:Storefront,link:LinkSimple};
 export function SectionGlyph({name,active=false}:{name:string;active?:boolean}){const Icon=icons[name]||Circle;return <Icon size={24} weight={active?'fill':'regular'} aria-hidden="true" className="zuri-ui-icon"/>;}
 export function AppGlyph({name,size=24}:{name:string;size?:number}){
  if(['aura','motion','rizz','lore'].includes(name))return <img className="zuri-app-logo" src={'/brand/'+name+'.svg'} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;

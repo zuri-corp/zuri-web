@@ -63,7 +63,7 @@ export default function CloudEmailLogin({ onRequest, onVerify, onSignedIn }: Pro
   return <section>
     {!sentTo ? <form aria-busy={busy} className="cw-login-form" onSubmit={submit}>
       <label>Email address<input name="email" autoComplete="email" type="email" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)}/></label>
-      <p>We’ll send a sign-in code. New here? This also starts your basic account. Creating an account does not grant paid membership.</p>
+      <p>We will email you an eight-digit sign-in code.</p>
       <button className="cw-primary" disabled={busy || seconds > 0}>{busy ? 'Sending…' : seconds ? `Try again in ${seconds}s` : 'Continue with email →'}</button>
     </form> : <>
       <p role="status" className="cw-login-status">A code was requested for {sentTo}. Check your inbox and spam folder.</p>

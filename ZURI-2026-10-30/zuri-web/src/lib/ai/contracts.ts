@@ -1,7 +1,27 @@
 import {intentCatalog, resolveIntent, validateIntentRequest, conversationIntent, type IntentRequest} from '@/lib/intent/engine';
 import {validateConversation, type ChatMessage} from '@/lib/chat/conversation';
 export type AIMode = 'intent' | 'guide' | 'viola';
-export type AIInput = {mode:AIMode; requestId:string; input:IntentRequest | {messages:ChatMessage[];surface:'app'|'website'}};
+export type AIReferences={
+  events:{source:'motion_imported_events'|'zuri_entities';id:string}[];
+  pings:string[];
+};
+export type AIInput = {mode:AIMode; requestId:string; input:IntentRequest | {messages:ChatMessage[];surface:'app'|'website'};references:AIReferences};
+function validateReferences(value:Record<string,unknown>):AIReferences {
+  const rawEvents=value.eventReferences,rawPings=value.pingReferences;
+  if(rawEvents!==undefined&&(!Array.isArray(rawEvents)||rawEvents.length>6)||rawPings!==undefined&&(!Array.isArray(rawPings)||rawPings.length>6))throw Error('Invalid conversation references.');
+  const events=((rawEvents??[]) as unknown[]).map((item:unknown)=>{
+    if(!item||typeof item!=='object'||Array.isArray(item))throw Error('Invalid conversation references.');
+    const reference=item as Record<string,unknown>;
+    if(reference.source==='motion_imported_events'&&typeof reference.id==='string'&&/^(quicket|x):[a-zA-Z0-9_-]+$/.test(reference.id))return {source:reference.source,id:reference.id} as const;
+    if(reference.source==='zuri_entities'&&typeof reference.id==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reference.id))return {source:reference.source,id:reference.id} as const;
+    throw Error('Invalid conversation references.');
+  });
+  const pings=((rawPings??[]) as unknown[]).map((item:unknown)=>{
+    if(typeof item!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(item))throw Error('Invalid conversation references.');
+    return item;
+  });
+  return {events,pings};
+}
 export function validateAIInput(raw:unknown, forcedMode?:AIMode):AIInput {
   if(!raw || typeof raw!=='object' || Array.isArray(raw)) throw Error('Send a valid AI request.');
   const value=raw as Record<string,unknown>;
@@ -10,9 +30,10 @@ export function validateAIInput(raw:unknown, forcedMode?:AIMode):AIInput {
   const mode=forcedMode??value.mode;
   if(mode!=='intent' && mode!=='guide' && mode!=='viola') throw Error('Choose a supported AI mode.');
   const input=mode==='intent'?validateIntentRequest(value.input):{messages:validateConversation(forcedMode?value:value.input),surface:mode==='guide'?'website' as const:'app' as const};
+  const references=validateReferences(value);
   // Narrow secret screening, not a general sensitive-data classifier.
-  if(/\bsk-(?:proj-)?[a-z0-9_-]{16,}|\b(?:password|api[ _-]?key|secret|otp|recovery code)\s*[:=]\s*\S{4,}|\b(?:\d[ -]?){15,19}\b/i.test(JSON.stringify(input))) throw Error('Remove secrets and payment-card numbers before using AI.');
-  return {mode,requestId:value.requestId,input};
+  if(/\bsk-(?:proj-)?[a-z0-9_-]{16,}|\b(?:password|api[ _-]?key|secret|otp|recovery code)\s*[:=]\s*\S{4,}|\b(?:\d[ -]?){15,19}\b/i.test(JSON.stringify({input,references}))) throw Error('Remove secrets and payment-card numbers before using AI.');
+  return {mode,requestId:value.requestId,input,references};
 }
 export const intentOutputSchema={type:'object',additionalProperties:false,properties:{goal:{type:['string','null'],enum:[...intentCatalog.map(item=>item.id),null]},explanation:{type:'string'},question:{type:['string','null']}},required:['goal','explanation','question']};
 export const conversationOutputSchema={type:'object',additionalProperties:false,properties:{reply:{type:'string'},intent:{anyOf:[{type:'null'},{type:'object',additionalProperties:false,properties:{goal:{type:['string','null'],enum:[...intentCatalog.map(item=>item.id),null]},sourceIndices:{type:'array',items:{type:'integer',minimum:0,maximum:11},minItems:1,maxItems:4}},required:['goal','sourceIndices']}]}},required:['reply','intent']};

@@ -1,0 +1,28 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {PGlite} from '@electric-sql/pglite';import {readFile} from 'node:fs/promises';import {randomUUID} from 'node:crypto';
+test('instant channels support owner broadcasts with private-reader isolation and safe retries',async t=>{
+ const pg=new PGlite();t.after(()=>pg.close());const a=randomUUID(),b=randomUUID();
+ await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema auth;grant usage on schema auth to anon,authenticated,service_role;
+ create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz,deleted_at timestamptz,banned_until timestamptz);
+ create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
+ create table public.admin_users(user_id uuid primary key references auth.users(id));`);
+ for(const id of [a,b])await pg.query('insert into auth.users(id,email_confirmed_at) values($1,now())',[id]);
+ for(const name of ['008_app_backend.sql','011_shared_profile_onboarding.sql','012_rizz_channels_publish_immediately.sql','013_channel_updates.sql'])await pg.exec(await readFile(new URL('../database/proposals/'+name,import.meta.url),'utf8'));
+ const as=async id=>{await pg.exec('reset role');await pg.query("select set_config('request.jwt.claim.sub',$1,false)",[id||'']);await pg.exec(id?'set role authenticated':'set role anon');};
+ const rpc=async(action,payload={})=>(await pg.query('select public.zuri_backend($1,$2) value',[action,payload])).rows[0].value;
+ await as(a);
+ const channel=await rpc('entities.create',{kind:'channel',title:'Public broadcast',visibility:'public',join_policy:'open',consent:true,consent_reference:'Owner chooses immediate public channel.'});
+ assert.equal(channel.status,'published');
+ const payload={id:channel.id,body:'First real update',request_id:randomUUID()};
+ const post=await rpc('channels.publish',payload);assert.equal((await rpc('channels.publish',payload)).id,post.id);
+ assert.equal((await rpc('channels.posts',{id:channel.id})).posts.length,1);
+ await assert.rejects(rpc('channels.publish',{...payload,body:'Different request content'}),/already used/);
+ const privateChannel=await rpc('entities.create',{kind:'channel',title:'Private broadcast',visibility:'private',consent:true,consent_reference:'Owner chooses private channel.'});
+ await rpc('channels.publish',{id:privateChannel.id,body:'Private update',request_id:randomUUID()});
+ await as(b);
+ assert.equal((await rpc('channels.posts',{id:channel.id})).posts[0].body,'First real update');
+ await assert.rejects(rpc('channels.publish',{id:channel.id,body:'Impersonation',request_id:randomUUID()}),/owner required/);
+ await assert.rejects(rpc('channels.posts',{id:privateChannel.id}),/unavailable/);
+ assert.equal((await pg.query('select * from public.zuri_channel_updates where channel_id=$1',[privateChannel.id])).rows.length,0);
+ await assert.rejects(pg.query('insert into public.zuri_channel_updates(id,channel_id,author_id,body) values($1,$2,$3,$4)',[randomUUID(),channel.id,b,'Bypass']),/permission denied/);
+ await as(null);await assert.rejects(rpc('channels.posts',{id:channel.id}),/permission denied/);
+});

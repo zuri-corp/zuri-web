@@ -1,4 +1,4 @@
-import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
@@ -7,10 +7,17 @@ import siteConfiguration from './.figma/make/site.json' with { type: 'json' }
 
 // Vite config — https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const apiBase = env.VITE_ZURI_API_BASE ?? (mode === 'development' ? '/api' : '')
+  const websiteOrigin = mode === 'development' ? localWebsiteOrigin(env.ZURI_WEBSITE_ORIGIN) : ''
   // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
   const emitSourcemaps = mode === 'development'
 
   return {
+    define: {
+      'import.meta.env.VITE_ZURI_API_BASE': JSON.stringify(apiBase),
+      'import.meta.env.VITE_ZURI_WEBSITE_ORIGIN': JSON.stringify(websiteOrigin),
+    },
     base: mode === 'production'
   ? '/zuri-app/'
   : process.env.FIGMA_PUBLIC_URL
@@ -34,18 +41,37 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: '0.0.0.0',
-      port: parseInt(process.env.PORT || '8443'),
+      host: '127.0.0.1',
+      port: parseInt(process.env.PORT || '8555'),
       strictPort: true,
       watch: { ignored: ['**/.figma/**'] },
       hmr: process.env.FIGMA_PUBLIC_URL ? { clientPort: 443, protocol: 'wss' } : undefined,
+      proxy: mode === 'development' && apiBase === '/api'
+        ? { '/api': { target: websiteOrigin, changeOrigin: false } }
+        : undefined,
     },
     preview: {
-      host: '0.0.0.0',
-      port: parseInt(process.env.PORT || '8443'),
+      host: '127.0.0.1',
+      port: parseInt(process.env.PORT || '8555'),
     },
   }
 })
+
+function localWebsiteOrigin(value: string | undefined): string {
+  const origin = new URL(value || 'http://127.0.0.1:3015')
+  if (
+    origin.protocol !== 'http:'
+    || !['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname)
+    || origin.username
+    || origin.password
+    || origin.pathname !== '/'
+    || origin.search
+    || origin.hash
+  ) {
+    throw new Error('ZURI_WEBSITE_ORIGIN must be a local HTTP origin.')
+  }
+  return origin.origin
+}
 
 type FigmaSiteConfiguration = {
   title?: string

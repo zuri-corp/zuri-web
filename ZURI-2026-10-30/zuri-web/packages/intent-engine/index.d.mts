@@ -3,7 +3,7 @@ export const INTENT_HANDOFF_KEY:string;
 export const CONVERSATION_HANDOFF_KEY:string;
 export type IntentDetails={location?:string;budget?:string;dueDate?:string;audience?:'personal'|'business'|'developer'};
 export type IntentRequest={text:string;surface:'app'|'website';goal?:string;details:IntentDetails};
-export type IntentAction={id:'open-workflow'|'planner-task';kind:'navigate'|'create-task';label:string;href?:string;scope?:'app'|'website';requiresConfirmation:boolean;effect:string};
+export type IntentAction={id:'open-workflow'|'planner-task'|'find-people';kind:'navigate'|'create-task';label:string;href?:string;scope?:'app'|'website';requiresConfirmation:boolean;effect:string};
 export type IntentPlan={engineVersion:string;request:IntentRequest;status:'ready'|'clarify'|'blocked';intentId:string|null;title:string;basis:'chosen'|'ambiguous'|'matched'|'unknown';interpretation:string;question:string|null;missing:string[];candidates:{id:string;title:string}[];steps:{id:string;title:string;detail:string;state:'proposed'}[];prerequisites:string[];actions:IntentAction[]};
 export type IntentDefinition={id:string;title:string;description:string;steps:[string,string][];target:{label:string;href:string;scope:'app'|'website'};needs:string[]};
 export const intentCatalog:readonly IntentDefinition[];

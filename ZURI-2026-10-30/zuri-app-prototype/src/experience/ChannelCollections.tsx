@@ -1,0 +1,11 @@
+import {useEffect,useRef,useState} from 'react';
+import {cloudRequest} from './cloudClient';
+import ObjectActivity from './ObjectActivity';
+import {InlineAction,SectionEmpty} from './ObjectLayout';
+export type Collection={id:string;title:string;post_count:number};
+export default function ChannelCollections({entityId,owner,initialId}:{entityId:string;owner:boolean;initialId?:string}){
+ const [rows,setRows]=useState<Collection[]>([]),[selected,setSelected]=useState(initialId||''),[create,setCreate]=useState(false),[title,setTitle]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false),[version,setVersion]=useState(0);const key=useRef(crypto.randomUUID());
+ useEffect(()=>{let active=true;cloudRequest<Collection[]>('collections.list',{id:entityId}).then(value=>{if(active)setRows(value);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[entityId,version]);
+ const current=rows.find(row=>row.id===selected);
+ return <section>{selected?<><button className="zs-text-button" onClick={()=>setSelected('')}>← All collections</button><h3>{current?.title||'Collection'}</h3><ObjectActivity key={selected} entityId={entityId} collectionId={selected} channel canPost={owner}/></>:<>{owner&&!create&&<InlineAction label="New collection" onClick={()=>setCreate(true)}/>} {create&&<form className="oc-composer" onSubmit={e=>{e.preventDefault();if(busy)return;setBusy(true);cloudRequest('collections.save',{id:entityId,collection_id:key.current,title:title.trim()}).then(()=>{setCreate(false);setTitle('');key.current=crypto.randomUUID();setVersion(v=>v+1);}).catch(e=>setError(e.message)).finally(()=>setBusy(false));}}><label>Collection name<input required maxLength={80} value={title} onChange={e=>setTitle(e.target.value)}/></label><div><button type="button" className="zs-text-button" onClick={()=>setCreate(false)}>Cancel</button><button className="zs-primary" disabled={busy}>Create collection</button></div></form>}<div className="sr-collections">{rows.map(row=><button key={row.id} onClick={()=>setSelected(row.id)}><span>▤</span><strong>{row.title}</strong><small>{row.post_count} {row.post_count===1?'post':'posts'}</small></button>)}</div>{!rows.length&&!create&&<SectionEmpty title="Bring related posts together in a collection."/>}</>}{error&&<p role="alert">{error}</p>}</section>;
+}

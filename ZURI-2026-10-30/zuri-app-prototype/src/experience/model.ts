@@ -13,13 +13,19 @@ export const worlds = {
   lore: { name: 'Lore', mark: '◒', color: '#4B8CF7', description: 'Your life, beautifully collected.', tabs: ['Moments', 'Discover', 'Chapters', 'Profile'] },
 } as const;
 export type World = keyof typeof worlds;
-export type Route = { world: World; tab: string; kind?: string; id?: string };
+export type Route = { world: World; tab: string; kind?: string; id?: string; scope?: 'owned'; searchTerm?:string; searchArea?:string; placeCategory?:string };
 export const home: Route = { world: 'lounge', tab: '' };
 const objectRoutes: Record<string,{world:World;tab:string}> = {
+  'new-chapter':{world:'lore',tab:'Chapters'},
+  'people-find':{world:'lore',tab:'Discover'},'post':{world:'rizz',tab:'Feed'},'channel-collection':{world:'rizz',tab:'Channels'},'external-event':{world:'motion',tab:'Events'},'plan-event':{world:'motion',tab:'Events'},
   'cloud-account':{world:'lore',tab:'Profile'},
   opportunities:{world:'motion',tab:'Events'},
   intent:{world:'lounge',tab:''},
  ...Object.fromEntries(Object.entries(pamojaRoutes).map(([kind,[world,tab]])=>[kind,{world:world as World,tab}])),
+  entity:{world:'aura',tab:'Societies'},
+  settings:{world:'lounge',tab:''},'settings-appearance':{world:'lounge',tab:''},'settings-wallpaper':{world:'lounge',tab:''},'settings-widgets':{world:'lounge',tab:''},
+  'new-task':{world:'motion',tab:'Planner'},'edit-task':{world:'motion',tab:'Planner'},
+  'edit-space':{world:'aura',tab:'Spaces'},'edit-society':{world:'aura',tab:'Societies'},'edit-event':{world:'motion',tab:'Events'},'edit-ping':{world:'motion',tab:'Pings'},'edit-channel':{world:'rizz',tab:'Channels'},
   space:{world:'aura',tab:'Spaces'},society:{world:'aura',tab:'Societies'},
   event:{world:'motion',tab:'Events'},trip:{world:'motion',tab:'Events'},ping:{world:'motion',tab:'Pings'},
   chat:{world:'rizz',tab:'Chats'},channel:{world:'rizz',tab:'Channels'},
@@ -31,6 +37,12 @@ const objectRoutes: Record<string,{world:World;tab:string}> = {
 };
 export function routeHash(route: Route) {
   const query = new URLSearchParams();
+  if (route.scope==='owned' && route.world==='aura' && ['Spaces','Societies'].includes(route.tab)) query.set('scope','owned');
+  if(route.world==='aura' && ['Find','Spaces'].includes(route.tab)){
+    if(route.searchTerm)query.set('q',route.searchTerm);
+    if(route.searchArea)query.set('area',route.searchArea);
+    if(route.placeCategory)query.set('category',route.placeCategory);
+  }
   if (route.kind && route.id) { query.set('kind', route.kind); query.set('id', route.id); }
   return `#/${route.world}${route.tab ? '/' + route.tab.toLowerCase() : ''}${query.size ? '?' + query : ''}`;
 }
@@ -55,7 +67,10 @@ export function parseRoute(hash: string): Route {
     const legacy:Record<string,[string,string]>={space_detail:['space','spaceId'],society_detail:['society','societyId'],event_detail:['event','eventId'],ping_detail:['ping','pingId'],creator:['person','userId'],creator_detail:['person','userId']};
     if(Object.prototype.hasOwnProperty.call(legacy,segment)){const [type,key]=legacy[segment];const legacyId=url.searchParams.get(key);if(legacyId)return {...objectRoutes[type],kind:type,id:legacyId};}
     if(segment==='topic_chat')return url.searchParams.get('topicId')?objectRoute('topic',url.searchParams.get('topicId')!):{world:'aura',tab:'Societies'};
-    return { world, tab };
+    const search=world==='aura'&&['Find','Spaces'].includes(tab)?{
+      searchTerm:url.searchParams.get('q')?.slice(0,100),searchArea:url.searchParams.get('area')?.slice(0,80),placeCategory:url.searchParams.get('category')?.slice(0,30),
+    }:{};
+    return { world, tab, ...search, ...(world==='aura' && ['Spaces','Societies'].includes(tab) && url.searchParams.get('scope')==='owned' ? {scope:'owned' as const} : {}) };
   } catch { return home; }
 }
 export type ContextTag={kind:'space'|'society'|'event'|'ping'|'chapter';id:string};

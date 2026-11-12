@@ -1,3 +1,6 @@
+import SettingsScreen from './SettingsScreen';
+import {loadPreferences,storePreferences,textScale,type AppPreferences} from './appPreferences';
+import {screenTitle,creationAction} from './screenPresentation';
 import CloudWorld from './CloudWorld';
 import CloudAccount from './CloudAccount';
 import NotificationCenter,{NotificationPreview} from './NotificationCenter';
@@ -33,7 +36,8 @@ import { allPings, contextHeader, tagLabel } from './activity';
 import OpportunityDiscovery from './OpportunityDiscovery';
 import {opportunityEndpoint} from './services';
 import { HomeDashboard, MobileDestination } from './MobileWorlds';
-import { getViolaStatus, askViola } from './aiService';
+import { getViolaStatus, askViola, violaDestination } from './services';
+import type {ViolaEventResult,ViolaPingResult,ViolaPingDraft} from './services';
 import { mergeBackup, migrateLegacy } from './backup';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { worlds, home, parseRoute, routeHash, objectRoute, initialData, readData, runFocus, today, type World, type Route, type LocalData } from './model';
@@ -49,6 +53,12 @@ function Empty({ title, children }: { title: string; children: ReactNode }) { re
 function Picture({ src, alt = '', className = '' }: { src?: string; alt?: string; className?: string }) { const [failed, setFailed] = useState(false); return src && !failed ? <img className={className} src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} /> : <div role="img" aria-label={alt || 'Image unavailable'} className={`zx-picture-fallback ${className}`}>Z</div>; }
 
 export default function Experience() {
+  const [contextTitle,setContextTitle]=useState('');
+  useEffect(()=>{const changed=(event:Event)=>{const d=(event as CustomEvent).detail;if(d?.route===window.location.hash&&typeof d.title==='string')setContextTitle(d.title.slice(0,120));};window.addEventListener('zuri-screen-title',changed);return()=>window.removeEventListener('zuri-screen-title',changed);},[]);
+  const [prefs,setPrefs]=useState<AppPreferences>(loadPreferences);
+  const [systemDay,setSystemDay]=useState(()=>window.matchMedia('(prefers-color-scheme: light)').matches);
+  const changePreferences=(next:AppPreferences)=>{const saved=storePreferences(next);setPrefs(saved);};
+  useEffect(()=>{const media=window.matchMedia('(prefers-color-scheme: light)');const changed=()=>setSystemDay(media.matches);media.addEventListener('change',changed);return()=>media.removeEventListener('change',changed);},[]);
   const [deviceMode,setDeviceMode]=useState(false);
   const [route, setRoute] = useState<Route>(home);
   const [introductionOpen,setIntroductionOpen]=useState(()=>import.meta.env.MODE==='website'&&new URLSearchParams(window.location.search).get('tour')==='welcome');
@@ -72,10 +82,14 @@ export default function Experience() {
   const [widgets, setWidgets] = useState(false);
   const [aiEnabled, setAiEnabled] = useState<boolean | null>(null);
   const [aiBusy, setAiBusy] = useState(false);
-  const [aiReview,setAiReview]=useState<{role:'user'|'assistant';content:string}[]|null>(null);
+  const aiEpoch=useRef(0);
+  const [violaSession,setViolaSession]=useState(0);
+  function startViola(text=''){resetViola();setAiInput(text);setViolaSession(session=>session+1);setViola(true);}
+  function closeViola(){setViola(false);resetViola();setViolaSession(session=>session+1);}
+  function resetViola(){aiEpoch.current++;setAiMessages([]);setAIIntent(null);setAiError('');setAiBusy(false);setAiInput('');}
   const [aiError, setAiError] = useState('');
   const [aiIntent,setAIIntent]=useState<ConversationIntent|null>(null);
-  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[]}[]>([]);
+  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>([]);
   const [aiInput, setAiInput] = useState('');
   const [photo, setPhoto] = useState<string>();
   const [photoError, setPhotoError] = useState('');
@@ -99,6 +113,9 @@ export default function Experience() {
   const setDraft = (value: string) => setDrafts(prev => ({ ...prev, [draftKey]: value }));
   const update = (fn: (previous: LocalData) => LocalData) => setData(previous=>captureNotifications(previous,fn(previous)));
   const notify = (message: string) => setNotice(message);
+  const isDayMode=prefs.mode==='day'||prefs.mode==='system'&&systemDay;
+  const createAction=creationAction(route);
+  const settingsRoute=route.kind==='settings'||route.kind?.startsWith('settings-')||route.kind==='appearance';
 
   useEffect(() => {
     try {
@@ -133,7 +150,7 @@ export default function Experience() {
       views.current[routeHash(r)] = { scroll: main.current?.scrollTop || 0, query: q, filter: f, focus: (document.activeElement as HTMLElement)?.dataset.focus };
       try { sessionStorage.setItem('zuri-v2-views', JSON.stringify(views.current)); } catch { /* Navigation still works in memory. */ }
     };
-    const pop = () => { save(); const next = parseRoute(window.location.hash); const saved = window.history.state?.zuriView || views.current[routeHash(next)] || {scroll: 0, query: '', filter: 'All'}; restore.current = saved; setQuery(saved.query); setFilter(saved.filter); setRoute(next); };
+    const pop = () => {setContextTitle(''); save(); const next = parseRoute(window.location.hash); const saved = window.history.state?.zuriView || views.current[routeHash(next)] || {scroll: 0, query: '', filter: 'All'}; restore.current = saved; setQuery(saved.query); setFilter(saved.filter); setRoute(next); };
     window.addEventListener('popstate', pop); window.addEventListener('hashchange', pop); window.addEventListener('pagehide', save);
     return () => { window.removeEventListener('popstate', pop); window.removeEventListener('hashchange', pop); window.removeEventListener('pagehide', save); };
   }, []);
@@ -179,11 +196,22 @@ export default function Experience() {
     lastTabs.current[route.world] = route.tab;
     const saved = views.current[routeHash(next)] || { scroll: 0, query: '', filter: 'All' };
     restore.current = saved;
-    window.history[replace ? 'replaceState' : 'pushState']({ ...window.history.state, zuriExperience: true, zuriView:saved }, '', routeHash(next));
+    setContextTitle('');window.history[replace ? 'replaceState' : 'pushState']({ ...window.history.state, zuriExperience: true, zuriView:saved }, '', routeHash(next));
     setQuery(saved.query); setFilter(saved.filter); setRoute(next);
   }
   function launch(world: World) { go({ world, tab: lastTabs.current[world] || worlds[world].tabs[0] || '' }); }
   function open(kind: string, id: string) { go(objectRoute(kind,id)); }
+  useEffect(()=>{
+    const navigate=(event:Event)=>{
+      const {kind,id}=(event as CustomEvent<{kind:string;id:string}>).detail;
+      if(!kind||!id)return;
+      event.preventDefault();
+      const next=objectRoute(kind,id);
+      if(routeHash(next)!==routeHash(route))go(next);
+    };
+    window.addEventListener('zuri-open-object',navigate);
+    return()=>window.removeEventListener('zuri-open-object',navigate);
+  },[route,query,filter]);
   function back() { if (window.history.state?.zuriExperience) window.history.back(); else go({ world: route.world, tab: route.tab }, true); }
   function save(id: string) { update(d => ({ ...d, saved: toggle(d.saved, id) })); }
   function addPlan(id: string) { update(d => ({...d, plan: toggle(d.plan, id)})); }
@@ -195,18 +223,21 @@ export default function Experience() {
   function search() { return <label className="zx-search"><span aria-hidden="true">⌕</span><input aria-label={`Search ${route.tab}`} placeholder={`Search ${route.tab.toLowerCase()}…`} value={query} onChange={e => setQuery(e.target.value)} />{query && <button aria-label="Clear search" onClick={() => setQuery('')}>×</button>}</label>; }
   function tasks() { return <>{route.world==='motion'&&<button className="zx-text" onClick={()=>open('extensions','personal')}>Tools for your plans ↗</button>}<form className="zx-inline" onSubmit={e => { e.preventDefault(); addTask(draft); setDraft(''); }}><input aria-label="New focus task" value={draft} maxLength={180} onChange={e => setDraft(e.target.value)} placeholder="Make space for one thing…" required/><button className="zx-primary" type="submit">Add</button></form>{data.tasks.length ? <ul className="zx-tasks">{data.tasks.map(t => <li key={t.id}><label><input type="checkbox" checked={t.done} onChange={() => update(d => ({...d, tasks: d.tasks.map(x => x.id === t.id ? toggleTask(x) : x)}))}/><span className={t.done ? 'zx-done' : ''}>{t.text}<small>{t.dueDate?'Due '+t.dueDate:'Added '+t.date}{t.assignee?' · '+t.assignee:''}</small></span></label>{t.sourceRef&&<button className="zx-text" onClick={()=>open(t.sourceRef!.kind,t.sourceRef!.id)}>Source {t.sourceRef.kind} ↗</button>}{t.sourceMomentId&&data.posts.some(p=>p.id===t.sourceMomentId)&&<button className="zx-text" onClick={()=>open('moment',t.sourceMomentId!)}>Original moment ↗</button>}{route.world==='motion'&&<TaskPlanning task={t} data={data} update={update}/>}<button aria-label={`Remove ${t.text}`} onClick={() => update(d => ({...d, tasks: d.tasks.filter(x => x.id !== t.id)}))}>×</button></li>)}</ul> : <p className="zx-muted">A clear page. Add something you want to make time for.</p>}</>; }
   function automations() { return <>{data.automations.map(a => <div className="zx-automation" key={a.id}><div><h3>{a.name}</h3><p>Once each day when you open ZURI. Runs on this device.</p><small>{a.lastRun ? `Last run: ${a.lastRun}` : 'No runs yet'}</small></div><button role="switch" aria-checked={a.enabled} aria-label={a.name} className={a.enabled ? 'zx-switch on' : 'zx-switch'} onClick={() => update(d => ({...d, automations: d.automations.map(x => x.id === a.id ? {...x, enabled: !x.enabled} : x)}))}><span/></button><button className="zx-text" onClick={() => { update(d => runFocus(d)); notify('Daily focus added to Planner. Repeated runs do not duplicate it.'); }}>Run now ↗</button></div>)}</>; }
-  function profile() { return <div className="zx-profile zx-panel"><IdentityAvatar data={data} large/><small>YOUR SHARED ZURI IDENTITY</small><h2>{data.name}</h2><p>{data.bio}</p><button className="zx-primary" onClick={()=>open('cloud-account','home')}>Your ZURI account ↗</button><IdentityEditor data={data} update={update} notify={notify}/><PresenceEditor data={data} update={update} open={open} notify={notify}/><label className="pj-field">Appearance<select aria-label="Appearance mode" value={pj(data).preferences.mode||'night'} onChange={e=>update(d=>({...d,pamoja:{...pj(d),preferences:{...pj(d).preferences,mode:e.target.value as 'day'|'night'}}}))}><option value="day">Day mode</option><option value="night">Night mode</option></select></label><SpecLinks open={open} items={[["◉","Notifications","notifications"],["✦","Your world","world-guide"],["▧","Requests & enquiries","orders"],["◇","Members & Wallet","members"],["⌖","Your Spaces","my-spaces"],["◒","Experience & trust","reputation"],["◉","Privacy & safety","privacy"],["◉","Data & privacy","privacy-core"],["◐","Appearance & widgets","appearance"]]}/><p className="zx-muted">This workspace is saved on this device. Open Your ZURI account to sign in, save selected work online and use your private conversations. Device drafts are shared only when you choose.</p><button className="zx-text" onClick={exportData}>Export unencrypted backup ↓</button><label className="zx-backup-label">Merge an app backup<input type="file" accept="application/json,.json" onChange={e=>void importBackup(e.currentTarget)}/></label><p className="zx-muted">Merging keeps your current identity and existing records. Export first to keep a separate snapshot.</p>{importError && <p className="zx-alert" role="alert">{importError}</p>}</div>; }
+  function profile() { return <div className="zx-profile zx-panel"><IdentityAvatar data={data} large/><small>YOUR PROFILE &amp; SETTINGS</small><h2>{data.name}</h2><p>{data.bio}</p><button className="zx-primary" onClick={()=>open('cloud-account','home')}>Your ZURI account ↗</button><IdentityEditor data={data} update={update} notify={notify}/><PresenceEditor data={data} update={update} open={open} notify={notify}/><label className="pj-field">Appearance<select aria-label="Appearance mode" value={pj(data).preferences.mode||'night'} onChange={e=>update(d=>({...d,pamoja:{...pj(d),preferences:{...pj(d).preferences,mode:e.target.value as 'day'|'night'}}}))}><option value="day">Day mode</option><option value="night">Night mode</option></select></label><SpecLinks open={open} items={[["◉","Notifications","notifications"],["✦","Your world","world-guide"],["▧","Requests & enquiries","orders"],["◇","Members & Wallet","members"],["⌖","Your Spaces","my-spaces"],["◒","Experience & trust","reputation"],["◉","Privacy & safety","privacy"],["◉","Data & privacy","privacy-core"],["◐","Appearance & widgets","appearance"]]}/><p className="zx-muted">This workspace is saved on this device. Open Your ZURI account to sign in, save selected work online and use your private conversations. Device drafts are shared only when you choose.</p><button className="zx-text" onClick={exportData}>Export unencrypted backup ↓</button><label className="zx-backup-label">Merge an app backup<input type="file" accept="application/json,.json" onChange={e=>void importBackup(e.currentTarget)}/></label><p className="zx-muted">Merging keeps your current identity and existing records. Export first to keep a separate snapshot.</p>{importError && <p className="zx-alert" role="alert">{importError}</p>}</div>; }
   function exportData() { const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'})); const a = document.createElement('a'); a.href = url; a.download = 'zuri-workspace.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  async function submitAI(approved=false) {
+  async function submitAI() {
     if (!aiInput.trim() || aiBusy || !aiEnabled) return;
     const displayMessages = [...aiMessages, {role:'user' as const, content:aiInput.trim()}].slice(-12);
-    const next = reviewedAIMessages(displayMessages);
-    if(!approved){setAiReview(next);return;}
-    if(!aiReview||JSON.stringify(aiReview)!==JSON.stringify(next)){setAiReview(next);return;}
-    setAiReview(null);
+    let next:ReturnType<typeof reviewedAIMessages>;
+    try{next=reviewedAIMessages(displayMessages);}catch(error){setAiError(error instanceof Error?error.message:'Check your message.');return;}
+    const epoch=++aiEpoch.current;
+    const previousEvents=[...displayMessages].reverse().find(message=>message.role==='assistant'&&message.events?.length)?.events??[];
+    const previousPings=[...displayMessages].reverse().find(message=>message.role==='assistant'&&message.pings?.length)?.pings??[];
+    const eventReferences=[...new Map(previousEvents.map(event=>[event.reference.source+':'+event.reference.id,event.reference])).values()].slice(0,6);
+    const pingReferences=[...new Set(previousPings.map(ping=>ping.reference.id))].slice(0,6);
     setAIIntent(null);setAiMessages(displayMessages); setAiInput(''); setAiBusy(true); setAiError('');
-    try { const result = await askViola(next,JSON.stringify(next)); setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources}]);setAIIntent(result.intent); }
-    catch (error) { setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1)); } finally {setAiBusy(false);}
+    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences); if(epoch!==aiEpoch.current)return;setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIIntent(result.intent); }
+    catch (error) { if(epoch!==aiEpoch.current)return;setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1)); } finally {if(epoch===aiEpoch.current)setAiBusy(false);}
   }
   function detail() {
     const {kind, id} = route;
@@ -235,7 +266,8 @@ export default function Experience() {
     return <div className="zx-feed"><button className="zx-text" onClick={()=>open('feed-controls','home')}>Your feed preferences ↗</button>{all.filter(p => visiblePost(data,p.id,p.userId==='self'?'me':p.userId,p.tags?.filter(t=>t.kind==='society').map(t=>t.id))&&matching(p.text + p.author) && (!spaceId || p.spaceIds.includes(spaceId))).map(p => <article className="zx-panel zx-post" key={p.id}><button className="zx-author" onClick={() => p.userId === 'self' ? go({world:'lore',tab:'Profile'}) : open('person',p.userId)}>{p.userId==='self'?<IdentityAvatar data={data}/>:<span className="zx-avatar">{p.author[0]}</span>}<span><b>{p.author}</b><small>{p.userId === 'self' ? 'Your local post' : 'ZURI sample story'}</small></span><span aria-hidden="true">↗</span></button>{p.video&&<video className="xf-media" src={p.video} controls playsInline preload="metadata"/>}{p.image && <button className="zx-post-image" aria-label={`Open moment: ${p.text}`} onClick={() => open('moment',p.id)}><Picture src={p.image}/></button>}<PostMeta text={p.text} count={(p.tags||p.spaceIds).length} contexts={<>{(p.tags||p.spaceIds.map(id=>({kind:'space' as const,id}))).map(t=><button key={t.kind+t.id} className="zx-context" onClick={()=>open(t.kind,t.id)}>⌘ {tagLabel(data,t)} ↗</button>)}</>}/><div className="zx-actions"><button aria-pressed={data.liked.includes(p.id)} className="zx-text" onClick={() => update(d => ({...d,liked:toggle(d.liked,p.id)}))}>{data.liked.includes(p.id) ? '♥ Liked' : '♡ Appreciate'}</button><button className="zx-text" onClick={() => p.userId === 'self' ? go({world:'rizz',tab:'Chats'}) : open('chat',p.userId)}>Message</button>{p.userId === 'self' && <button className="zx-text" onClick={() => update(d => ({...d,posts:d.posts.filter(x => x.id !== p.id)}))}>Delete local post</button>}</div></article>)}</div>;
   }
   function renderPage() {
-    if(!deviceMode&&route.kind!=='privacy-core'&&route.kind!=='assistant-settings'&&route.kind!=='appearance'&&route.kind!=='notification-preview')return <CloudWorld route={route} data={data} go={go} open={open} onDevice={()=>setDeviceMode(true)} onViola={()=>setViola(true)} input={aiInput} setInput={setAiInput}/>;
+    if(settingsRoute)return <SettingsScreen key={route.kind} section={route.kind||'settings'} prefs={prefs} onChange={changePreferences} onOpen={open} onProfile={()=>go({world:'lore',tab:'Profile'})}/>;
+    if(!deviceMode&&route.kind!=='privacy-core'&&route.kind!=='assistant-settings'&&route.kind!=='appearance'&&route.kind!=='notification-preview')return <CloudWorld route={route} data={data} go={go} open={open} onDevice={()=>setDeviceMode(true)} onViola={startViola} input={aiInput} setInput={setAiInput} preferences={prefs}/>;
 
     if(route.kind==='intent')return <IntentWorkspace key={route.id} recordId={route.id} initialText={route.id==='new'?aiInput:''} data={data} update={update} open={open} go={go}/>;
     if(route.kind==='notification-preview')return <NotificationPreview/>;
@@ -245,7 +277,7 @@ export default function Experience() {
     if(route.kind==='cloud-account')return <CloudAccount deviceTasks={data.tasks}/>;
     if(route.kind==='privacy-core')return <PrivacyCore {...screenProps}/>;
     if(handlesPamoja(screenProps))return <PamojaScreens key={routeHash(route)} {...screenProps}/>;
-    if(route.world==='lounge') return <HomeDashboard data={data} update={update} open={open} go={go} notify={notify} planner={tasks()} automations={automations()} input={aiInput} setInput={setAiInput} onViola={()=>setViola(true)} onIntent={()=>setViola(true)}/>;
+    if(route.world==='lounge') return <HomeDashboard data={data} update={update} open={open} go={go} notify={notify} planner={tasks()} automations={automations()} input={aiInput} setInput={setAiInput} onViola={()=>startViola()} onIntent={()=>startViola()}/>;
     if(route.kind==='opportunities')return <OpportunityDiscovery endpoint={opportunityEndpoint()} onSpace={id=>open('space',id)} onSave={o=>update(d=>({...d,tasks:d.tasks.some(t=>t.id==='opportunity:'+o.id)?d.tasks:[...d.tasks,{id:'opportunity:'+o.id,text:'Follow up: '+o.title+' · '+o.source_url,done:false,date:today()}]}))}/>;
     const flowDetail=['new-moment','ping','new-ping','ping-chat','new-topic','topic','attend','travel','trip','new-channel','manage-channel','channel','chapter','moment'].includes(route.kind||'');
     const flowList=!route.kind&&(route.world==='aura'&&route.tab==='Feed'||route.world==='motion'&&route.tab==='Pings'||route.world==='rizz'&&['Create','Channels'].includes(route.tab)||route.world==='lore'&&route.tab==='Chapters');
@@ -280,17 +312,28 @@ export default function Experience() {
       window.parent.postMessage({type:'zuri-app-route',hash:routeHash(route)},window.location.origin);
   },[route,ready]);
   if (!ready) return <div className="zuri-exp zx-opening" role="status">✦ Opening your world…</div>;
-  return <div className="zuri-exp" data-nav-hidden={navHidden} onWheelCapture={()=>{userScroll.current=Date.now()+1200;}} onTouchMoveCapture={()=>{userScroll.current=Date.now()+1200;}} onScrollCapture={e=>{const el=e.target;if(route.kind||!(el instanceof HTMLElement)||el!==main.current||Date.now()<dockInteraction.current||Date.now()>userScroll.current)return;navMotion.current=nextScrollNav(navMotion.current,el.scrollTop);setNavHidden(navMotion.current.hidden);}} data-mode={pj(data).preferences.mode||'night'} data-world={route.world} data-tab={route.tab} data-detail={route.kind||''} data-chat-theme={route.kind==='chat'?(data.chatWallpapers?.[route.id||'']||'default'):undefined} data-wallpaper={pj(data).preferences.wallpaper} style={{'--zx-accent':theme.color} as CSSProperties}>
+  return <div className="zuri-exp" data-nav-hidden={navHidden} onWheelCapture={()=>{userScroll.current=Date.now()+1200;}} onTouchMoveCapture={()=>{userScroll.current=Date.now()+1200;}} onScrollCapture={e=>{const el=e.target;if(route.kind||!(el instanceof HTMLElement)||el!==main.current||Date.now()<dockInteraction.current||Date.now()>userScroll.current)return;navMotion.current=nextScrollNav(navMotion.current,el.scrollTop);setNavHidden(navMotion.current.hidden);}} data-mode={isDayMode?'day':'night'} data-palette={prefs.palette} data-font={prefs.font} data-density={prefs.density} data-world={route.world} data-tab={route.tab} data-detail={route.kind||''} data-chat-theme={route.kind==='chat'?(data.chatWallpapers?.[route.id||'']||'default'):undefined} data-wallpaper={prefs.customWallpaper?'custom':prefs.wallpaper} style={{'--zx-accent':theme.color,'--zuri-text-scale':textScale[prefs.size],'--zs-wallpaper-image':prefs.customWallpaper?`url("${prefs.customWallpaper}")`:undefined} as CSSProperties}>
     <a href="#zx-main" className="zx-skip" onClick={e=>{e.preventDefault();main.current?.focus({preventScroll:true});}}>Skip to workspace</a>
-    {import.meta.env.MODE==='website'&&<DesktopWorkspace local={deviceMode} route={route} data={deviceMode?data:initialData} launch={launch} go={go} open={open} onViola={()=>setViola(true)} onIntroduction={()=>setIntroductionOpen(true)}/>}
-    <div className="zx-body"><header className="zx-topbar"><div><button className="zm-home-button" aria-label={route.world==='lounge'?'Open Aura':'Return to Lounge'} onClick={()=>route.world==='lounge'?launch('aura'):launch('lounge')}><AppGlyph name={route.world==='lounge'?'aura':route.world} size={30}/></button><button className="xf-header-title" aria-label={route.kind==='chat'?`View ${locationHeader.title} profile`:route.kind?'Return to lounge':`Return to lounge from ${theme.name}`} onClick={()=>route.kind==='chat'?open('person',route.id||''):launch('lounge')}>{route.kind?<><small>{locationHeader.parent}</small><strong>{locationHeader.title}</strong></>:<strong>{route.world==='lounge'?'Lounge':theme.name}</strong>}</button></div>{import.meta.env.MODE==='website'&&<form className="zw-global-search" role="search" onSubmit={event=>{event.preventDefault();go({world:'aura',tab:'Find'});setQuery(globalSearch);}}><label htmlFor="zw-global-search">Search ZURI</label><input id="zw-global-search" placeholder="Search people, places and ideas" value={globalSearch} onChange={event=>setGlobalSearch(event.target.value)}/><button aria-label="Search" type="submit">⌕</button></form>}<div className="zw-top-actions">{import.meta.env.MODE==='website'&&<button className="zw-intro-trigger" aria-label="Open ZURI introduction" title="ZURI introduction" onClick={()=>setIntroductionOpen(true)}>?</button>}{!route.kind&&<button className="nc-header-button" aria-label={`Notifications${deviceMode&&unreadNotices(data)?`, ${unreadNotices(data)} unread`:''}`} onClick={()=>open('notifications','home')}><AppGlyph name="bell" size={23}/>{deviceMode&&unreadNotices(data)>0&&<b>{unreadNotices(data)>99?'99+':unreadNotices(data)}</b>}</button>}{!route.kind&&<button className="zx-avatar" aria-label="Your shared profile" onClick={()=>go({world:'lore',tab:'Profile'})}>{deviceMode?<IdentityAvatar data={data}/>:<AppGlyph name="Profile" size={27}/>}</button>}{route.kind&&route.kind!=='object-actions'&&<button className="pj-context-menu" aria-label="Experience options" onClick={()=>open('object-actions',route.kind+':'+route.id)}><AppGlyph name="more" size={23}/></button>}</div></header>
+    {import.meta.env.MODE==='website'&&<DesktopWorkspace local={deviceMode} route={route} data={deviceMode?data:initialData} launch={launch} go={go} open={open} onViola={()=>startViola()} onIntroduction={()=>setIntroductionOpen(true)}/>}
+    <div className="zx-body">
+      <header className="zx-topbar zs-topbar">
+        <div className="zs-header-context">
+          {route.kind&&<button className="zs-icon-button zs-back" aria-label="Back" onClick={back}><AppGlyph name="back" size={21}/></button>}
+          {route.world==='lounge'&&!route.kind?<span className="zs-lounge-logo"><img src={import.meta.env.BASE_URL+'brand/zuri.png'} alt="ZURI"/></span>:<>
+          <button className="zs-world-home" aria-label="Return to Lounge" onClick={()=>launch('lounge')}><AppGlyph name={route.world} size={32}/></button>
+          <strong className="zs-screen-title">{contextTitle||screenTitle(route)}</strong></>}
+        </div>
+        <div className="zs-header-actions">
+          {route.world==='lounge'&&!route.kind&&<button className="zs-icon-button" aria-label="Notifications" onClick={()=>open('notifications','home')}><AppGlyph name="bell" size={21}/></button>}
+          {!settingsRoute&&<button className="zs-icon-button" aria-label="Settings" onClick={()=>open('settings','home')}><AppGlyph name="settings" size={21}/></button>}
+          {createAction&&<button className="zs-icon-button zs-create-button" aria-label={createAction.label} onClick={()=>open(createAction.kind,'new')}><AppGlyph name="plus" size={24}/></button>}
+        </div>
+      </header>
 
-      <main id="zx-main" ref={main} tabIndex={-1} className="zx-main"><div className="zx-content">{!online && <div className="zx-offline" role="status">You’re offline. Account operations need a connection. Existing device drafts remain available separately.</div>}{storageError && <div className="zx-alert" role="alert"><p>{storageError}</p><button onClick={exportData}>Export current data</button><button onClick={() => {localStorage.removeItem(STORAGE);storageSafe.current=true;setStorageError('');setData(structuredClone(initialData));}}>Reset local workspace</button></div>}<div className="zx-page-heading"><div>{route.kind && <button className="zx-text zx-back" onClick={back}>← Back to where you were</button>}<small>{route.world === 'lounge' ? `ZURI · ${today()}` : `ZURI / ${theme.name.toUpperCase()}`}</small><h1 ref={heading} tabIndex={-1}>{route.world === 'lounge' ? (deviceMode?'Your device workspace':'Lounge') : route.kind ? theme.name + ' / ' + route.kind : route.tab}</h1>{route.world !== 'lounge' && <p>{intros[route.tab]}</p>}</div>{route.world === 'lounge' && <span className="zx-quiet-tag">◌ Your own pace</span>}</div>{import.meta.env.MODE==='website'&&route.world==='lounge'&&!route.kind&&<DesktopLaunchpad launch={launch}/>}{deviceMode&&<div className="cw-device-banner"><strong>On this device · not your live account</strong><p>Existing drafts are preserved. Old examples may need review. Nothing here is automatically uploaded or delivered.</p><button onClick={()=>setDeviceMode(false)}>Return to your ZURI account</button></div>}{renderPage()}{route.kind&&['space','society','event','ping','offer','chapter','person','order','enquiry-draft'].includes(route.kind)&&route.id&&<ConnectedActions key={'connections-'+routeHash(route)} source={{kind:route.kind as ObjectRef['kind'],id:route.id}} data={data} update={update} open={open} go={go} notify={notify}/>}<footer className="zx-footer"><span>ZURI · Powering &amp; Distributing Good Systems</span><span>Shared foundation. Distinct experiences.</span></footer></div></main>
-    </div>{!route.kind&&theme.tabs.length>0&&<nav className="zx-tabs zn-app-dock" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label={`${theme.name} sections`}>{theme.tabs.map(t=><button key={t} aria-current={route.tab===t?'page':undefined} onClick={()=>go({world:route.world,tab:t})}><SectionGlyph name={t} active={route.tab===t}/><span>{t}</span></button>)}</nav>}{route.world==='lounge'&&!route.kind&&<nav className="zx-mobile-nav" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label="ZURI mobile destinations">{(Object.keys(worlds) as World[]).filter(w=>w!=='lounge').map(w => <button key={w} aria-current={route.world === w ? 'page' : undefined} onClick={() => launch(w)}><span style={{color:worlds[w].color}}><AppGlyph name={w}/><span className="zp-sr">{worlds[w].mark}</span></span>{worlds[w].name}</button>)}</nav>}<button className="zm-viola-orb" hidden={route.world==='lounge'||!!route.kind} onClick={()=>setViola(true)} aria-label="Open Viola" aria-haspopup="dialog">✦</button>
+      <main id="zx-main" ref={main} tabIndex={-1} className="zx-main"><div className="zx-content">{!online && <div className="zx-offline" role="status">You’re offline. Account operations need a connection. Existing device drafts remain available separately.</div>}{storageError && <div className="zx-alert" role="alert"><p>{storageError}</p><button onClick={exportData}>Export current data</button><button onClick={() => {localStorage.removeItem(STORAGE);storageSafe.current=true;setStorageError('');setData(structuredClone(initialData));}}>Reset local workspace</button></div>}<h1 className="zs-sr-only" ref={heading} tabIndex={-1}>{screenTitle(route)}</h1>{import.meta.env.MODE==='website'&&route.world==='lounge'&&!route.kind&&<DesktopLaunchpad launch={launch}/>}{deviceMode&&<div className="cw-device-banner"><strong>On this device · not your live account</strong><p>Existing drafts are preserved. Old examples may need review. Nothing here is automatically uploaded or delivered.</p><button onClick={()=>setDeviceMode(false)}>Return to your ZURI account</button></div>}{renderPage()}{deviceMode&&route.kind&&['space','society','event','ping','offer','chapter','person','order','enquiry-draft'].includes(route.kind)&&route.id&&<ConnectedActions key={'connections-'+routeHash(route)} source={{kind:route.kind as ObjectRef['kind'],id:route.id}} data={data} update={update} open={open} go={go} notify={notify}/>}</div></main>
+    </div>{!route.kind&&theme.tabs.length>0&&<nav className="zx-tabs zn-app-dock" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label={`${theme.name} sections`}>{theme.tabs.map(t=><button key={t} aria-current={route.tab===t?'page':undefined} onClick={()=>go({world:route.world,tab:t})}><SectionGlyph name={t} active={route.tab===t}/><span>{t}</span></button>)}</nav>}{route.world==='lounge'&&!route.kind&&<nav className="zx-mobile-nav" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label="ZURI mobile destinations">{(Object.keys(worlds) as World[]).filter(w=>w!=='lounge').map(w => <button key={w} aria-current={route.world === w ? 'page' : undefined} onClick={() => launch(w)}><span style={{color:worlds[w].color}}><AppGlyph name={w}/><span className="zp-sr">{worlds[w].mark}</span></span>{worlds[w].name}</button>)}</nav>}<button className="zm-viola-orb" hidden={route.world==='lounge'||!!route.kind} onClick={()=>startViola()} aria-label="Open Viola" aria-haspopup="dialog">✦</button>
     <div className="zx-toast" role="status">{notice}</div>
-    <ViolaWorkbox notify={notify} visible={viola} onClose={()=>setViola(false)} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} review={aiReview} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()} onApprove={()=>void submitAI(true)} onCancelReview={()=>setAiReview(null)}/>
+    <ViolaWorkbox key={violaSession} notify={notify} visible={viola} canPublish={!deviceMode} onClose={closeViola} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} currentSpace={route.kind==='space'?route.id:undefined} onReset={resetViola} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()}/>
     {import.meta.env.MODE==='website'&&introductionOpen&&<AppIntroduction onClose={()=>setIntroductionOpen(false)} launch={launch}/>}
   </div>;
 }
-
-
