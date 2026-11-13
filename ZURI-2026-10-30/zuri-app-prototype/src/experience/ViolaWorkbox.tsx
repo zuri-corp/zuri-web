@@ -51,7 +51,7 @@ export default function ViolaWorkbox(p:Props){
   if(greet||updates||post){clearArtifacts();p.onReset();setTurns([{role:'user',content:request},...(greet?[{role:'assistant' as const,content:zuriGreeting(p.data.name)}]:[])]);if(post)setRizzDraft(post[1]||'');else setBrief(/\breport\b/i.test(request)?'report':'updates');return;}
   if(/^(?:open|show(?: me)?)\s+(?:my\s+)?(?:rizz\s+)?(?:chats|channels|rizz feed)[.!]*$/i.test(request)){p.onClose();p.go({world:'rizz',tab:/chats/i.test(request)?'Chats':/channels/i.test(request)?'Channels':'Feed'});return;}
   const fresh=creationDraft(request);
-  const correction=creation&&!savedEntity&&/^(?:actually\b|change\b|make it\b|(?:venue|location|description|category|visibility|capacity|price|admission)\s*:|UGX\b|we deliver\b)/i.test(request)?reviseCreation(creation,request):null;
+  const correction=creation&&!savedEntity&&/^(?:actually\b|change\b|make it\b|call it\b|name it\b|rename it\b|(?:title|name|about|venue|location|description|category|visibility|capacity|price|admission)\s*:|UGX\b|we deliver\b)/i.test(request)?reviseCreation(creation,request):null;
   if(fresh||correction){
    const next=(fresh||correction)!;
    if(fresh){clearArtifacts();p.onReset();setCreationSession(id=>id+1);}

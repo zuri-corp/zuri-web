@@ -1,3 +1,4 @@
+import {draftCopy} from './violaDrafts';
 import {AppGlyph} from './AppGlyph';
 import {CropPhotoInput} from './SpaceUI';
 import {useEffect,useRef,useState} from 'react';
@@ -6,12 +7,13 @@ import {cloudRequest,discoverCloud,uploadCloud,type CloudRecord,type DirectoryIt
 export type LoreRequest={kind:'people'|'chapter'|'moment';mode:'find'|'draft';term:string;body?:string};
 export function loreRequest(text:string):LoreRequest|null{
  const request=text.trim().replace(/[.!?]+$/,'');
- const entry=request.match(/^(?:please\s+)?(?:i (?:want|need) to\s+)?(?:start|create|make|draft|add|save|find|open|show(?: me)?)\s+(?:(?:a|an|my|the|new|private)\s+)*(chapter|moment)s?\b(?:\s+(?:called|named|about|on|for)\s+)?\s*(.*)$/i);
+ const entry=request.match(/^(?:please\s+)?(?:i (?:want|need) to\s+)?(?:start|create|make|draft|add|save|find|open|show(?: me)?)\s+(?:(?:a|an|my|the|new|private)\s+)*(chapter|moment)s?\b(?:\s+(?:called|named|on)\s+)?\s*(.*)$/i);
  if(entry){
   const mode=/\b(?:find|open|show)\b/i.test(request.split(/\b(?:chapter|moment)s?\b/i)[0])?'find':'draft';
   const [title,...notes]=mode==='draft'?entry[2].split(/\s*[;.]\s+(?=(?:notes?|description|text)\s*:)/i):[entry[2]];
-  const body=notes.join(' ').replace(/^(?:notes?|description|text)\s*:\s*/i,'');
-  return {kind:entry[1].toLowerCase() as 'chapter'|'moment',mode,term:title.slice(0,120),...(body?{body:body.slice(0,4000)}:{})};
+  const copy=mode==='draft'?draftCopy(request,title):{};
+  const body=copy.description||notes.join(' ').replace(/^(?:notes?|description|text)\s*:\s*/i,'');
+  return {kind:entry[1].toLowerCase() as 'chapter'|'moment',mode,term:(copy.title||title).slice(0,120),...(body?{body:body.slice(0,4000)}:{})};
  }
  const people=request.match(/^(?:please\s+)?(?:find|show me|look for|search for)\s+(?:(?:a|an|some|people who can|people with)\s+)?(.+)$/i);
  if(!people)return null;
