@@ -1,6 +1,5 @@
 import 'server-only';
-import {createServerSupabaseClient} from '@/lib/supabase/server';
-import {createPublicSupabaseClient} from '@/lib/supabase/public';
+import type {SupabaseClient} from '@supabase/supabase-js';
 
 const MAX_SOURCE_ROWS=100;
 const MAX_RESULTS=6;
@@ -219,13 +218,12 @@ function eventMatches(event:ViolaEvent,filters:EventFilters) {
   return true;
 }
 
-export async function searchViolaEvents(query:string,now=Date.now(),references?:ViolaEventReference[]):Promise<ViolaEvent[]> {
+export async function searchViolaEvents(query:string,now=Date.now(),references:ViolaEventReference[]|undefined,motionClient:SupabaseClient,userClient:SupabaseClient):Promise<ViolaEvent[]> {
   const filters=eventSearchFilters(query,now);
   if(filters.status==='unsupported'||filters.locationRequired||filters.end!==undefined&&filters.end<=now)return [];
   const nowIso=new Date(now).toISOString();
   const motionIds=references?.filter(reference=>reference.source==='motion_imported_events').map(reference=>reference.id)??[];
   const zuriIds=references?.filter(reference=>reference.source==='zuri_entities').map(reference=>reference.id)??[];
-  const [motionClient,userClient]=await Promise.all([Promise.resolve(createPublicSupabaseClient()),createServerSupabaseClient()]);
   const motionQuery=motionClient.from('motion_imported_events')
       .select('id,title,description,starts_at,ends_at,sessions,next_occurrence_at,location,registration_url,source_payload,verification_status,publication_status')
       .eq('verification_status','verified')

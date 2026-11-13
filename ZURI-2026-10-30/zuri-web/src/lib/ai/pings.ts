@@ -1,5 +1,5 @@
 import 'server-only';
-import {createServerSupabaseClient} from '@/lib/supabase/server';
+import type {SupabaseClient} from '@supabase/supabase-js';
 import {eventSearchFilters,isEventReferenceFollowup} from './events';
 import type {ViolaEvent,ViolaEventReference} from './events';
 
@@ -106,10 +106,9 @@ export function isPingReferenceFollowup(query:string) {
     ||/\b(?:tell me more|join it|join them|can we go together)\b/i.test(query);
 }
 
-export async function searchViolaPings(query:string,now=Date.now(),references?:ViolaPingReference[]):Promise<ViolaPing[]> {
+export async function searchViolaPings(query:string,now=Date.now(),references:ViolaPingReference[]|undefined,client:SupabaseClient):Promise<ViolaPing[]> {
   const filters=eventSearchFilters(query,now);
   if(filters.status==='unsupported'||filters.locationRequired||filters.end!==undefined&&filters.end<=now)return [];
-  const client=await createServerSupabaseClient();
   let request=client.from('zuri_entities')
     .select('id,kind,title,description,status,visibility,join_policy,starts_at,ends_at,capacity,details')
     .eq('kind','ping')
