@@ -1,9 +1,19 @@
 
+import {AppGlyph} from './AppGlyph';
 import {useState} from 'react';
 import {intentCatalog,resolveIntent,validateIntentRequest,type ConversationIntent,type IntentRequest} from '../core/intents';
 
 export default function ConversationNextStep({draft,onContinue}:{draft:ConversationIntent;onContinue:(request:IntentRequest)=>void}){
- const [expanded,setExpanded]=useState(false),[text,setText]=useState(draft.request.text),[goal,setGoal]=useState(draft.goal??''),[error,setError]=useState('');
- function proceed(){try{const request=validateIntentRequest({...draft.request,text,...(goal?{goal}:{goal:undefined})});if(resolveIntent(request).status==='blocked')throw Error('This goal cannot bypass permission boundaries.');onContinue(request);setError('');}catch(e){setError(e instanceof Error?e.message:'Review your goal.');}}
- return <section className="conversation-next-step" aria-label="A next step from your conversation"><span>{draft.source==='ai'?'VIOLA · PROPOSED DIRECTION':'ON-DEVICE · POSSIBLE NEXT STEP'}</span><h3>Let’s give this a next step.</h3><p>{draft.goal?intentCatalog.find(item=>item.id===draft.goal)?.title:'Review the outcome you want to work towards.'}</p>{!expanded?<button type="button" onClick={()=>setExpanded(true)}>Review a goal from this conversation ↗</button>:<div><label>Your goal<textarea value={text} onChange={e=>setText(e.target.value)} maxLength={1500} rows={3}/></label><small>Starts with your own messages. Edit anything you want to change.</small><label>Direction<select value={goal} onChange={e=>setGoal(e.target.value)}><option value="">Let ZURI match my goal</option>{intentCatalog.map(item=><option key={item.id} value={item.id}>{item.title}</option>)}</select></label>{error&&<p role="alert">{error}</p>}<button type="button" onClick={proceed}>Review goal &amp; next steps ↗</button><button className="conversation-next-cancel" type="button" onClick={()=>setExpanded(false)}>Keep talking</button><small>Opens a draft for review. Saving a task or performing an external action needs its own approval.</small></div>}</section>;
+ const [error,setError]=useState('');
+ function proceed(){
+  try{
+   const request=validateIntentRequest({...draft.request,goal:draft.goal??undefined});
+   if(resolveIntent(request).status==='blocked')throw Error('This goal cannot bypass permission boundaries.');
+   onContinue(request);
+  }catch(e){setError(e instanceof Error?e.message:'This suggestion could not open.');}
+ }
+ return <section className="conversation-next-step" aria-label="A next step from your conversation">
+  <button className="vw-suggestion-link" type="button" onClick={proceed}><AppGlyph name="next" size={16}/><span><strong>{intentCatalog.find(item=>item.id===draft.goal)?.title||'Explore a next step'}</strong><small>Open suggestion</small></span></button>
+  {error&&<p role="alert">{error}</p>}
+ </section>;
 }

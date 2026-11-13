@@ -42,6 +42,15 @@ export default function About() {
         <dl className="system-beliefs">{beliefs.map(([title, text], index) => <div key={title}><dt><span>0{index + 1}</span>{title}</dt><dd>{text}</dd></div>)}</dl>
       </div>
     </section>
+    <section id="founder-note" className="page-wrap section-pad narrow" aria-labelledby="founder-note-heading">
+      <p className="eyebrow">A note from the founder</p>
+      <h2 id="founder-note-heading" className="headline">Everyone has something to give.</h2>
+      <p className="intro">A person can spend years getting good at something and still struggle to find someone who needs it. A shop can support a family and still be hard to find from two streets away. That gap is why I’m building ZURI.</p>
+      <p>Jesus’ parable of the talents makes me think about what happens when we put our gifts to work. Saying 5 of the Gospel of Thomas makes me think about what we fail to see in front of us. The seven Hermetic principles also shape how I think about spiritual growth and the freedom to explore it. These are roots of my thinking, and everyone who comes to ZURI can bring their own beliefs.</p>
+      <p>I want it to take less time and money for someone’s abilities to reach the people who need them. A business is somebody’s livelihood. The hours people put into it deserve respect. When someone documents a firsthand experience in a Channel, their account could help others decide where to go, what they might find, and what the place feels like. We want to make those experiences easier to discover while respecting the author’s choices about how their work is used.</p>
+      <p>Kindness means treating people as we would want to be treated. Sometimes that means giving someone room to live differently from us. Private conversations and Societies need boundaries people can trust. Children should have room to learn, play and grow, and they deserve protection from exploitation and harassment. I want human accounts and genuine participation on ZURI. Fake engagement, repeated bullying and fraud undermine the trust that lets people do good work together.</p>
+      <p>— Dawdy Jabulani, founder of ZURI</p>
+    </section>
     <section className="about-divisions"><div className="page-wrap section-pad">
       <p className="eyebrow">Shared foundation. Distinct experiences.</p>
       <h2 className="headline">One belief.<br/>Three ways to put it to work.</h2>

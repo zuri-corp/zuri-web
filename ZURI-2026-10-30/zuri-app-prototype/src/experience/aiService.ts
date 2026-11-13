@@ -13,7 +13,7 @@ let lastReviewedAI={json:"",id:""};
 export function intentGatewayUrl(){return apiBase?`${apiBase}/ai`:`${directAIUrl}?mode=intent`;}
 export function violaDestination(){return apiBase?apiBase+'/viola':`${publicConfig.url}/functions/v1/zuri-ai`;}
 
-async function requestAI(mode:AIMode,init:RequestInit={}){
+export async function requestAI(mode:AIMode,init:RequestInit={}){
   if(!apiBase&&!directConfigured())throw Error('Live Viola is not connected to this app yet.');
   const headers=new Headers(init.headers);
   if(!apiBase){

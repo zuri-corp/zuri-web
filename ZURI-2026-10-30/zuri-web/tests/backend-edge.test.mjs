@@ -41,7 +41,7 @@ test('uncertain uploads hold quota, unauthorized reads cannot sign files, downlo
 });
 test('edge AI keeps the canonical gateway disabled without a fresh provider setup and never calls provider by default',async()=>{
  const status=await handlers['zuri-ai'](new Request('https://example.supabase.co/functions/v1/zuri-ai',{headers:{Authorization:'Bearer valid-token'}}));assert.equal(status.status,200);assert.equal((await status.json()).enabled,false);
- const input={mode:'viola',consent:true,requestId:'00000000-0000-4000-8000-000000000000',input:{messages:[{role:'user',content:'Hello'}]}};
+ const input={mode:'viola',consent:true,requestId:'00000000-0000-4000-8000-000000000000',messages:[{role:'user',content:'Hello'}]};
  assert.equal((await handlers['zuri-ai'](req(input))).status,503);assert.equal(state.calls.length,0);
  assert.equal((await handlers['zuri-ai'](req(input,{Authorization:''}))).status,401);
 });

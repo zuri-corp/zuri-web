@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {worlds,home,parseRoute,routeHash,readData,initialData,runFocus} from '../src/experience/model.ts';
 import {mergeBackup,migrateLegacy} from '../src/experience/backup.ts';
-import {resolveApiBase,getViolaStatus,askViola} from '../src/experience/services.ts';
+import {resolveApiBase,websiteLoginUrl,getViolaStatus,askViola,readViolaEvents,readViolaPings,readViolaPingDraft} from '../src/experience/services.ts';
 import {content} from './fixtures/catalog.ts';
 
 test('the standalone app mounts V2 directly and has no website dependency',()=>{
@@ -62,7 +62,19 @@ test('daily focus remains idempotent and preserves completed work',()=>{
 test('API configuration accepts only deliberate public service addresses',async()=>{
  for(const value of [undefined,'','javascript:alert(1)','//evil.test','http://remote.test','https://user:secret@remote.test','https://example.test/api?token=secret'])assert.equal(resolveApiBase(value),null);
  assert.equal(resolveApiBase('/api/'),'/api');assert.equal(resolveApiBase('https://api.example.test/api/'),'https://api.example.test/api');assert.equal(resolveApiBase('http://127.0.0.1:3000/api'),'http://127.0.0.1:3000/api');
+ assert.equal(websiteLoginUrl('/app#/lounge','http://127.0.0.1:3015'),'http://127.0.0.1:3015/pamoja/login?next=%2Fapp%23%2Flounge');
+ assert.equal(websiteLoginUrl('/app','https://remote.example.test'),'/pamoja/login?next=%2Fapp');
  assert.deepEqual(await getViolaStatus(),{enabled:false});await assert.rejects(()=>askViola([{role:'user',content:'Hello'}]),/not connected/);
+});
+test('Viola validates canonical event and Ping references and safe links before rendering',()=>{
+ const event={reference:{source:'motion_imported_events',id:'quicket:event-42'},source:'Motion',title:'Verified Concert',description:'Verified listing.',canonicalUrl:'https://tickets.example.test/event',startsAt:'2026-11-11T09:00:00.000Z',endsAt:null,status:'upcoming',visibility:'public',location:{venue:'Acacia Mall',city:'Kampala',country:'Uganda'}};
+ const unsafe=readViolaEvents([{...event,canonicalUrl:'javascript:alert(1)'},{...event,reference:{...event.reference,id:'invalid id'}}]);
+ assert.equal(unsafe.length,1);assert.equal(unsafe[0].canonicalUrl,null);
+ const ping={reference:{source:'zuri_entities',id:'550e8400-e29b-41d4-a716-446655440010'},title:'Study Ping',description:'Find a study partner.',startsAt:'2026-11-11T09:00:00.000Z',endsAt:null,status:'upcoming',visibility:'private',joinPolicy:'approval',capacity:3,location:{venue:'Library',city:'Kampala',country:'Uganda'},category:'Study'};
+ assert.equal(readViolaPings([ping,{...ping,reference:{source:'zuri_entities',id:'bad'}}]).length,1);
+ const draft={title:'FIFA at Acacia Mall',description:'Play FIFA tomorrow.',startsAt:'2026-11-11T09:00:00.000Z',timeZone:'Africa/Kampala',location:'Acacia Mall',participantCount:3,category:'Sport',visibility:null,joinPolicy:null,linkedEvent:null};
+ assert.equal(readViolaPingDraft(draft).participantCount,3);
+ assert.equal(readViolaPingDraft({...draft,timeZone:'UTC'}),null);
 });
 test('installable shell excludes external resources and API responses',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../public/manifest.webmanifest',import.meta.url),'utf8'));

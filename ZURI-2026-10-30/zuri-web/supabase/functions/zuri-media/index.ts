@@ -17,15 +17,21 @@ export async function handler(request:Request){
    const {data,error}=await admin.rpc('zuri_media_operation',{actor:user.id,operation:'ready',payload:{id:reservation.id}});
    return reply(error?{error:'Upload needs reconciliation.'}:{id:data.id,size:data.size_bytes,mime:data.mime,private:true},error?503:201,headers);
   }
-  const body=await edgeJson(request,2000);if(typeof body.id!=='string'||!/^[a-f0-9-]{36}$/i.test(body.id)||!['read','delete'].includes(String(body.action)))return reply({error:'Choose your file.'},400,headers);
-  const {data:media,error}=await admin.rpc('zuri_media_operation',{actor:user.id,operation:'read',payload:{id:body.id}});
+  const body=await edgeJson(request,2000);if(typeof body.id!=='string'||!/^[a-f0-9-]{36}$/i.test(body.id)||!['read','delete','entity-cover','object-media','entity-avatar','host-avatar','offering-photo','person-avatar','chat-media'].includes(String(body.action)))return reply({error:'Choose your file.'},400,headers);
+  const {data:media,error}=body.action==='entity-cover'
+   ?await admin.rpc('zuri_entity_cover',{actor:user.id,entity_id:body.id})
+   :body.action==='object-media'?await admin.rpc('zuri_object_media',{actor:user.id,activity_id:body.id})
+   :body.action==='person-avatar'?await admin.rpc('zuri_person_photo',{actor:user.id,person_id:body.id})
+   :body.action==='chat-media'?await admin.rpc('zuri_chat_media',{actor:user.id,message_id:body.id})
+   :['entity-avatar','host-avatar','offering-photo'].includes(body.action)?await admin.rpc('zuri_context_media',{actor:user.id,target:body.id,kind:body.action})
+   :await admin.rpc('zuri_media_operation',{actor:user.id,operation:'read',payload:{id:body.id}});
   if(error)return reply({error:'Your available files only.',code:error.code},databaseStatus(error.code),headers);
   if(body.action==='delete'){
    const {error:removeError}=await admin.storage.from(media.bucket).remove([media.path]);if(removeError)return reply({error:'Deletion not confirmed.'},503,headers);
    const {error:markError}=await admin.rpc('zuri_media_operation',{actor:user.id,operation:'removed',payload:{id:media.id}});
    return reply(markError?{error:'File removal needs reconciliation.'}:{deleted:true},markError?503:200,headers);
   }
-  const {data:signed,error:signError}=await admin.storage.from(media.bucket).createSignedUrl(media.path,60,{download:true});
+  const {data:signed,error:signError}=await admin.storage.from(media.bucket).createSignedUrl(media.path,60,['entity-cover','object-media','entity-avatar','host-avatar','offering-photo','person-avatar','chat-media'].includes(body.action)?{}:{download:true});
   return reply(signError?{error:'Download unavailable.'}:{url:signed.signedUrl,expiresIn:60},signError?503:200,headers);
  }catch(e){const code=e instanceof Error?e.message:'';return reply({error:'Sign in and check the file, origin and request size.'},code==='auth'?401:code==='verified'||code==='origin'?403:code==='size'?413:400,headers);}
 }

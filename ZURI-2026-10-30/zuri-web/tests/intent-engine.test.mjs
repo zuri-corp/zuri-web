@@ -46,3 +46,34 @@ test('explicit browser handoff carries an unsaved draft, strips authority and re
  assert.throws(()=>makeIntentHandoff(request('Make it happen'),now));
  assert.ok(!('execute'in parsed));assert.ok(!('taskId'in parsed));
 });
+
+
+test('casual meetup language resolves to real ZURI workflows',()=>{
+ const resolve=text=>resolveIntent({text,surface:'app'});
+ const meetup=resolve('i wanna link up with soe software devs sometme this week, schedule something');
+ assert.equal(meetup.status,'ready');
+ assert.equal(meetup.intentId,'motion.meetup');
+ assert.equal(intentTarget(meetup,'open-workflow').href,'#/motion/pings?kind=new-ping&id=new');
+ assert.equal(intentTarget(meetup,'find-people').href,'#/lore/discover?kind=people-find&id=discover');
+ assert.equal(resolve('find software developers').intentId,'people.connect');
+ assert.equal(resolve('build a software application').intentId,'tech.build');
+ assert.equal(resolve('find events this week').intentId,'motion.events');
+});
+
+
+test('Aura routes discovery, participation and ownership to different workflows',()=>{
+ const cases=[
+  ['add photos and offerings to my space','aura.space.manage','#/aura/spaces?scope=owned'],
+  ['view offerings at a space','aura.space.visit','#/aura/spaces'],
+  ['find restaurants in Kampala','aura.place.find','#/aura/find'],
+  ['invite people to my society','aura.society.manage','#/aura/societies?scope=owned'],
+  ['join a photography society','aura.society.visit','#/aura/societies'],
+ ];
+ for(const [text,id,href] of cases){
+  const plan=resolveIntent({text,surface:'app'});
+  assert.equal(plan.status,'ready',text);
+  assert.equal(plan.intentId,id,text);
+  assert.equal(intentTarget(plan,'open-workflow').href,href);
+ }
+ assert.ok(resolveIntent({text:'find restaurants near me',surface:'app'}).missing.includes('location'));
+});

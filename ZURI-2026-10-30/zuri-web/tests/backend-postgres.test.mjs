@@ -11,6 +11,15 @@ test('app backend isolates people, communities, messages, storage and authority'
  const as=async id=>{await pg.exec('reset role');await pg.query("select set_config('request.jwt.claim.sub',$1,false)",[id??'']);await pg.exec(id?'set role authenticated':'set role anon');};
  const rpc=async(action,payload={})=>(await pg.query('select public.zuri_backend($1,$2) value',[action,payload])).rows[0].value;
  const reviewer=async(id,decision='published')=>{await pg.exec('reset role');return pg.query('select public.zuri_backend_review($1,$2,$3)',[admin,id,decision]);};
+ await as(a);
+ const awaitingChannel=await rpc('entities.create',{kind:'channel',title:'Earlier Rizz channel',visibility:'public',consent:true,consent_reference:'Creator confirms public channel.'});
+ await rpc('entities.submit',{id:awaitingChannel.id});
+ await pg.exec('reset role');
+ await pg.exec(await readFile(new URL('../database/proposals/012_rizz_channels_publish_immediately.sql',import.meta.url),'utf8'));
+ await as(a);
+ const existingChannels=await rpc('entities.list');
+ assert.equal(existingChannels.find(e=>e.id===awaitingChannel.id).status,'published');
+ assert.equal(existingChannels.find(e=>e.id===awaitingChannel.id).reviewed_by,null);
  await t.test('anonymous, unverified and forged owner fields cannot authorize private operations',async()=>{
   await as(null);await assert.rejects(rpc('account.get'),/permission denied/);await as(unverified);await assert.rejects(rpc('account.get'),/Verified/);
   await as(a);const own=await rpc('profile.save',{display_name:'Alice',bio:'private bio',user_id:b,role:'admin'});assert.equal(own.user_id,a);
@@ -70,12 +79,24 @@ test('app backend isolates people, communities, messages, storage and authority'
  await t.test('Spaces need consent and review; strangers cannot self-publish or admit themselves',async()=>{
   await as(a);await assert.rejects(rpc('entities.create',{kind:'space',title:'Cafe'}),/authority/);
   entity=await rpc('entities.create',{kind:'space',title:'Test cafe',description:'A real owner draft',visibility:'public',join_policy:'approval',capacity:2,consent:true,consent_reference:'I represent this establishment.'});
-  await as(null);assert.equal((await pg.query('select * from public.zuri_entities')).rows.length,0);
+  await as(null);assert.equal((await pg.query('select * from public.zuri_entities where id=$1',[entity.id])).rows.length,0);
   await as(a);await rpc('entities.submit',{id:entity.id});await reviewer(entity.id);await as(b);
   assert.equal((await rpc('entities.join',{id:entity.id})).state,'pending');await assert.rejects(rpc('entities.admit',{id:entity.id,user_id:b}),/Owner/);
   await as(a);assert.equal((await rpc('entities.admit',{id:entity.id,user_id:b})).admitted,true);
   await as(c);await rpc('entities.join',{id:entity.id});await as(a);await assert.rejects(rpc('entities.admit',{id:entity.id,user_id:c}),/capacity/);
   await as(null);assert.equal((await pg.query('select public.zuri_discover($1) value',['cafe'])).rows[0].value.length,1);
+ });
+ await t.test('public Rizz channels publish immediately without changing the review flow for other entities',async()=>{
+  await as(a);
+  const channel=await rpc('entities.create',{kind:'channel',title:'Open Rizz channel',description:'Available when created',visibility:'public',join_policy:'approval',consent:true,consent_reference:'Creator confirms this public listing.'});
+  assert.equal(channel.status,'published');
+  assert.equal(channel.reviewed_by,null);
+  assert.equal(channel.reviewed_at,null);
+  const privateChannel=await rpc('entities.create',{kind:'channel',title:'Private Rizz channel',visibility:'private',consent:true,consent_reference:'Creator confirms this private channel.'});
+  assert.equal(privateChannel.status,'draft');
+  await as(null);
+  const discovered=(await pg.query("select public.zuri_discover($1) value",['Open Rizz channel'])).rows[0].value;
+  assert.ok(discovered.some(item=>item.kind==='entity'&&item.entity_kind==='channel'&&item.id===channel.id));
  });
  let chat;
  await t.test('only opted-in recipients can be invited; acceptance precedes message delivery',async()=>{

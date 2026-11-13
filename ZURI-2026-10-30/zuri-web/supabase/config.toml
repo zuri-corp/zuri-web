@@ -5,6 +5,10 @@ project_id = "eghtvbqzytyxsdgvwkge"
 [functions.zuri-api]
 verify_jwt = false
 [functions.zuri-media]
-verify_jwt = false
+verify_jwt = true
 [functions.zuri-ai]
+verify_jwt = false
+
+# Public place discovery uses a server-held provider key.
+[functions.geoapify-places]
 verify_jwt = false
