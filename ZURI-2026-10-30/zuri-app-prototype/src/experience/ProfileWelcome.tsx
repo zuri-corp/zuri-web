@@ -6,7 +6,7 @@ import {AppGlyph} from './AppGlyph';
 const interests=['Technology','Sport','Music','Food','Business','Art','Learning','Travel','Community','Wellness'];
 type Profile=NonNullable<CloudAccountState['profile']>;
 export default function ProfileWelcome({account,onDone}:{account:CloudAccountState;onDone:(profile?:Profile)=>void}){
- const [step,setStep]=useState(0),[name,setName]=useState(account.profile?.display_name||''),[bio,setBio]=useState(account.profile?.bio||'');
+ const [step,setStep]=useState(0),[name,setName]=useState(account.profile?.display_name==='ZURI member'?'':account.profile?.display_name||''),[bio,setBio]=useState(account.profile?.bio||'');
  const [file,setFile]=useState<File|null>(null),[selected,setSelected]=useState<string[]>([]);
  const [visible,setVisible]=useState(account.profile?.is_public??false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  async function finish(){
@@ -22,7 +22,8 @@ export default function ProfileWelcome({account,onDone}:{account:CloudAccountSta
  }
  return <section className="cw-card zs-welcome" aria-labelledby="welcome-title">
   <AppGlyph name="lounge" size={32}/><small>Step {step+1} of 2</small>
-  <h2 id="welcome-title">{step===0?'Make ZURI yours':'What are you into?'}</h2>
+  <h2 id="welcome-title">{step===0?'Welcome to ZURI':'What are you into?'}</h2>
+  {step===0&&<><p>Start in the Lounge. Explore places and communities in Aura, make plans in Motion, share in Rizz, and keep your Moments in Lore.</p><p>Verified new members get a small Viola allowance to try it. Ask for help finding something to do or turning an idea into a plan.</p></>}
   <form onSubmit={e=>{e.preventDefault();if(step===0&&name.trim())setStep(1);else if(step===1)void finish();}}>
    {step===0?<><label>Your name<input autoComplete="name" required maxLength={80} value={name} onChange={e=>setName(e.target.value)}/></label>
     <label>A little about you<textarea maxLength={600} value={bio} onChange={e=>setBio(e.target.value)}/></label>

@@ -63,13 +63,13 @@ export default function CloudEmailLogin({ onRequest, onVerify, onSignedIn }: Pro
   return <section>
     {!sentTo ? <form aria-busy={busy} className="cw-login-form" onSubmit={submit}>
       <label>Email address<input name="email" autoComplete="email" type="email" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)}/></label>
-      <p>We will email you an eight-digit sign-in code.</p>
-      <button className="cw-primary" disabled={busy || seconds > 0}>{busy ? 'Sending…' : seconds ? `Try again in ${seconds}s` : 'Continue with email →'}</button>
+      <p>Enter your email and we’ll send you an eight-digit code. The same code flow creates your account or signs you back in.</p>
+      <button className="cw-primary" disabled={busy || seconds > 0}>{busy ? 'Sending…' : seconds ? `Try again in ${seconds}s` : 'Email me a code →'}</button>
     </form> : <>
       <p role="status" className="cw-login-status">A code was requested for {sentTo}. Check your inbox and spam folder.</p>
       <form aria-busy={busy} className="cw-login-form" onSubmit={submit}>
-        <label>Verification code<input ref={codeInput} name="code" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{8}" maxLength={8} required value={code} onChange={event => setCode(event.target.value)}/></label>
-        <button className="cw-primary" disabled={busy}>{busy ? 'Checking…' : 'Verify and continue →'}</button>
+        <label>Verification code<input ref={codeInput} name="code" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{8}" onPaste={event => {const digits=event.clipboardData.getData('text').replace(/\D/g,'');if(digits.length===8){event.preventDefault();setCode(digits);}}} required value={code} onChange={event => setCode(event.target.value.replace(/\D/g,'').slice(0,8))}/></label>
+        <button className="cw-primary" disabled={busy || code.length!==8}>{busy ? 'Checking…' : 'Verify and continue →'}</button>
       </form>
       <div className="cw-login-options">
         <button className="cw-link" disabled={busy || seconds > 0} onClick={() => void send()} type="button">{seconds ? `Request another code in ${seconds}s` : 'Request another code'}</button>
