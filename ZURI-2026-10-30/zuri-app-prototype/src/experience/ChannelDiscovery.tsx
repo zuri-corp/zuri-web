@@ -1,3 +1,4 @@
+import {AppGlyph} from './AppGlyph';
 import {useState} from 'react';
 import {cloudRequest} from './cloudClient';
 
@@ -21,7 +22,7 @@ export function ChannelExperienceSearch({onOpen}:{onOpen:(kind:string,id:string)
   {error&&<p role="alert">{error}</p>}
   {matches?.length===0&&<p role="status">No matching Channel experiences.</p>}
   {matches?.map(match=><article className="oc-post" key={match.id}>
-   <button className="oc-source" onClick={()=>onOpen('channel',match.channel_id)}>{match.channel_title} ↗</button>
+   <button className="oc-source" onClick={()=>onOpen('channel',match.channel_id)}>{match.channel_title} <AppGlyph name="next" size={16}/></button>
    <p>{match.excerpt}</p>
   </article>)}
  </section>;

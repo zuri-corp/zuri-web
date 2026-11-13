@@ -13,11 +13,32 @@ export const accountEpoch=()=>epoch;
 const changed=()=>{epoch++;if(typeof window!=='undefined')window.dispatchEvent(new Event('zuri-account-changed'));};
 export function directConfigured(){return !!publicConfig.url&&!!publicConfig.publishableKey;}
 export function cloudConfigured(){return !!backendEndpoint()||directConfigured();}
-function savedSession(){if(!session){try{const s=JSON.parse(sessionStorage.getItem(storageKey)||'null');if(s&&typeof s.access_token==='string'&&typeof s.refresh_token==='string'&&Number.isFinite(s.expires_at))session=s;}catch{}}return session;}
-function keepSession(v:unknown,announce=true){const s=v as Session;if(!s||typeof s.access_token!=='string'||typeof s.refresh_token!=='string')throw new CloudError('Sign-in could not be verified.');session={access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+3600};try{sessionStorage.setItem(storageKey,JSON.stringify(session));}catch{throw new CloudError('This browser cannot retain the session. Please use the website edition.');}if(announce)changed();}
-export function clearCloudSession(){session=null;try{sessionStorage.removeItem(storageKey);}catch{}changed();}
+function savedSession(){if(!session){try{const s=JSON.parse((typeof localStorage!=='undefined'?localStorage.getItem(storageKey):null)||sessionStorage.getItem(storageKey)||'null');if(s&&typeof s.access_token==='string'&&typeof s.refresh_token==='string'&&Number.isFinite(s.expires_at)){session=s;localStorage.setItem(storageKey,JSON.stringify(s));sessionStorage.removeItem(storageKey);}}catch{}}return session;}
+function keepSession(v:unknown,announce=true){const s=v as Session;if(!s||typeof s.access_token!=='string'||typeof s.refresh_token!=='string')throw new CloudError('Sign-in could not be verified.');session={access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+3600};try{localStorage.setItem(storageKey,JSON.stringify(session));sessionStorage.removeItem(storageKey);}catch{try{sessionStorage.setItem(storageKey,JSON.stringify(session));}catch{throw new CloudError('This browser cannot retain the session. Please use the website edition.');}}if(announce)changed();}
+export function clearCloudSession(){session=null;try{localStorage.removeItem(storageKey);}catch{}try{sessionStorage.removeItem(storageKey);}catch{}changed();}
 async function jsonRequest(url:string,init:RequestInit={}){let response:Response;try{response=await fetch(url,{...init,signal:init.signal||AbortSignal.timeout(20000),cache:'no-store'});}catch{throw new CloudError('ZURI could not be reached. Your draft is still here. Retry when connected.');}if(response.status===204)return {};let result:any;try{result=await response.json();}catch{throw new CloudError('The service returned an unreadable response.',response.status);}if(!response.ok)throw new CloudError(typeof result.error==='string'?result.error:result.msg||'The operation was not confirmed.',response.status,result.code||'');return result;}
-async function token(){let s=savedSession();if(!s)throw new CloudError('Sign in to your ZURI account.',401);if(s.expires_at*1000<Date.now()+30000){const v=await jsonRequest(publicConfig.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:publicConfig.publishableKey,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});keepSession(v,false);s=session!;}return s.access_token;}
+let refreshing:Promise<string>|null=null;
+if(typeof window!=='undefined'&&typeof window.addEventListener==='function')window.addEventListener('storage',event=>{
+ if(event.key!==storageKey)return;
+ session=null;
+ if(!event.newValue)changed();
+});
+async function token(){let s=savedSession();if(!s)throw new CloudError('Sign in to your ZURI account.',401);if(s.expires_at*1000<Date.now()+30000){
+ if(!refreshing){
+  const refresh=async()=>{
+   session=null;
+   const current=savedSession();
+   if(!current)throw new CloudError('Sign in to your ZURI account.',401);
+   if(current.expires_at*1000>=Date.now()+30000)return current.access_token;
+   const start=epoch;
+   const v=await jsonRequest(publicConfig.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:publicConfig.publishableKey,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:current.refresh_token})});
+   if(start!==epoch)throw new CloudError('Your account changed. Please try again.');
+   keepSession(v,false);return session!.access_token;
+  };
+  refreshing=(async()=>typeof navigator!=='undefined'&&navigator.locks?await navigator.locks.request(storageKey,refresh):await refresh())().finally(()=>{refreshing=null;});
+ }
+ return refreshing;
+}return s.access_token;}
 export async function cloudAccessToken(){return token();}
 export async function cloudRequest<T=any>(action:string,payload:unknown={},signal?:AbortSignal):Promise<T>{
  const endpoint=backendEndpoint(),start=epoch;

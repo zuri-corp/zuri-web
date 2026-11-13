@@ -1,5 +1,15 @@
 import {useState} from 'react';
 import {ScopedMedia} from './ObjectLayout';
 import {ActivityCard,type Activity} from './ObjectActivity';
-import {Modal} from './UsabilityUI';
-export default function MediaGallery({posts}:{posts:Activity[]}){const [selected,setSelected]=useState<Activity|null>(null);return <><div className="ux-media-grid">{posts.filter(post=>post.media_id&&(!post.media_mime||post.media_mime.startsWith('image/')||post.media_mime.startsWith('video/'))).map(post=><button key={post.id} className="ux-media-tile" aria-label={'Open media: '+(post.title||post.body||'Shared moment')} onClick={()=>setSelected(post)}><ScopedMedia id={post.id} mime={post.media_mime} preview alt=""/>{post.media_mime?.startsWith('video/')&&<span className="ux-video-mark">▷</span>}</button>)}</div>{selected&&<Modal label="Shared media" onClose={()=>setSelected(null)}><ActivityCard post={selected}/></Modal>}</>;}
+import MediaViewer from './MediaViewer';
+import {AppGlyph} from './AppGlyph';
+
+export default function MediaGallery({posts}:{posts:Activity[]}){
+ const [selection,setSelection]=useState('');
+ const media=posts.filter(post=>post.media_id&&(!post.media_mime||/^(image|video)\//.test(post.media_mime)));
+ const index=media.findIndex(post=>post.id===selection);
+ return <><div className="ux-media-grid">{media.map(post=><button key={post.id} className="ux-media-tile" aria-label={'Open media: '+(post.title||post.body||'Shared moment')} onClick={()=>setSelection(post.id)}>
+  <ScopedMedia id={post.id} mime={post.media_mime} preview alt=""/>
+  {post.media_mime?.startsWith('video/')&&<span className="ux-video-mark"><AppGlyph name="next" size={17}/></span>}
+ </button>)}</div>{index>=0&&<MediaViewer index={index} count={media.length} onChange={i=>setSelection(media[i].id)} onClose={()=>setSelection('')}><ActivityCard key={selection} post={media[index]}/></MediaViewer>}</>;
+}

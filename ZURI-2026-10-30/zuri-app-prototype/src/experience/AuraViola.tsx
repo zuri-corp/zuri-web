@@ -1,3 +1,4 @@
+import {AppGlyph} from './AppGlyph';
 import {useEffect,useState} from 'react';
 import {browseEntities,cloudRequest,type CloudEntity} from './cloudClient';
 import {getPlacesPage,directionsUrl,type Business} from '../lib/geoapify-places';
@@ -29,7 +30,7 @@ export function AuraSearchCard({search,onOpen,go}:{search:AuraSearch;onOpen:(kin
   {result?.spaces.map(row=><button className="vw-choice" key={row.id} onClick={()=>onOpen('space',row.id)}>{row.title}<small>{String(row.details.location||'')}</small></button>)}
   {result?.places.map(row=><a className="vw-choice" key={row.id} href={directionsUrl(row)} target="_blank" rel="noopener noreferrer">{row.name}<small>{row.address}</small></a>)}
   {result&&!result.spaces.length&&!result.places.length&&<small>No matching {query.mode} in this area.</small>}
-  {query.area&&<button className="vw-text" onClick={()=>go({world:'aura',tab:query.mode==='spaces'?'Spaces':'Find',searchTerm:query.term,searchArea:query.area,placeCategory:query.category})}>Open this search in Aura ↗</button>}
+  {query.area&&<button className="vw-text" onClick={()=>go({world:'aura',tab:query.mode==='spaces'?'Spaces':'Find',searchTerm:query.term,searchArea:query.area,placeCategory:query.category})}>Open this search in Aura <AppGlyph name="next" size={16}/></button>}
  </section>;
 }
 

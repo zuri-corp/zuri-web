@@ -1,3 +1,4 @@
+import {AppGlyph} from './AppGlyph';
 import {CropPhotoInput} from './SpaceUI';
 import {useEffect,useRef,useState} from 'react';
 import {cloudRequest,discoverCloud,uploadCloud,type CloudRecord,type DirectoryItem} from './cloudClient';
@@ -52,7 +53,7 @@ export default function LoreViola({request,onOpen}:{request:LoreRequest;onOpen:(
    {people.map(person=><button className="vw-choice" key={person.id} onClick={()=>onOpen('person',person.id)}>{person.name}<small>{person.description}</small></button>)}
    {records.map(row=><button className="vw-choice" key={row.id} onClick={()=>onOpen(row.kind,row.id)}>{String(row.content.title||noun)}</button>)}
    {!busy&&!error&&(request.kind!=='people'||filter.length>=2)&&!people.length&&!records.length&&<small>No matching results.</small>}
-  </>:saved?<button className="vw-primary" onClick={()=>onOpen(saved.kind,saved.id)}>Open {noun} ↗</button>:review?<>
+  </>:saved?<button className="vw-primary" onClick={()=>onOpen(saved.kind,saved.id)}>Open {noun} <AppGlyph name="next" size={16}/></button>:review?<>
    <strong>{title}</strong>{text&&<p>{text}</p>}{file&&<small>{file.name}</small>}<small>Private to your account</small>
    <div className="vw-card-actions"><button className="vw-text" disabled={busy} onClick={()=>setReview(false)}>Edit</button><button className="vw-primary" disabled={busy} onClick={()=>void save()}>Save {noun}</button></div>
   </>:<form onSubmit={e=>{e.preventDefault();if(title.trim())setReview(true);}}><label>What should it be called?<input required maxLength={120} value={title} onChange={e=>setTitle(e.target.value)}/></label><label>{request.kind==='chapter'?'What is this chapter about?':'What do you want to remember?'}<textarea rows={2} maxLength={4000} value={text} onChange={e=>setText(e.target.value)}/></label>{request.kind==='moment'&&<CropPhotoInput label="Photo · optional" ratio={4/3} onChange={setFile}/>}<button className="vw-primary">Review draft</button></form>}

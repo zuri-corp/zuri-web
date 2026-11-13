@@ -1,3 +1,4 @@
+import {AppGlyph} from './AppGlyph';
 import OfferingCard from './OfferingCard';
 import OfferingEditor,{type Offering} from './OfferingEditor';
 import OfferingPhoto from './OfferingPhoto';
@@ -23,7 +24,7 @@ export function SpaceOfferings({entityId,owner,viewerId}:{entityId:string;owner:
 }
 export function ObjectPlans({entity,owner,onOpen}:{entity:CloudEntity;owner:boolean;onOpen:(kind:string,id:string)=>void}){
  const [rows,setRows]=useState<CloudEntity[]>([]),[error,setError]=useState('');useEffect(()=>{let active=true;cloudRequest<CloudEntity[]>('contexts.plans',{id:entity.id}).then(value=>{if(active)setRows(value);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[entity.id]);
- return <section>{owner&&<InlineAction label={entity.kind==='space'?'Create an event here':'Make a plan'} onClick={()=>onOpen(entity.kind==='space'?'event-create':'new-ping','parent:'+entity.id+':'+entity.visibility)}/>} {rows.map(plan=><button className="zs-object-card" key={plan.id} onClick={()=>onOpen(plan.kind,plan.id)}><span><small>{plan.kind}</small><strong>{plan.title}</strong>{plan.starts_at&&<time>{new Date(plan.starts_at).toLocaleString('en-UG',{dateStyle:'medium',timeStyle:'short',timeZone:'Africa/Kampala'})}</time>}</span><span>↗</span></button>)}{!rows.length&&!error&&<SectionEmpty title={owner?'Give people something to look forward to.':'Watch this space for the next plan.'}/>} {error&&<p role="alert">{error}</p>}</section>;
+ return <section>{owner&&<InlineAction label={entity.kind==='space'?'Create an event here':'Make a plan'} onClick={()=>onOpen(entity.kind==='space'?'event-create':'new-ping','parent:'+entity.id+':'+entity.visibility)}/>} {rows.map(plan=><button className="zs-object-card" key={plan.id} onClick={()=>onOpen(plan.kind,plan.id)}><span><small>{plan.kind}</small><strong>{plan.title}</strong>{plan.starts_at&&<time>{new Date(plan.starts_at).toLocaleString('en-UG',{dateStyle:'medium',timeStyle:'short',timeZone:'Africa/Kampala'})}</time>}</span><span> <AppGlyph name="next" size={16}/></span></button>)}{!rows.length&&!error&&<SectionEmpty title={owner?'Give people something to look forward to.':'Watch this space for the next plan.'}/>} {error&&<p role="alert">{error}</p>}</section>;
 }
 export function PlanAttendance({source,id,onSignIn,onPlanner,onChanged}:{source:'zuri'|'imported';id:string;onSignIn:()=>void;onPlanner:()=>void;onChanged?:()=>void}){
  const [planned,setPlanned]=useState(false),[needsAuth,setNeedsAuth]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');

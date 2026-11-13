@@ -1,5 +1,6 @@
 import {CropPhotoInput} from './SpaceUI';
 import {useEffect,useState,type FormEvent} from 'react';
+import MediaViewer from './MediaViewer';
 import {MomentTile} from './ObjectLayout';
 import MomentViewer from './MomentViewer';
 import ChapterWorkspace from './ChapterWorkspace';
@@ -13,6 +14,9 @@ export default function CloudLore({route,records,busy,onOpen,onSave,onRun,onBack
  const isChapter=route.tab==='Chapters',kind=isChapter?'chapter':'moment';
  const record=records.find(r=>r.id===route.id),creating=route.kind===`new-${kind}`;
  const [optionsId,setOptionsId]=useState('');
+ const moments=records.filter(item=>item.kind==='moment');
+ const [previewId,setPreviewId]=useState('');
+ const previewIndex=moments.findIndex(item=>item.id===previewId);
  const optionsRecord=records.find(item=>item.id===optionsId);
  const [editing,setEditing]=useState(false),[title,setTitle]=useState(''),[text,setText]=useState(''),[note,setNote]=useState(''),[file,setFile]=useState<File|null>(null);
  useEffect(()=>{setEditing(false);setTitle('');setText('');setNote('');setFile(null);},[route.id,route.kind]);
@@ -25,6 +29,6 @@ export default function CloudLore({route,records,busy,onOpen,onSave,onRun,onBack
   if(!isChapter)return <MomentViewer record={record} busy={busy} onSave={(content,file)=>onSave(record,content,file)} onDelete={()=>onDelete(record)}/>;
   return <ChapterWorkspace record={record} busy={busy} onEdit={beginEdit} onSave={content=>onSave(record,content,null)}/>;
  }
- if(!isChapter)return <div className="sr-moments-grid">{records.filter(r=>r.kind==='moment').map(record=><MomentTile key={record.id} record={record} onOpen={()=>onOpen('moment',record.id)} onOptions={()=>setOptionsId(record.id)}/>)}{optionsRecord&&<MomentViewer record={optionsRecord} busy={busy} onDismiss={()=>setOptionsId('')} onSave={(content,file)=>onSave(optionsRecord,content,file)} onDelete={()=>onDelete(optionsRecord)}/>} {!records.length&&<p>Tap + to keep a moment.</p>}</div>;
+ if(!isChapter)return <div className="sr-moments-grid">{moments.map(record=><MomentTile key={record.id} record={record} onOpen={()=>setPreviewId(record.id)} onOptions={()=>setOptionsId(record.id)}/>)}{previewIndex>=0&&<MediaViewer index={previewIndex} count={moments.length} onChange={i=>setPreviewId(moments[i].id)} onClose={()=>setPreviewId('')}><MomentViewer key={previewId} record={moments[previewIndex]} busy={busy} onSave={(content,file)=>onSave(moments[previewIndex],content,file)} onDelete={async()=>{await onDelete(moments[previewIndex]);setPreviewId('');}}/></MediaViewer>}{optionsRecord&&<MomentViewer record={optionsRecord} busy={busy} onDismiss={()=>setOptionsId('')} onSave={(content,file)=>onSave(optionsRecord,content,file)} onDelete={()=>onDelete(optionsRecord)}/>} {!records.length&&<p>Tap + to keep a moment.</p>}</div>;
  return <><div className="cw-lore-collection">{records.filter(r=>r.kind===kind).map(r=><button className="cw-lore-card" key={r.id} onClick={()=>onOpen(kind,r.id)} aria-label={'Open '+kind+': '+String(r.content.title||'Untitled')}><AppGlyph name={isChapter?'Chapters':'Moments'} size={25}/><span><strong>{String(r.content.title||'Untitled')}</strong><small>{new Date(r.updated_at).toLocaleDateString()} · Private</small>{isChapter&&<small>{chapterEntries(r.content.entries).length} entries</small>}</span><AppGlyph name="next" size={18}/></button>)}</div>{!records.length&&<section className="cw-empty"><h3>{isChapter?'A story starts here.':'Make room for a moment.'}</h3><p>Tap + when you are ready.</p></section>}</>;
 }

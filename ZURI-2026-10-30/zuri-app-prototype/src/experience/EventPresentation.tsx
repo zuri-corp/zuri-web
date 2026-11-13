@@ -1,3 +1,4 @@
+import {AppGlyph} from './AppGlyph';
 import {PlanAttendance} from './ObjectPanels';
 import {occurrenceTime,safeEventUrl} from '../lib/motion-event-dates';
 import type {ImportedMotionEvent} from '../lib/motion-events';
@@ -9,8 +10,8 @@ export function eventSource(event:ImportedMotionEvent){return event.source==='x'
 
 export function EventCard({event,onOpen}:{event:ImportedMotionEvent;onOpen:()=>void}){
  return <button type="button" className="cw-event-card" onClick={onOpen} aria-label={'View event: '+event.title}>
-  {safeEventUrl(event.image?.original_url)?<img src={event.image!.original_url!} alt="" loading="lazy"/>:<span className="cw-event-art" aria-hidden="true">↗</span>}
-  <span className="cw-event-summary"><span className="cw-event-tags"><span>{eventCategory(event.category)}</span><span>{eventSource(event)}</span></span><strong>{event.title}</strong><time>{eventDate(event)}</time><span className="cw-event-location">{eventLocation(event)}</span></span><span className="cw-event-arrow" aria-hidden="true">↗</span>
+  {safeEventUrl(event.image?.original_url)?<img src={event.image!.original_url!} alt="" loading="lazy"/>:<span className="cw-event-art" aria-hidden="true"> <AppGlyph name="next" size={16}/></span>}
+  <span className="cw-event-summary"><span className="cw-event-tags"><span>{eventCategory(event.category)}</span><span>{eventSource(event)}</span></span><strong>{event.title}</strong><time>{eventDate(event)}</time><span className="cw-event-location">{eventLocation(event)}</span></span><span className="cw-event-arrow" aria-hidden="true"> <AppGlyph name="next" size={16}/></span>
  </button>;
 }
 
@@ -20,5 +21,5 @@ export function EventDetails({event,onSignIn,onPlanner}:{event:ImportedMotionEve
  {onSignIn&&onPlanner&&<PlanAttendance source="imported" id={event.id} onSignIn={onSignIn} onPlanner={onPlanner}/>}<dl className="cw-event-facts"><div><dt>When</dt><dd>{eventDate(event)} · EAT{event.source_payload?.time_known===false&&<small>Start time not announced</small>}</dd></div><div><dt>Where</dt><dd>{eventLocation(event)}</dd></div></dl>
  <section><h3>About this event</h3><p className="cw-event-description">{event.description||'Read the original listing for the organiser’s full details.'}</p></section>
  {Array.isArray(event.sessions)&&event.sessions.length>1&&<details><summary>Event sessions</summary><ul>{event.sessions.filter(s=>s.starts_at).map((s,i)=><li key={i}>{new Date(occurrenceTime(s.starts_at!)).toLocaleString('en-UG',{dateStyle:'medium',timeStyle:'short',timeZone:'Africa/Kampala'})}</li>)}</ul></details>}
- <div className="cw-event-actions">{booking&&<a className="cw-primary" href={booking} target="_blank" rel="noopener noreferrer">{event.source==='x'?'Registration details ↗':'View tickets on Quicket ↗'}</a>}{source&&source!==booking&&<a className="cw-link" href={source} target="_blank" rel="noopener noreferrer">Original announcement ↗</a>}</div></article>;
+ <div className="cw-event-actions">{booking&&<a className="cw-primary" href={booking} target="_blank" rel="noopener noreferrer">{event.source==='x'?'Registration details ↗':'View tickets on Quicket ↗'}</a>}{source&&source!==booking&&<a className="cw-link" href={source} target="_blank" rel="noopener noreferrer">Original announcement <AppGlyph name="next" size={16}/></a>}</div></article>;
 }
