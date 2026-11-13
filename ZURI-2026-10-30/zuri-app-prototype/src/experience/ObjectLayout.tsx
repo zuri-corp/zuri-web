@@ -1,4 +1,4 @@
-import {useEffect,useState,type ReactNode} from 'react';
+import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {AppGlyph} from './AppGlyph';
 import {useContextPhoto} from './OfferingPhoto';
 import {downloadCloud,entityCoverUrl,objectMediaUrl,contextMediaUrl} from './cloudClient';
@@ -6,7 +6,7 @@ export function useMediaUrl(id:string|undefined,scope:'entity'|'activity'|'priva
  const [url,setUrl]=useState('');useEffect(()=>{let active=true;setUrl('');if(id)(scope==='entity'?entityCoverUrl(id):scope==='activity'?objectMediaUrl(id):scope==='chat'?contextMediaUrl(id,'chat-media'):downloadCloud(id)).then(value=>{if(active)setUrl(value);}).catch(()=>{});return()=>{active=false;};},[id,scope]);return url;
 }
 export function ScopedMedia({id,scope='activity',mime='',className='',alt='',preview=false}:{id:string;scope?:'entity'|'activity'|'private'|'chat';mime?:string;className?:string;alt?:string;preview?:boolean}){
- const url=useMediaUrl(id,scope),[loaded,setLoaded]=useState(false);useEffect(()=>setLoaded(false),[url]);if(!url)return <span className="ux-photo-placeholder"><AppGlyph name="aura" size={32}/></span>;return mime.startsWith('video/')||/\.mp4(?:\?|$)/i.test(url)?<video className={className+' ux-image '+(loaded?'is-loaded':'')} onLoadedMetadata={()=>setLoaded(true)} src={url} controls={!preview} muted={preview} playsInline preload="metadata" aria-label={alt||'Video'}/>:<img className={className+' ux-image '+(loaded?'is-loaded':'')} onLoad={()=>setLoaded(true)} src={url} alt={alt} loading="lazy"/>;
+ const url=useMediaUrl(id,scope),[loaded,setLoaded]=useState(false);useEffect(()=>setLoaded(false),[url]);if(!url)return <span className="ux-photo-placeholder"><AppGlyph name="aura" size={32}/></span>;return mime.startsWith('video/')||/\.mp4(?:\?|$)/i.test(url)?<video className={className+' ux-image '+(loaded?'is-loaded':'')} onLoadedMetadata={()=>setLoaded(true)} src={url} controls={!preview} muted={preview} playsInline preload={preview?"metadata":"none"} aria-label={alt||'Video'}/>:<img className={className+' ux-image '+(loaded?'is-loaded':'')} onLoad={()=>setLoaded(true)} src={url} alt={alt} decoding="async" loading="lazy"/>;
 }
 export function ObjectHero({title,kind,visibility,coverId,privateCover=false,avatar,avatarId,profileCoverId,children}:{title:string;kind:string;visibility?:string;coverId?:string;privateCover?:boolean;avatar?:string;avatarId?:string;profileCoverId?:string;children?:ReactNode}){
  const cover=useMediaUrl(coverId,privateCover?'private':'entity'),profile=useContextPhoto(profileCoverId,'entity-avatar'),url=profile||cover,[loadedUrl,setLoadedUrl]=useState(''),heroReady=Boolean(url&&url===loadedUrl);const world=kind==='Space'||kind==='Society'?'aura':kind==='Ping'||kind==='Event'?'motion':kind==='Channel'?'rizz':'lore';
@@ -18,4 +18,12 @@ export function InlineAction({label,onClick,icon='plus'}:{label:string;onClick:(
 export function SectionEmpty({title,action}:{title:string;action?:ReactNode}){return <div className="oc-empty"><p>{title}</p>{action}</div>;}
 
 export function ContextAvatar({id,name,host=false}:{id:string;name:string;host?:boolean}){const [url,setUrl]=useState('');useEffect(()=>{let active=true;setUrl('');contextMediaUrl(id,host?'host-avatar':'entity-avatar').then(value=>{if(active)setUrl(value);}).catch(()=>{});return()=>{active=false;};},[id,host]);return url?<img className="sr-context-avatar" src={url} alt={host?'Host: '+name:name}/>:<span className="oc-person-initial sr-context-avatar" aria-label={host?'Host: '+name:name}>{(name||'Z')[0]}</span>;}
-export function MomentTile({record,onOpen}:{record:import('./cloudClient').CloudRecord;onOpen:()=>void}){const url=useMediaUrl(typeof record.content.mediaId==='string'?record.content.mediaId:undefined,'private'),title=String(record.content.title||'Moment'),video=String(record.content.mime||'').startsWith('video/')||/\.mp4(?:\?|$)/i.test(url);return <button className="sr-moment-tile" onClick={onOpen} aria-label={'Open moment: '+title}>{url?(video?<video src={url} muted playsInline preload="metadata" aria-label={title}/>:<img src={url} alt="" loading="lazy"/>):<span className="sr-moment-fallback">{title}</span>}<span className="sr-moment-caption">{video?'▷ ':''}{title}</span></button>;}
+export function MomentTile({record,onOpen,onOptions}:{record:import('./cloudClient').CloudRecord;onOpen:()=>void;onOptions?:()=>void}){const url=useMediaUrl(typeof record.content.mediaId==='string'?record.content.mediaId:undefined,'private'),title=String(record.content.title||'Moment'),video=String(record.content.mime||'').startsWith('video/')||/\.mp4(?:\?|$)/i.test(url);const hold=useRef<{timer:number;x:number;y:number}|null>(null),held=useRef(false);
+ function clear(){if(hold.current)window.clearTimeout(hold.current.timer);hold.current=null;}
+ useEffect(()=>clear,[]);
+ return <button className="sr-moment-tile" onClick={()=>{if(!held.current)onOpen();held.current=false;}}
+ onContextMenu={e=>{if(onOptions){e.preventDefault();clear();held.current=true;onOptions();}}}
+ onPointerDown={e=>{held.current=false;if(!onOptions||e.pointerType==='mouse'||!e.isPrimary)return;
+  clear();hold.current={timer:window.setTimeout(()=>{held.current=true;onOptions();},550),x:e.clientX,y:e.clientY};}}
+ onPointerMove={e=>{if(hold.current&&Math.hypot(e.clientX-hold.current.x,e.clientY-hold.current.y)>12)clear();}}
+ onPointerUp={clear} onPointerCancel={clear} onPointerLeave={clear} aria-label={'Open moment: '+title}>{url?(video?<video src={url} muted playsInline preload="metadata" aria-label={title}/>:<img src={url} alt="" loading="lazy"/>):<span className="sr-moment-fallback">{title}</span>}<span className="sr-moment-caption">{video?'▷ ':''}{title}</span></button>;}
