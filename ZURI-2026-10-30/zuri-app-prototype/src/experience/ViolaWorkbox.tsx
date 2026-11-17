@@ -17,7 +17,7 @@ import type {ViolaEventResult,ViolaPingResult,ViolaPingDraft} from './services';
 import {cloudRequest,type CloudEntity} from './cloudClient';
 
 type Message={role:'user'|'assistant';content:string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null};
-type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
+type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'viola'|'robert';onAssistant:(value:'viola'|'robert')=>void;visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
 
 export default function ViolaWorkbox(p:Props){
  const [brief,setBrief]=useState<'updates'|'report'|null>(null),[rizzDraft,setRizzDraft]=useState<string|null>(null);
@@ -45,6 +45,12 @@ export default function ViolaWorkbox(p:Props){
   if(!p.input.trim()||p.busy)return;
   const request=p.input.trim();
   if(/^(?:new topic|start over|clear chat|change topic)[.!\s]*$/i.test(request)){newTopic();return;}
+  if(p.assistant==='robert'){
+   clearArtifacts();
+   if(p.enabled){setTurns([]);p.onAsk();return;}
+   setTurns(previous=>[...previous,{role:'user',content:request},{role:'assistant',content:'Have you sold this before? If yes, look at what brought your last customer and repeat one step. If not, start with one likely buyer and test whether they would pay.'}]);
+   p.setInput('');return;
+  }
   const greet=/^(?:hi|hey|hello|good morning|good afternoon|good evening)(?:\s+viola)?[.!]*$/i.test(request);
   const updates=/\b(?:updates|news|report|brief|summari[sz]e|what.s new)\b/i.test(request)&&/\b(?:aura|spaces?|societ(?:y|ies)|echoes|topics)\b/i.test(request)||/^what.s new[?!.]*$/i.test(request);
   const post=request.match(/^(?:(?:can|could) you\s+)?(?:draft|write|create|prepare)\s+(?:a\s+)?(?:rizz\s+)?(?:post|channel update)(?:\s+(?:about|saying|that says)\s+(.+))?[.!]?$/i);
@@ -155,7 +161,7 @@ export default function ViolaWorkbox(p:Props){
  }
  if(!p.visible)return null;
  return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><dialog ref={dialog} className="vw-box vw-glass vw-simple" aria-labelledby="vw-title" aria-modal={false} onCancel={e=>{e.preventDefault();p.onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
- <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name="viola" size={25}/> Viola</h2></div><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
+ <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'work':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Robert</option></select></h2></div><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
  <div className="vw-conversation" role="log" aria-label="Conversation with Viola" aria-live="polite">
   {turns.map((m,i)=><div key={'local'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}><p>{m.content}</p></div>)}
@@ -187,6 +193,6 @@ export default function ViolaWorkbox(p:Props){
  {notice&&<div className="vw-success" role="status"><span>✓</span>{notice}<button onClick={()=>{p.onClose();p.go({world:'motion',tab:'Planner'});}}>Open Planner <AppGlyph name="next" size={16}/></button></div>}
  {error&&<p className="vw-error" role="alert">{error}</p>}{p.error&&p.enabled!==false&&<p className="vw-error" role="alert">{p.error}</p>}
  </div>
- <footer className="vw-compose"><form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label="Message Viola" placeholder="Message Viola…" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label="Send to Viola" disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
+ <footer className="vw-compose"><form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Robert':'Message Viola'} placeholder={p.assistant==='robert'?'Ask Robert about your business…':'Message Viola…'} value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label="Send to Viola" disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
  </dialog></div>,document.body);
 }

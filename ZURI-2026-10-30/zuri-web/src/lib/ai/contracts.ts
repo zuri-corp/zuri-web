@@ -5,7 +5,7 @@ export type AIReferences={
   events:{source:'motion_imported_events'|'zuri_entities';id:string}[];
   pings:string[];
 };
-export type AIInput = {mode:AIMode; requestId:string; input:IntentRequest | {messages:ChatMessage[];surface:'app'|'website'};references:AIReferences};
+export type AIInput = {mode:AIMode; assistant?:'robert'; requestId:string; input:IntentRequest | {messages:ChatMessage[];surface:'app'|'website'};references:AIReferences};
 function validateReferences(value:Record<string,unknown>):AIReferences {
   const rawEvents=value.eventReferences,rawPings=value.pingReferences;
   if(rawEvents!==undefined&&(!Array.isArray(rawEvents)||rawEvents.length>6)||rawPings!==undefined&&(!Array.isArray(rawPings)||rawPings.length>6))throw Error('Invalid conversation references.');
@@ -33,7 +33,7 @@ export function validateAIInput(raw:unknown, forcedMode?:AIMode):AIInput {
   const references=validateReferences(value);
   // Narrow secret screening, not a general sensitive-data classifier.
   if(/\bsk-(?:proj-)?[a-z0-9_-]{16,}|\b(?:password|api[ _-]?key|secret|otp|recovery code)\s*[:=]\s*\S{4,}|\b(?:\d[ -]?){15,19}\b/i.test(JSON.stringify({input,references}))) throw Error('Remove secrets and payment-card numbers before using AI.');
-  return {mode,requestId:value.requestId,input,references};
+  return {mode,...(mode==='viola'&&value.assistant==='robert'?{assistant:'robert' as const}:{}),requestId:value.requestId,input,references};
 }
 export const intentOutputSchema={type:'object',additionalProperties:false,properties:{goal:{type:['string','null'],enum:[...intentCatalog.map(item=>item.id),null]},explanation:{type:'string'},question:{type:['string','null']}},required:['goal','explanation','question']};
 export const conversationOutputSchema={type:'object',additionalProperties:false,properties:{reply:{type:'string'},intent:{anyOf:[{type:'null'},{type:'object',additionalProperties:false,properties:{goal:{type:['string','null'],enum:[...intentCatalog.map(item=>item.id),null]},sourceIndices:{type:'array',items:{type:'integer',minimum:0,maximum:11},minItems:1,maxItems:4}},required:['goal','sourceIndices']}]}},required:['reply','intent']};

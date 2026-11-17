@@ -6,7 +6,7 @@ test('object experiences connect participation, private chat, offerings, media a
  create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
  create table public.admin_users(user_id uuid primary key references auth.users(id));`);
  for(const id of [a,b,c])await pg.query('insert into auth.users(id,email_confirmed_at) values($1,now())',[id]);
- for(const name of ['008_app_backend.sql','011_shared_profile_onboarding.sql','012_rizz_channels_publish_immediately.sql','013_channel_updates.sql','014_instant_app_creation.sql','015_object_experiences.sql'])await pg.exec(await readFile(new URL('../database/proposals/'+name,import.meta.url),'utf8'));
+ for(const name of ['008_app_backend.sql','011_shared_profile_onboarding.sql','012_rizz_channels_publish_immediately.sql','013_channel_updates.sql','014_instant_app_creation.sql','015_object_experiences.sql','023_independent_planner.sql'])await pg.exec(await readFile(new URL('../database/proposals/'+name,import.meta.url),'utf8'));
  const as=async id=>{await pg.exec('reset role');await pg.query("select set_config('request.jwt.claim.sub',$1,false)",[id||'']);await pg.exec(id?'set role authenticated':'set role anon');};
  const rpc=async(action,payload={})=>(await pg.query('select public.zuri_backend($1,$2) value',[action,payload])).rows[0].value;
  const create=async(kind,visibility='public',details={})=>rpc('entities.create',{kind,title:kind,description:'A useful place',visibility,join_policy:'open',consent:true,consent_reference:'Owner explicitly selects this audience.',request_id:randomUUID(),details,...(['event','ping'].includes(kind)?{starts_at:'2030-12-01T12:00:00Z'}:{})});
@@ -18,8 +18,8 @@ test('object experiences connect participation, private chat, offerings, media a
  assert.equal((await rpc('objects.discovery')).some(p=>p.kind==='chat'),false);
  await as(b);await assert.rejects(rpc('objects.activity',{id:ping.id,view:'chat'}),/Join/);await assert.rejects(rpc('objects.publish',{id:space.id,kind:'post',body:'Not a member',request_id:randomUUID()}),/Participation/);
  assert.equal((await rpc('objects.offerings',{id:space.id}))[0].title,'Software development');await assert.rejects(rpc('objects.offer.save',{id:space.id,title:'Forged',request_id:randomUUID()}),/owner/);
- const attendance=await rpc('events.plan',{source:'zuri',id:ping.id});assert.equal(attendance.planned,true);assert.equal((await rpc('events.plan',{source:'zuri',id:ping.id})).task_id,attendance.task_id);assert.equal((await rpc('objects.activity',{id:ping.id,view:'chat'}))[0].body,'A real group message');
- const task=(await rpc('records.list',{kind:'task'}))[0];assert.equal(task.content.eventRef.id,ping.id);assert.match(task.content.text,/Attend ping/);
+ const attendance=await rpc('events.plan',{source:'zuri',id:ping.id});assert.equal(attendance.planned,true);assert.equal((await rpc('events.plan',{source:'zuri',id:ping.id})).task_id,attendance.task_id);await assert.rejects(rpc('objects.activity',{id:ping.id,view:'chat'}),/Join/);await rpc('entities.join',{id:ping.id});assert.equal((await rpc('objects.activity',{id:ping.id,view:'chat'}))[0].body,'A real group message');
+ const task=(await rpc('records.list',{kind:'task'}))[0];assert.equal(task.content.eventRef.id,ping.id);assert.equal(task.content.text,ping.title);
  await rpc('entities.join',{id:channel.id});await assert.rejects(rpc('objects.publish',{id:channel.id,kind:'post',body:'Impersonate owner',request_id:randomUUID()}),/Participation/);
  await assert.rejects(rpc('objects.summary',{id:society.id}),/unavailable/);await assert.rejects(rpc('objects.activity',{id:society.id}),/access/);
  const file=randomUUID();await pg.exec('reset role');await pg.query("insert into public.zuri_media(id,owner_id,path,size_bytes,mime,state) values($1,$2,$3,20,'image/png','ready')",[file,a,`${a}/${file}.png`]);await as(a);

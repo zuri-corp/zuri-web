@@ -60,9 +60,9 @@ export default function ExternalMotionEvents({onOpen}:{onOpen:(id:string)=>void}
       {!loading && !error && events.length > 0 && <p role="status">{filtered.length} {filtered.length === 1 ? 'event' : 'events'}{query || source !== 'all' ? ' matching your search' : ' to explore'} · Times in East Africa Time</p>}
       {!loading && !error && events.length > 0 && filtered.length === 0 && <p>No matches. Try another place, category, or source.</p>}
       <div className="cw-event-grid">
-      {!loading && !error && filtered.slice(0, shown).map(event => <EventCard key={event.id} event={event} onOpen={()=>onOpen(event.id)}/>)}
+      {filtered.slice(0, shown).map(event => <EventCard key={event.id} event={event} onOpen={()=>onOpen(event.id)}/>)}
       </div>
-      {!loading && !error && filtered.length > shown && <button type="button" className="cw-link" onClick={() => setShown(value => value + 12)}>Show more events ({filtered.length - shown} remaining)</button>}
+      {filtered.length > shown && <button type="button" className="cw-link" onClick={() => setShown(value => value + 12)}>Show more events ({filtered.length - shown} remaining)</button>}
     </section>
   )
 }

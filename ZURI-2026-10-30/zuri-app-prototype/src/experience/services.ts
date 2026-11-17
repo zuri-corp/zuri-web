@@ -137,11 +137,11 @@ export async function getViolaStatus(signal?: AbortSignal): Promise<{enabled:boo
   const value = await response.json();
   return {enabled:value.enabled === true,reason:typeof value.reason==="string"?value.reason:undefined};
 }
-export async function askViola(messages: {role:'user'|'assistant'; content:string}[],approvedJson?:string,eventReferences:ViolaEventResult['reference'][]=[],pingReferences:string[]=[]): Promise<{reply:string;intent:ConversationIntent|null;sources:KnowledgeSource[];events:ViolaEventResult[];pings:ViolaPingResult[];pingDraft:ViolaPingDraft|null}> {
+export async function askViola(messages: {role:'user'|'assistant'; content:string}[],approvedJson?:string,eventReferences:ViolaEventResult['reference'][]=[],pingReferences:string[]=[],assistant:'viola'|'robert'='viola'): Promise<{reply:string;intent:ConversationIntent|null;sources:KnowledgeSource[];events:ViolaEventResult[];pings:ViolaPingResult[];pingDraft:ViolaPingDraft|null}> {
   if(!approvedJson||!matchesAIReview(messages,approvedJson))throw Error('Review the exact conversation before sending.');
   messages=reviewedAIMessages(messages);
-  const json=JSON.stringify({messages,eventReferences,pingReferences});if(lastReviewedAI.json!==json)lastReviewedAI={json,id:crypto.randomUUID()};
-  const {response,value}=await (await import('./aiService')).requestAI('viola',{method:'POST',body:JSON.stringify({messages,eventReferences,pingReferences,consent:true,requestId:lastReviewedAI.id}),signal:AbortSignal.timeout(50000)});
+  const json=JSON.stringify({assistant,messages,eventReferences,pingReferences});if(lastReviewedAI.json!==json)lastReviewedAI={json,id:crypto.randomUUID()};
+  const {response,value}=await (await import('./aiService')).requestAI('viola',{method:'POST',body:JSON.stringify({assistant,messages,eventReferences,pingReferences,consent:true,requestId:lastReviewedAI.id}),signal:AbortSignal.timeout(50000)});
   if (!response.ok || typeof value.reply !== 'string' || !value.reply.trim()) throw new Error(typeof value.error === 'string' ? value.error : 'Viola could not finish. Please retry.');
   return {reply:value.reply,intent:readConversationIntent(value.intent,messages,'app'),sources:sourceLinks(value.sources),events:readViolaEvents(value.events),pings:readViolaPings(value.pings),pingDraft:readViolaPingDraft(value.pingDraft)};
 }

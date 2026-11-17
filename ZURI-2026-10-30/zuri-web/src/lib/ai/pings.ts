@@ -166,7 +166,7 @@ function parsePingStart(query:string,now:number):string|null {
 function pingLocation(query:string):string {
   const destination=query.match(/\banyone heading to\s+([a-z0-9][a-z0-9 .'-]{1,99})/i);
   if(destination)return destination[1].split(/\b(?:on\s+)?(?:today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday|20\d{2}-\d{2}-\d{2})\b/i)[0].trim().slice(0,120);
-  const match=query.match(/\b(?:at|in|near)\s+([a-z0-9][a-z0-9 .'-]{1,99})/i);
+  const match=query.replace(/\bat\s+(?:noon|midnight|\d{1,2}(?::[0-5]\d)?\s*(?:am|pm)|(?:[01]?\d|2[0-3]):[0-5]\d)\b/gi,'').match(/\b(?:at|in|near)\s+([a-z0-9][a-z0-9 .'-]{1,99})/i);
   if(!match)return '';
   const location=match[1]
     .split(/\b(?:today|tomorrow|tonight|monday|tuesday|wednesday|thursday|friday|saturday|sunday|this weekend|next week|at\s+(?:noon|midnight|\d)|i need|looking for|need\s+\d+)\b/i)[0]
@@ -177,7 +177,7 @@ function pingLocation(query:string):string {
 function pingTitle(query:string):string {
   if(/\banyone heading to\b/i.test(query))return `Heading to ${pingLocation(query)}`.trim().slice(0,120);
   const stripped=query.replace(/^\s*(?:viola[,:\s]*)?/i,'')
-    .replace(/^(?:create|make|start|post|set up|draft)\s+(?:a\s+)?(?:motion\s+)?ping\s+(?:for\s+)?/i,'')
+    .replace(/^(?:i (?:wanna|want to|would like to|need to)\s+)?(?:create|make|start|post|set up|draft)\s+(?:a\s+)?(?:motion\s+)?ping\s+(?:for\s+)?/i,'')
     .replace(/^(?:anyone up for|anyone heading to|looking for\s+(?:one|two|three|four|five|\d+)\s+people to|looking for someone to(?: join me)?|who wants to(?: join me)?)\s+/i,'')
     .replace(/^join me\s+/i,'');
   if(/^(?:(?:the\s+)?(?:first|second|third|last)(?:\s+(?:event|one))?|that|this|the event|it)\b/i.test(stripped))return '';
@@ -207,7 +207,7 @@ export function prepareViolaPingDraft(query:string,events:ViolaEvent[],now=Date.
   const linkedEvent=linkRequested?(namedEvent??(eventIndex>=0?events[eventIndex]:events.length===1?events[0]:undefined)):undefined;
   const location=pingLocation(query)||[linkedEvent?.location.venue,linkedEvent?.location.city].filter(Boolean).join(', ');
   const title=pingTitle(query)||linkedEvent?.title||'';
-  const category=/\b(?:football|fifa|basketball|volleyball|sport|game)\b/i.test(query)?'Sport':/study|calculus|homework/i.test(query)?'Study':'';
+  const category=/\b(?:football|fifa|basketball|volleyball|cycling|bike riding|sport|game)\b/i.test(query)?'Sport':/study|calculus|homework/i.test(query)?'Study':'';
   return {
     title,
     description:query.trim().slice(0,1000),

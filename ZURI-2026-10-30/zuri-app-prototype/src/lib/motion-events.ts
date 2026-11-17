@@ -34,7 +34,7 @@ export async function getMotionEvents(): Promise<ImportedMotionEvent[]> {
       .select('id,source,title,description,category,starts_at,ends_at,sessions,source_payload,next_occurrence_at,location,image,registration_url')
       .eq('verification_status', 'verified')
       .eq('publication_status', 'published')
-      .or(`next_occurrence_at.gte.${new Date(now).toISOString()},ends_at.gte.${new Date(now).toISOString()}`)
+      .or(`next_occurrence_at.gte.${new Date(now).toISOString()},starts_at.gte.${new Date(now).toISOString()},ends_at.gte.${new Date(now).toISOString()}`)
       .order('id', { ascending: true })
       .range(offset, offset + 99)
     if (error) throw error
