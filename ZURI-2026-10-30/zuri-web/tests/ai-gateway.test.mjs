@@ -384,3 +384,21 @@ test('explicit today request reads only dated Planner tasks and excludes unrelat
  assert.equal(response.status,200);
  assert.deepEqual(state.calls.find(call=>call.rpc==='zuri_backend').args,{action:'records.list',payload:{kind:'task'}});
 });
+
+test('owned Pamoja context answers explicit requests without including other owners or other object kinds',async()=>{
+ state.ownedEntities=[
+  {kind:'space',owner_id:state.user.id,title:'Campus Repairs',description:'Laptop repairs'},
+  {kind:'space',owner_id:'another-user',title:'PRIVATE_OTHER_SPACE',description:'Private details'},
+  {kind:'society',owner_id:state.user.id,title:'PRIVATE_SOCIETY',description:'Members only'}
+ ];
+ globalThis.fetch=async(_url,options)=>{
+  const payload=JSON.parse(options.body),input=JSON.parse(payload.input);
+  assert.deepEqual(input.MY_PAMOJA_OBJECTS,[{kind:'space',title:'Campus Repairs',about:'Laptop repairs'}]);
+  assert.ok(!payload.input.includes('PRIVATE_OTHER_SPACE'));
+  assert.ok(!payload.input.includes('PRIVATE_SOCIETY'));
+  return provider(JSON.stringify({reply:'Your Space is Campus Repairs, offering laptop repairs.',intent:null,sourceIds:[]}));
+ };
+ const response=await viola(req(violaBody([{role:'user',content:'Tell me about my spaces'}])));
+ assert.equal(response.status,200);
+ assert.deepEqual(state.calls.find(call=>call.rpc==='zuri_backend').args,{action:'entities.list',payload:{}});
+});

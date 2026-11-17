@@ -1,5 +1,6 @@
+import PublishLore from './PublishLore';
 import {CropPhotoInput} from './SpaceUI';
-import {useEffect,useState,type FormEvent} from 'react';
+import {useEffect,useRef,useState,type FormEvent} from 'react';
 import MediaViewer from './MediaViewer';
 import {MomentTile} from './ObjectLayout';
 import MomentViewer from './MomentViewer';
@@ -13,6 +14,10 @@ type Props={route:Route;records:CloudRecord[];busy:boolean;onOpen:(kind:string,i
 export default function CloudLore({route,records,busy,onOpen,onSave,onRun,onBack,onDelete}:Props){
  const isChapter=route.tab==='Chapters',kind=isChapter?'chapter':'moment';
  const record=records.find(r=>r.id===route.id),creating=route.kind===`new-${kind}`;
+ const [publishRecord,setPublishRecord]=useState<CloudRecord|null>(null);
+ const held=useRef(false),press=useRef<{timer:number;x:number;y:number}|null>(null);
+ function cancelPress(){if(press.current)window.clearTimeout(press.current.timer);press.current=null;}
+ useEffect(()=>cancelPress,[]);
  const [optionsId,setOptionsId]=useState('');
  const moments=records.filter(item=>item.kind==='moment');
  const [previewId,setPreviewId]=useState('');
@@ -30,5 +35,9 @@ export default function CloudLore({route,records,busy,onOpen,onSave,onRun,onBack
   return <ChapterWorkspace record={record} busy={busy} onEdit={beginEdit} onSave={content=>onSave(record,content,null)}/>;
  }
  if(!isChapter)return <div className="sr-moments-grid">{moments.map(record=><MomentTile key={record.id} record={record} onOpen={()=>setPreviewId(record.id)} onOptions={()=>setOptionsId(record.id)}/>)}{previewIndex>=0&&<MediaViewer index={previewIndex} count={moments.length} onChange={i=>setPreviewId(moments[i].id)} onClose={()=>setPreviewId('')}><MomentViewer key={previewId} record={moments[previewIndex]} busy={busy} onSave={(content,file)=>onSave(moments[previewIndex],content,file)} onDelete={async()=>{await onDelete(moments[previewIndex]);setPreviewId('');}}/></MediaViewer>}{optionsRecord&&<MomentViewer record={optionsRecord} busy={busy} onDismiss={()=>setOptionsId('')} onSave={(content,file)=>onSave(optionsRecord,content,file)} onDelete={()=>onDelete(optionsRecord)}/>} {!records.length&&<p>Tap + to keep a moment.</p>}</div>;
- return <><div className="cw-lore-collection">{records.filter(r=>r.kind===kind).map(r=><button className="cw-lore-card" key={r.id} onClick={()=>onOpen(kind,r.id)} aria-label={'Open '+kind+': '+String(r.content.title||'Untitled')}><AppGlyph name={isChapter?'Chapters':'Moments'} size={25}/><span><strong>{String(r.content.title||'Untitled')}</strong><small>{new Date(r.updated_at).toLocaleDateString()} · Private</small>{isChapter&&<small>{chapterEntries(r.content.entries).length} entries</small>}</span><AppGlyph name="next" size={18}/></button>)}</div>{!records.length&&<section className="cw-empty"><h3>{isChapter?'A story starts here.':'Make room for a moment.'}</h3><p>Tap + when you are ready.</p></section>}</>;
+ return <>{publishRecord&&<PublishLore record={publishRecord} onClose={()=>setPublishRecord(null)}/>}<div className="cw-lore-collection">{records.filter(r=>r.kind===kind).map(r=><button className="cw-lore-card" key={r.id} onClick={()=>{if(!held.current)onOpen(kind,r.id);held.current=false;}}
+ onContextMenu={e=>{e.preventDefault();cancelPress();held.current=true;setPublishRecord(r);}}
+ onPointerDown={e=>{held.current=false;if(e.pointerType==='mouse'||!e.isPrimary)return;cancelPress();press.current={timer:window.setTimeout(()=>{held.current=true;setPublishRecord(r);},550),x:e.clientX,y:e.clientY};}}
+ onPointerMove={e=>{if(press.current&&Math.hypot(e.clientX-press.current.x,e.clientY-press.current.y)>12)cancelPress();}}
+ onPointerUp={cancelPress} onPointerLeave={cancelPress} onPointerCancel={cancelPress} aria-label={'Open '+kind+': '+String(r.content.title||'Untitled')}><AppGlyph name={isChapter?'Chapters':'Moments'} size={25}/><span><strong>{String(r.content.title||'Untitled')}</strong><small>{new Date(r.updated_at).toLocaleDateString()} · Private</small>{isChapter&&<small>{chapterEntries(r.content.entries).length} entries</small>}</span><AppGlyph name="next" size={18}/></button>)}</div>{!records.length&&<section className="cw-empty"><h3>{isChapter?'A story starts here.':'Make room for a moment.'}</h3><p>Tap + when you are ready.</p></section>}</>;
 }

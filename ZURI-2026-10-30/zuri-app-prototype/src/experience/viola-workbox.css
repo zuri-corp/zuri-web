@@ -113,3 +113,13 @@
 .vw-ai-intro>div{display:flex;gap:8px;flex-wrap:wrap}
 .vw-ai-intro button{background:#ffffff08;border:1px solid #ffffff20;border-radius:14px;padding:10px 12px;color:inherit;text-align:left;min-height:44px}
 .vw-header select{max-width:110px;background:transparent;color:inherit;border:0;font:inherit}
+
+.zs-ai-entry{position:relative;cursor:pointer}
+.zs-ai-entry-open{position:absolute;inset:0;background:transparent;border:0;border-radius:inherit}
+.zs-ai-entry>:not(.zs-ai-entry-open){position:relative}
+.vw-compose-tools{display:flex;align-items:center;gap:8px;padding:2px 5px 8px}
+.vw-compose-tools button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:36px;min-height:36px;background:transparent;color:inherit;border:1px solid #ffffff20;border-radius:12px;font-size:12px}
+.vw-context-menu{max-height:180px;overflow:auto;display:grid;gap:5px;padding:10px;background:#151b2d;border-radius:14px;margin:0 0 8px}
+.vw-context-menu button{text-align:left;display:grid;gap:3px;padding:8px;background:#ffffff08;color:inherit;border-radius:10px}
+.vw-context-menu p{font-size:12px;margin:0 0 5px}
+.vw-note-preview{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;font-size:12px}

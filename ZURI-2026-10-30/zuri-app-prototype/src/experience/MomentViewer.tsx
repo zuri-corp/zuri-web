@@ -1,3 +1,4 @@
+import PublishLore from './PublishLore';
 import {useEffect,useRef,useState} from 'react';
 import {cloudRequest,downloadCloud,type CloudRecord} from './cloudClient';
 import {ScopedMedia} from './ObjectLayout';
@@ -43,10 +44,12 @@ export default function MomentViewer({record,busy,onSave,onDelete,onDismiss}:{re
    {media?<ScopedMedia id={media} scope="private" mime={String(record.content.mime||'')} alt={title}/>:<p>{String(record.content.text||title)}</p>}
    <button type="button" className="oc-moment-menu" aria-label="Moment options" onClick={open}>⋯</button>
   </div>}
-  {menu&&<Modal label="Moment options" onClose={()=>{if(!working)dismiss();}}>
+  {menu&&action==='publish'&&<PublishLore record={record} onClose={()=>{setAction('');dismiss();}}/>}
+  {menu&&action!=='publish'&&<Modal label="Moment options" onClose={()=>{if(!working)dismiss();}}>
    <div className="oc-moment-actions">
     <strong>{title}</strong>
     {!action&&<>
+     <button onClick={()=>setAction('publish')}>Publish to Channel</button>
      <button onClick={()=>setAction('rename')}>Rename</button>
      <button onClick={()=>void work(async()=>{setChapters(await cloudRequest<CloudRecord[]>('records.list',{kind:'chapter'}));setAction('context');},false)} disabled={working}>Add to a Chapter</button>
      <button onClick={()=>setAction('replace')}>Replace media</button>

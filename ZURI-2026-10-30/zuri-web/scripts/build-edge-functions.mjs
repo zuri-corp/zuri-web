@@ -14,7 +14,7 @@ replaceOnce('export async function aiRequest(request:Request, forcedMode?:AIMode
 replaceOnce('createPublicSupabaseClient(),await createServerSupabaseClient()','motionClient,userClient');
 replaceOnce(',await createServerSupabaseClient());}',',userClient);}');
 replaceOnce("(await createServerSupabaseClient()).rpc('zuri_search_channel_experiences'","userClient.rpc('zuri_search_channel_experiences'");
-replaceOnce("(await createServerSupabaseClient()).rpc('zuri_backend'","userClient.rpc('zuri_backend'");
+source=source.replaceAll("(await createServerSupabaseClient()).rpc('zuri_backend'","userClient.rpc('zuri_backend'");
 source=source.replace(/^  if\(!sameOrigin\(request\)\).*\r?\n/m,'');
 const actorStart=source.indexOf('  let actor:string|null;'),actorEnd=source.indexOf('  if(!actor)return',actorStart);if(actorStart<0||actorEnd<0)throw Error('Gateway principal boundary changed.');source=source.slice(0,actorStart)+source.slice(actorEnd);
 replaceOnce('  const client=createAdminClient();','');

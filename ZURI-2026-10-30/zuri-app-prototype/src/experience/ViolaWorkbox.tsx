@@ -20,8 +20,11 @@ type Message={role:'user'|'assistant';content:string;sources?:KnowledgeSource[];
 type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'viola'|'robert';onAssistant:(value:'viola'|'robert')=>void;visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
 
 export default function ViolaWorkbox(p:Props){
- const [fullMode,setFullMode]=useState(false);
+ const [fullMode,setFullMode]=useState(true);
  const [brief,setBrief]=useState<'updates'|'report'|null>(null),[rizzDraft,setRizzDraft]=useState<string|null>(null);
+ const [capabilities,setCapabilities]=useState(false),[contextRows,setContextRows]=useState<CloudEntity[]>([]),[contextLoading,setContextLoading]=useState(false);
+ const [attachment,setAttachment]=useState<{name:string;text:string}|null>(null);
+ const textFile=useRef<HTMLInputElement>(null);
  const [lore,setLore]=useState<LoreRequest|null>(null);
  const [plan,setPlan]=useState<IntentPlan|null>(null),[turns,setTurns]=useState<Message[]>([]),[taskOpen,setTaskOpen]=useState(false),[task,setTask]=useState(''),[date,setDate]=useState(''),[approval,setApproval]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [pingDraft,setPingDraft]=useState<ViolaPingDraft|null>(null),[pingApproved,setPingApproved]=useState(false),[pingBusy,setPingBusy]=useState(false),[publishedPing,setPublishedPing]=useState(''),[pingError,setPingError]=useState('');
@@ -42,9 +45,42 @@ export default function ViolaWorkbox(p:Props){
  function useConversation(request:IntentRequest){try{analyse(request.text,request.goal??'',request.details);p.setInput('');}catch(e){setError((e as Error).message);}}
  function clearArtifacts(){setReference(null);setCreation(null);setDraftVisibility(null);setSavedEntity(null);setPlan(null);setPingDraft(null);setTaskOpen(false);setApproval('');setAura(null);setLore(null);setBrief(null);setRizzDraft(null);setNotice('');setError('');setPingApproved(false);setPublishedPing('');setPingError('');}
  function newTopic(){clearArtifacts();setTurns([]);p.onReset();input.current?.focus();}
+ async function showCapabilities(){
+  setCapabilities(value=>!value);
+  if(capabilities)return;
+  setContextLoading(true);setError('');
+  try{setContextRows(await cloudRequest<CloudEntity[]>('entities.contexts',{}));}
+  catch{setError('Sign in to choose a Space, Society or Channel.');}
+  finally{setContextLoading(false);}
+ }
+ function recordToLore(){
+  const messages=[...turns,...p.messages];
+  const user=[...messages].reverse().find(message=>message.role==='user')?.content||p.input.trim();
+  const assistant=[...messages].reverse().find(message=>message.role==='assistant')?.content;
+  const source=[user,assistant].filter(Boolean).join('\n\n');
+  if(!source&&!attachment){setError('Tell me what you want to keep, or attach a note first.');return;}
+  const content=[source,attachment?.text].filter(Boolean).join('\n\n').slice(0,4000);
+  const project=/\b(?:project|course|semester|exam|research|business plan|chapter)\b/i.test(user);
+  const summary=user.replace(/^(?:please\s+)?(?:save|record|remember)\s+(?:this\s+)?(?:to lore\s*:?)?/i,'').trim();
+  const title=summary.split(/[.!?\n]/)[0].split(/\s+/).slice(0,9).join(' ').slice(0,120)||attachment?.name||'Conversation note';
+  setLore({kind:project?'chapter':'moment',mode:'draft',term:title,body:content});
+  setCapabilities(false);setError('');
+ }
+ async function attachNote(file?:File){
+  if(!file)return;
+  if(file.size>24000){setError('Choose a text note smaller than 24 KB.');return;}
+  try{const text=(await file.text()).trim();if(!text||text.includes('\u0000'))throw Error();setAttachment({name:file.name,text:text.slice(0,3000)});setError('');}
+  catch{setError('Choose a readable .txt or .md note.');}
+ }
  function submit(){
   if(!p.input.trim()||p.busy)return;
+  if(attachment){
+   p.setInput((p.input.trim()+'\n\nAttached note ('+attachment.name+'):\n'+attachment.text).slice(0,1500));
+   setAttachment(null);
+   setError('Your note is included below. Review it, then send.');return;
+  }
   const request=p.input.trim();
+  if(/^(?:save|record|keep)\s+(?:this\s+)?(?:in|to)\s+lore[.!]*$/i.test(request)){recordToLore();p.setInput('');return;}
   if(/^(?:new topic|start over|clear chat|change topic)[.!\s]*$/i.test(request)){newTopic();return;}
   if(p.assistant==='robert'){
    clearArtifacts();
@@ -195,6 +231,22 @@ export default function ViolaWorkbox(p:Props){
  {notice&&<div className="vw-success" role="status"><span>✓</span>{notice}<button onClick={()=>{p.onClose();p.go({world:'motion',tab:'Planner'});}}>Open Planner <AppGlyph name="next" size={16}/></button></div>}
  {error&&<p className="vw-error" role="alert">{error}</p>}{p.error&&p.enabled!==false&&<p className="vw-error" role="alert">{p.error}</p>}
  </div>
- <footer className="vw-compose"><form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Robert':'Message Viola'} placeholder={p.assistant==='robert'?'Ask Robert about your business…':'Message Viola…'} value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label="Send to Viola" disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
+ <footer className="vw-compose">
+ <div className="vw-compose-tools">
+  <button type="button" disabled={p.busy} aria-label="Attach text note" onClick={()=>textFile.current?.click()}><AppGlyph name="plus" size={19}/></button>
+  <input type="file" accept=".txt,.md,text/plain,text/markdown" hidden ref={textFile} onChange={e=>{void attachNote(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
+  <button type="button" disabled={p.busy} aria-expanded={capabilities} aria-label="Choose Pamoja context" onClick={()=>void showCapabilities()}>@</button>
+  <button type="button" disabled={p.busy} onClick={recordToLore}><AppGlyph name="Chapters" size={17}/> Record to Lore</button>
+ </div>
+ {attachment&&<div className="vw-note-preview"><span>{attachment.name}</span><button type="button" onClick={()=>setAttachment(null)} aria-label="Remove note"><AppGlyph name="close" size={15}/></button></div>}
+ {capabilities&&<div className="vw-context-menu" aria-label="Pamoja context">
+  <p>Choose an object to mention in your message.</p>
+  {contextLoading&&<small role="status">Loading your context…</small>}
+  {contextRows.slice(0,20).map(row=><button type="button" key={row.id} onClick={()=>{
+   p.setInput((p.input+'\nRegarding my '+row.kind+' “'+row.title+'”'+(row.description?': '+row.description.slice(0,220):'')).trim().slice(0,1500));setCapabilities(false);input.current?.focus();
+  }}><strong>{row.title}</strong><small>{row.kind} · {row.visibility}</small></button>)}
+  {!contextLoading&&!contextRows.length&&<small>No available Pamoja objects.</small>}
+ </div>}
+ <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Robert':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label="Send to Viola" disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
  </dialog></div>,document.body);
 }
