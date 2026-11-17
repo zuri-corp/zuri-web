@@ -370,3 +370,17 @@ test('event provider failures retain the reservation and do not return retrieved
  assert.equal(state.calls.some(call=>call.rpc.includes('release')),false);assert.equal(lastDiagnostic().stage,'provider');assert.equal(lastDiagnostic().category,'provider_http_error');
  assert.ok(!JSON.stringify(diagnostics).includes('PRIVATE_PROVIDER_ERROR_MARKER'));
 });
+
+test('explicit today request reads only dated Planner tasks and excludes unrelated private content',async()=>{
+ const today=new Date(Date.now()+3*3600000).toISOString().slice(0,10);
+ state.plannerRows=[{kind:'task',content:{text:'Study circuits',date:today,done:false}},{kind:'task',content:{text:'Old task',date:'2001-01-01'}},{kind:'moment',content:{text:'PRIVATE_MOMENT',date:today}}];
+ globalThis.fetch=async(_url,options)=>{
+  const payload=JSON.parse(options.body),input=JSON.parse(payload.input);
+  assert.deepEqual(input.TODAY_PLANNER,[{title:'Study circuits',done:false}]);
+  assert.ok(!payload.input.includes('PRIVATE_MOMENT'));
+  return provider(JSON.stringify({reply:'You have Study circuits in Planner today.',intent:null,sourceIds:[]}));
+ };
+ const response=await viola(req(violaBody([{role:'user',content:'What am I doing today?'}])));
+ assert.equal(response.status,200);
+ assert.deepEqual(state.calls.find(call=>call.rpc==='zuri_backend').args,{action:'records.list',payload:{kind:'task'}});
+});

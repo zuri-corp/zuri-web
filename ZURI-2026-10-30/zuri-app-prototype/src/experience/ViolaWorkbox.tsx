@@ -20,6 +20,7 @@ type Message={role:'user'|'assistant';content:string;sources?:KnowledgeSource[];
 type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'viola'|'robert';onAssistant:(value:'viola'|'robert')=>void;visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
 
 export default function ViolaWorkbox(p:Props){
+ const [fullMode,setFullMode]=useState(false);
  const [brief,setBrief]=useState<'updates'|'report'|null>(null),[rizzDraft,setRizzDraft]=useState<string|null>(null);
  const [lore,setLore]=useState<LoreRequest|null>(null);
  const [plan,setPlan]=useState<IntentPlan|null>(null),[turns,setTurns]=useState<Message[]>([]),[taskOpen,setTaskOpen]=useState(false),[task,setTask]=useState(''),[date,setDate]=useState(''),[approval,setApproval]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -160,10 +161,11 @@ export default function ViolaWorkbox(p:Props){
   </section>;
  }
  if(!p.visible)return null;
- return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><dialog ref={dialog} className="vw-box vw-glass vw-simple" aria-labelledby="vw-title" aria-modal={false} onCancel={e=>{e.preventDefault();p.onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
- <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'work':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Robert</option></select></h2></div><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
+ return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><dialog ref={dialog} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal={false} onCancel={e=>{e.preventDefault();p.onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
+ <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'work':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Robert</option></select></h2></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
- <div className="vw-conversation" role="log" aria-label="Conversation with Viola" aria-live="polite">
+ {!p.messages.length&&!turns.length&&<div className="vw-ai-intro"><h3>{p.assistant==='robert'?'Work on your business':'What would you like to work on?'}</h3><p>{p.assistant==='robert'?'Explore a market, improve an offering, or plan your next customer conversation.':'Ask a question, work through an idea, study a topic, or find something to do.'}</p><div>{(p.assistant==='robert'?['Help me find customers for my business','Help me improve an offering']:['Explain Kirchhoff’s laws with an example','Help me plan my weekend']).map(text=><button type="button" key={text} onClick={()=>{p.setInput(text);input.current?.focus();}}>{text}</button>)}</div></div>}
+ <div className="vw-conversation" role="log"  aria-label="Conversation with Viola" aria-live="polite">
   {turns.map((m,i)=><div key={'local'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}><p>{m.content}</p></div>)}
   {p.messages.map((m,i)=><div key={'ai'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}>
    <p>{m.content}</p>

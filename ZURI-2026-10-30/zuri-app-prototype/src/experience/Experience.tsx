@@ -85,13 +85,19 @@ export default function Experience() {
   const aiEpoch=useRef(0);
   const [violaSession,setViolaSession]=useState(0);
   const [assistant,setAssistant]=useState<'viola'|'robert'>('viola');
-  function startViola(text=''){resetViola();setAiInput(text);setViolaSession(session=>session+1);setViola(true);}
-  function closeViola(){setViola(false);resetViola();setViolaSession(session=>session+1);}
+  function startViola(text=''){if(text)setAiInput(text);setViola(true);}
+  function closeViola(){setViola(false);}
   function resetViola(){aiEpoch.current++;setAiMessages([]);setAIIntent(null);setAiError('');setAiBusy(false);setAiInput('');}
   const [aiError, setAiError] = useState('');
   const [aiIntent,setAIIntent]=useState<ConversationIntent|null>(null);
   const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>([]);
   const [aiInput, setAiInput] = useState('');
+  useEffect(()=>{
+   const clear=()=>{setViola(false);resetViola();setViolaSession(value=>value+1);};
+   window.addEventListener('zuri-account-changed',clear);
+   return()=>window.removeEventListener('zuri-account-changed',clear);
+  },[]);
+
   const [photo, setPhoto] = useState<string>();
   const [photoError, setPhotoError] = useState('');
   const [importError, setImportError] = useState('');
