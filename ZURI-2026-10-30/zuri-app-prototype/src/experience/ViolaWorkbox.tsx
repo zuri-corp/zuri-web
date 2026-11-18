@@ -35,7 +35,7 @@ export default function ViolaWorkbox(p:Props){
  const [frame,setFrame]=useState<CSSProperties>({visibility:'hidden'});
  useLayoutEffect(()=>{if(!p.visible)return;const app=document.querySelector('.zuri-exp');if(!app)return;const measure=()=>{const r=app.getBoundingClientRect();setFrame({left:r.left,top:r.top,width:r.width,height:r.height,borderRadius:getComputedStyle(app).borderRadius});};measure();const observer=new ResizeObserver(measure);observer.observe(app);window.addEventListener('resize',measure);window.addEventListener('scroll',measure,true);return()=>{observer.disconnect();window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};},[p.visible]);
  const dialog=useRef<HTMLDialogElement>(null),input=useRef<HTMLTextAreaElement>(null),body=useRef<HTMLDivElement>(null),restoreFocus=useRef<HTMLElement|null>(null),pingRequest=useRef({key:'',id:''});
- useEffect(()=>{const d=dialog.current;if(!p.visible)return;restoreFocus.current=document.activeElement as HTMLElement|null;if(d&&!d.open)d.show();input.current?.focus();return()=>{if(d?.open)d.close();restoreFocus.current?.focus();};},[p.visible]);
+ useEffect(()=>{const d=dialog.current;if(!p.visible)return;setFullMode(true);restoreFocus.current=document.activeElement as HTMLElement|null;if(d&&!d.open)d.show();input.current?.focus();return()=>{if(d?.open)d.close();restoreFocus.current?.focus();};},[p.visible]);
  useEffect(()=>{if(body.current)body.current.scrollTop=body.current.scrollHeight;},[p.messages,p.busy,p.intent,turns,plan,taskOpen,notice]);
  useEffect(()=>{const draft=[...p.messages].reverse().find(message=>message.pingDraft)?.pingDraft;if(draft){setPingDraft({...draft});setPingApproved(false);setPublishedPing('');setPingError('');}},[p.messages]);
  function analyse(text:string,goal='',details:IntentDetails={}){
@@ -62,20 +62,24 @@ export default function ViolaWorkbox(p:Props){
   const content=[source,attachment?.text].filter(Boolean).join('\n\n').slice(0,4000);
   const project=/\b(?:project|course|semester|exam|research|business plan|chapter)\b/i.test(user);
   const summary=user.replace(/^(?:please\s+)?(?:save|record|remember)\s+(?:this\s+)?(?:to lore\s*:?)?/i,'').trim();
-  const title=summary.split(/[.!?\n]/)[0].split(/\s+/).slice(0,9).join(' ').slice(0,120)||attachment?.name||'Conversation note';
+  const topic=summary.replace(/^(?:explain|tell me about|help me understand|help me with|what is|what are)\s+/i,'')
+   .split(/\b(?:in (?:one|two|three|four|\d+) sentences?|and (?:give|show|make)|with (?:a short|an?|one) (?:numerical )?example)\b/i)[0].trim();
+  const title=topic.split(/[.!?\n]/)[0].split(/\s+/).slice(0,9).join(' ').slice(0,120)||attachment?.name||'Conversation note';
   setLore({kind:project?'chapter':'moment',mode:'draft',term:title,body:content});
   setCapabilities(false);setError('');
  }
  async function attachNote(file?:File){
   if(!file)return;
   if(file.size>24000){setError('Choose a text note smaller than 24 KB.');return;}
-  try{const text=(await file.text()).trim();if(!text||text.includes('\u0000'))throw Error();setAttachment({name:file.name,text:text.slice(0,3000)});setError('');}
+  try{const text=(await file.text()).trim();if(!text||text.includes('\u0000'))throw Error();if(text.length>1200){setError('Choose a note up to 1,200 characters so you can review it in the message.');return;}setAttachment({name:file.name,text:text.slice(0,3000)});setError('');}
   catch{setError('Choose a readable .txt or .md note.');}
  }
  function submit(){
   if(!p.input.trim()||p.busy)return;
   if(attachment){
-   p.setInput((p.input.trim()+'\n\nAttached note ('+attachment.name+'):\n'+attachment.text).slice(0,1500));
+   const withNote=p.input.trim()+'\n\nAttached note ('+attachment.name+'):\n'+attachment.text;
+   if(withNote.length>1500){setError('Shorten your message or note to fit 1,500 characters together.');return;}
+   p.setInput(withNote);
    setAttachment(null);
    setError('Your note is included below. Review it, then send.');return;
   }

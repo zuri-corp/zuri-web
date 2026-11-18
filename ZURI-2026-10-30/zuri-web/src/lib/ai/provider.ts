@@ -98,7 +98,7 @@ export async function geminiResponse(payload:ProviderPayload,key:string) {
     body:JSON.stringify({
       systemInstruction:{parts:[{text:payload.instructions}]},
       contents:[{role:'user',parts:[{text:typeof payload.input==='string'?payload.input:JSON.stringify(payload.input)}]}],
-      generationConfig:{maxOutputTokens:payload.max_output_tokens,responseMimeType:'application/json',responseSchema:schema},
+      generationConfig:{maxOutputTokens:payload.max_output_tokens,responseMimeType:'application/json',responseSchema:schema,...(/^gemini-(?:3\.5-flash(?:-lite)?|3-flash-preview)$/.test(payload.model)?{thinkingConfig:{thinkingLevel:'minimal'}}:{})},
     }),
     signal:AbortSignal.timeout(45000),redirect:'error',cache:'no-store',
   });

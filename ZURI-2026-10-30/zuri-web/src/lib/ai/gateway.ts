@@ -185,6 +185,11 @@ ${input.mode==='guide'?'Return JSON with reply and intent:null. Have a normal he
     if(error instanceof ProviderFailure){category=error.category;httpStatus=error.httpStatus;finishReason=error.finishReason;}
     logAIRequestFailure({requestId:input.requestId,mode:input.mode,provider:config.provider,stage,category,...(httpStatus!==undefined?{httpStatus}:{}),...(finishReason?{finishReason}:{}),...(databaseCode?{databaseCode}:{}),...(inputTokens!==undefined?{inputTokens}:{}),...(outputTokens!==undefined?{outputTokens}:{})});
     if(stage==='response_parsing'||stage==='response_validation')return json({error:'Viola’s reply didn’t come through in a usable format. Your message is still here.',code:'invalid_provider_reply',requestId:input.requestId},503);
-    return json({error:'AI could not finish safely. This request’s allowance remains reserved for review; it will not be automatically retried. On-device planning is still available.',code:'reconciliation_required',requestId:input.requestId},503);
+    const explanation=finishReason==='MAX_TOKENS'?'Viola reached the reply length limit.':
+      category==='provider_timeout'?'Viola’s model took too long to answer.':
+      category==='provider_http_error'&&httpStatus===429?'Viola’s model is temporarily rate limited.':
+      category==='provider_blocked'||finishReason==='SAFETY'?'The model could not answer this request.':
+      stage==='settlement'?'Your AI usage could not be confirmed.':'Viola could not complete this reply.';
+    return json({error:explanation+' Your request is held for review. Please avoid sending it repeatedly.',code:'reconciliation_required',requestId:input.requestId,diagnostic:{stage,category,...(httpStatus?{httpStatus}:{}),...(finishReason?{finishReason}:{})}},503);
   }
 }
