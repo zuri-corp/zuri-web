@@ -27,7 +27,7 @@ export async function handler(request:Request){
   const hash=[...new Uint8Array(fingerprint)].map(value=>value.toString(16).padStart(2,'0')).join('');
   const {data:hold,error:holdError}=await admin.rpc('zuri_ai_reserve',{actor:user.id,request_id:requestId,fingerprint:hash,mode:'viola',model,reserved_micros:reserved,input_rate:inputRate,output_rate:outputRate});
   if(holdError||!hold?.reserved)return reply({error:holdError?.code==='P0001'?'Your AI allowance is unavailable for another poster right now.':'This poster request could not be reserved.',code:holdError?.code},databaseStatus(holdError?.code),headers);
-  const provider=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['IMAGE'],responseFormat:{image:{aspectRatio,imageSize:'1K'}}}}),signal:AbortSignal.timeout(55000)});
+  const provider=await fetch(`https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['TEXT','IMAGE'],imageConfig:{aspectRatio,imageSize:'1K'}}}),signal:AbortSignal.timeout(55000)});
   if(!provider.ok)return reply({error:'The image model could not make this poster. Your request is held for review.'},503,headers);
   const result=await provider.json();
   const part=result?.candidates?.[0]?.content?.parts?.find((item:unknown)=>typeof item==='object'&&item&&'inlineData' in item)?.inlineData;
