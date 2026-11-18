@@ -16,7 +16,7 @@ export async function handler(request:Request){
   if(request.method!=='POST')return reply({error:'Use POST.'},405,headers);
   const {user,admin}=await identity(request);
   if(Deno.env.get('ZURI_IMAGE_ENABLED')!=='true')return reply({error:'Poster generation is not enabled.'},503,headers);
-  const key=Deno.env.get('GEMINI_API_KEY'),model=Deno.env.get('ZURI_IMAGE_MODEL')||'gemini-3.1-flash-image';
+  const key=Deno.env.get('GEMINI_API_KEY'),model=Deno.env.get('ZURI_IMAGE_MODEL')||'gemini-2.5-flash-image';
   if(!key||!/^gemini-[a-z0-9._-]{1,90}$/i.test(model))return reply({error:'Poster generation is unavailable.'},503,headers);
   const body=await edgeJson(request,1800);
   const prompt=text(body.prompt,1200),requestId=text(body.requestId,36),aspectRatio=text(body.aspectRatio,5);
@@ -27,8 +27,9 @@ export async function handler(request:Request){
   const hash=[...new Uint8Array(fingerprint)].map(value=>value.toString(16).padStart(2,'0')).join('');
   const {data:hold,error:holdError}=await admin.rpc('zuri_ai_reserve',{actor:user.id,request_id:requestId,fingerprint:hash,mode:'viola',model,reserved_micros:reserved,input_rate:inputRate,output_rate:outputRate});
   if(holdError||!hold?.reserved)return reply({error:holdError?.code==='P0001'?'Your AI allowance is unavailable for another poster right now.':'This poster request could not be reserved.',code:holdError?.code},databaseStatus(holdError?.code),headers);
-  const provider=await fetch(`https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['TEXT','IMAGE'],imageConfig:{aspectRatio,imageSize:'1K'}}}),signal:AbortSignal.timeout(55000)});
-  if(!provider.ok)return reply({error:'The image model could not make this poster. Your request is held for review.'},503,headers);
+  const imageConfig=model.startsWith('gemini-2.5-')?{aspectRatio}:{aspectRatio,imageSize:'1K'};
+  const provider=await fetch(`https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['TEXT','IMAGE'],imageConfig}}),signal:AbortSignal.timeout(55000)});
+  if(!provider.ok){console.error('Image provider rejected request',provider.status,await provider.text());return reply({error:provider.status===403?'Image generation is not enabled for the ZURI AI account yet.':provider.status===404?'The configured image model is not available.':'The image model could not make this poster. Your request is held for review.'},503,headers);}
   const result=await provider.json();
   const part=result?.candidates?.[0]?.content?.parts?.find((item:unknown)=>typeof item==='object'&&item&&'inlineData' in item)?.inlineData;
   const data=typeof part?.data==='string'?part.data:'';
