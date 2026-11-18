@@ -35,7 +35,7 @@ export default function DistributeConversation({text,onClose}:{text:string;onClo
   <label>Your post<textarea rows={4} maxLength={4000} value={body} disabled={busy||published} onChange={e=>setBody(e.target.value)}/></label>
   {channels.map(channel=><label className="cw-check" key={channel.id}><input type="checkbox" checked={selected.includes(channel.id)} disabled={busy||results.some(result=>result.id===channel.id&&result.state==='published')} onChange={e=>setSelected(previous=>e.target.checked?[...previous,channel.id]:previous.filter(id=>id!==channel.id))}/>{channel.title} · {channel.visibility}</label>)}
   {loading&&<small role="status">Loading your Channels…</small>}
-  {!loading&&!error&&!creating&&<button type="button" className="vw-text" disabled={busy} onClick={()=>setCreating(true)}>Create a Channel</button>}
+  {!creating&&<button type="button" className="vw-text" disabled={busy} onClick={()=>setCreating(true)}>Create a Channel</button>}
   {creating&&<EntityEditor kind="channel" inline initialFields={{visibility:'private'}} onCancel={()=>setCreating(false)} onCreated={row=>{
    setChannels(previous=>[row,...previous]);setSelected(previous=>[...previous,row.id]);setCreating(false);
   }}/>}
