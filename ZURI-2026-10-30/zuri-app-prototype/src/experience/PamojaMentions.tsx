@@ -1,3 +1,4 @@
+import {getMotionEvents} from '../lib/motion-events';
 import {useEffect,useState} from 'react';
 import {cloudRequest,discoverCloud,type CloudEntity,type CloudRecord} from './cloudClient';
 
@@ -9,6 +10,7 @@ export default function PamojaMentions({onChoose}:{onChoose:(mention:Mention)=>v
  useEffect(()=>{
   let active=true;
   const reads=[
+   getMotionEvents().then(items=>items.map(item=>({id:item.id,kind:'event',title:item.title,about:[item.next_occurrence_at,item.location?.venue,item.description?.slice(0,220)].filter(Boolean).join(' · '),visibility:'public'}))),
    cloudRequest<CloudEntity[]>('entities.contexts').then(items=>items.map(item=>({id:item.id,kind:item.kind,title:item.title,about:item.description,visibility:item.visibility}))),
    ...['chapter','moment','task'].map(kind=>cloudRequest<CloudRecord[]>('records.list',{kind}).then(items=>items.map(item=>({id:item.id,kind,title:String(item.content.title||item.content.text||'Untitled').slice(0,120),about:String(item.content.text||'').slice(0,400),visibility:'private'}))))
   ];

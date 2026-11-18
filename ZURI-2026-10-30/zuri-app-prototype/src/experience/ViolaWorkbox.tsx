@@ -255,9 +255,9 @@ export default function ViolaWorkbox(p:Props){
  {capabilities&&<PamojaMentions onChoose={item=>{
   const mention='\n@'+item.kind+': '+item.title+' ('+item.visibility+')'+(item.about?'\n'+item.about.slice(0,400):'');
   if(p.input.length+mention.length>1500){setError('Shorten the message to add this context.');return;}
-  p.setInput((p.input+mention).trim());setCapabilities(false);input.current?.focus();
+  p.setInput((p.input.replace(/(?:^|\s)@$/,'')+mention).trim());setCapabilities(false);input.current?.focus();
  }}/>}
  {motionMenu&&<div className="vw-motion-choices" aria-label="Create in Motion"><button type="button" onClick={()=>createMotion('ping')}>Create Ping</button><button type="button" onClick={()=>createMotion('event')}>Create Event</button><button type="button" onClick={()=>{p.onClose();p.open('new-task','new');}}>Add Planner task</button></div>}
- <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Sanyu':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label={p.assistant==='robert'?'Send to Sanyu':'Send to Viola'} disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
+ <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Sanyu':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');if(/(?:^|\s)@$/.test(e.target.value)){setCapabilities(true);setMotionMenu(false);}}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label={p.assistant==='robert'?'Send to Sanyu':'Send to Viola'} disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
  </dialog></div>,document.body);
 }

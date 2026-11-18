@@ -190,6 +190,6 @@ ${input.mode==='guide'?'Return JSON with reply and intent:null. Have a normal he
       category==='provider_http_error'&&httpStatus===429?'Viola’s model is temporarily rate limited.':
       category==='provider_blocked'||finishReason==='SAFETY'?'The model could not answer this request.':
       stage==='settlement'?'Your AI usage could not be confirmed.':'Viola could not complete this reply.';
-    return json({error:explanation+' Your request is held for review. Please avoid sending it repeatedly.',code:'reconciliation_required',requestId:input.requestId,diagnostic:{stage,category,...(httpStatus?{httpStatus}:{}),...(finishReason?{finishReason}:{})}},503);
+    return json({error:explanation+' Your request is held for review. Please avoid sending it repeatedly. Support code: '+category+(httpStatus?' '+httpStatus:'')+(finishReason?' '+finishReason:''),code:'reconciliation_required',requestId:input.requestId,diagnostic:{stage,category,...(httpStatus?{httpStatus}:{}),...(finishReason?{finishReason}:{})}},503);
   }
 }
