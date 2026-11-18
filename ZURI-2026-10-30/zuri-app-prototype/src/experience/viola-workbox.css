@@ -123,3 +123,15 @@
 .vw-context-menu button{text-align:left;display:grid;gap:3px;padding:8px;background:#ffffff08;color:inherit;border-radius:10px}
 .vw-context-menu p{font-size:12px;margin:0 0 5px}
 .vw-note-preview{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;font-size:12px}
+
+.zs-world-entrance{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;pointer-events:none;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--entrance-color),#09121f 76%),#09121f);color:white;animation:zs-world-arrive .7s ease both}
+.zs-world-entrance strong{font-size:clamp(32px,6vw,54px);letter-spacing:-.04em}
+.zs-world-entrance span{font-size:14px;max-width:300px;text-align:center;opacity:.8}
+@keyframes zs-world-arrive{0%{opacity:0;transform:scale(1.025)}20%,65%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.99)}}
+@media(prefers-reduced-motion:reduce){.zs-world-entrance{display:none}}
+
+.vw-compose-tools{flex-wrap:wrap}
+.vw-event-title{background:transparent;color:inherit;text-align:left;font-weight:700;padding:0;font-size:inherit}
+.vw-motion-choices{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.vw-motion-choices button{min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid #ffffff25;background:#ffffff08;color:inherit}
+.vw-ai-message p{white-space:pre-wrap}

@@ -1,3 +1,5 @@
+import PamojaMentions from './PamojaMentions';
+import DistributeConversation from './DistributeConversation';
 import MotionReference,{motionReference,type MotionReferenceRequest} from './MotionReference';
 import EntityEditor,{entityNames} from './EntityScreens';
 import {creationDraft,reviseCreation,type CreationDraft} from './violaDrafts';
@@ -22,7 +24,7 @@ type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'
 export default function ViolaWorkbox(p:Props){
  const [fullMode,setFullMode]=useState(true);
  const [brief,setBrief]=useState<'updates'|'report'|null>(null),[rizzDraft,setRizzDraft]=useState<string|null>(null);
- const [capabilities,setCapabilities]=useState(false),[contextRows,setContextRows]=useState<CloudEntity[]>([]),[contextLoading,setContextLoading]=useState(false);
+ const [capabilities,setCapabilities]=useState(false),[motionMenu,setMotionMenu]=useState(false),[distribution,setDistribution]=useState<string|null>(null);
  const [attachment,setAttachment]=useState<{name:string;text:string}|null>(null);
  const textFile=useRef<HTMLInputElement>(null);
  const [lore,setLore]=useState<LoreRequest|null>(null);
@@ -42,16 +44,26 @@ export default function ViolaWorkbox(p:Props){
   const result=resolveIntent({text,surface:'app',...(goal?{goal}:{}),details});
   setPlan(result);setTask(`${result.steps[0]?.title||'Choose my next step'}: ${result.request.text}`.slice(0,500));setDate('');setTaskOpen(false);setApproval('');setNotice('');setError('');return result;
  }
- function useConversation(request:IntentRequest){try{analyse(request.text,request.goal??'',request.details);p.setInput('');}catch(e){setError((e as Error).message);}}
- function clearArtifacts(){setReference(null);setCreation(null);setDraftVisibility(null);setSavedEntity(null);setPlan(null);setPingDraft(null);setTaskOpen(false);setApproval('');setAura(null);setLore(null);setBrief(null);setRizzDraft(null);setNotice('');setError('');setPingApproved(false);setPublishedPing('');setPingError('');}
+ function useConversation(request:IntentRequest){try{
+ const resolved=analyse(request.text,request.goal??'',request.details);
+ const action=resolved.actions.find(item=>item.id==='open-workflow'||item.id==='find-people');
+ const next=action?intentTarget(resolved,action.id):null;
+ if(resolved.status==='ready'&&next?.scope==='app'&&next.href){p.onClose();p.go(parseRoute(next.href));}
+ p.setInput('');
+}catch(e){setError((e as Error).message);}}
+ function clearArtifacts(){setDistribution(null);setCapabilities(false);setMotionMenu(false);setReference(null);setCreation(null);setDraftVisibility(null);setSavedEntity(null);setPlan(null);setPingDraft(null);setTaskOpen(false);setApproval('');setAura(null);setLore(null);setBrief(null);setRizzDraft(null);setNotice('');setError('');setPingApproved(false);setPublishedPing('');setPingError('');}
  function newTopic(){clearArtifacts();setTurns([]);p.onReset();input.current?.focus();}
- async function showCapabilities(){
-  setCapabilities(value=>!value);
-  if(capabilities)return;
-  setContextLoading(true);setError('');
-  try{setContextRows(await cloudRequest<CloudEntity[]>('entities.contexts',{}));}
-  catch{setError('Sign in to choose a Space, Society or Channel.');}
-  finally{setContextLoading(false);}
+ function distribute(){
+  const text=p.input.trim()||[...p.messages,...turns].reverse().find(message=>message.role==='assistant')?.content||'';
+  setDistribution(text.slice(0,4000));setMotionMenu(false);setCapabilities(false);
+ }
+ function createMotion(kind:'event'|'ping'){
+  const text=p.input.trim()||[...p.messages,...turns].reverse().find(message=>message.role==='user')?.content||'';
+  clearArtifacts();
+  setCreationSession(value=>value+1);
+  setCreation({kind,fields:{description:text.slice(0,1000)}});
+  setMotionMenu(false);
+  setTurns(previous=>[...previous,{role:'assistant',content:'Let’s shape your '+kind+'. Add a name, date and place, then review it before publishing.'}]);
  }
  function recordToLore(){
   const messages=[...turns,...p.messages];
@@ -86,12 +98,6 @@ export default function ViolaWorkbox(p:Props){
   const request=p.input.trim();
   if(/^(?:save|record|keep)\s+(?:this\s+)?(?:in|to)\s+lore[.!]*$/i.test(request)){recordToLore();p.setInput('');return;}
   if(/^(?:new topic|start over|clear chat|change topic)[.!\s]*$/i.test(request)){newTopic();return;}
-  if(p.assistant==='robert'){
-   clearArtifacts();
-   if(p.enabled){setTurns([]);p.onAsk();return;}
-   setTurns(previous=>[...previous,{role:'user',content:request},{role:'assistant',content:'Have you sold this before? If yes, look at what brought your last customer and repeat one step. If not, start with one likely buyer and test whether they would pay.'}]);
-   p.setInput('');return;
-  }
   const greet=/^(?:hi|hey|hello|good morning|good afternoon|good evening)(?:\s+viola)?[.!]*$/i.test(request);
   const updates=/\b(?:updates|news|report|brief|summari[sz]e|what.s new)\b/i.test(request)&&/\b(?:aura|spaces?|societ(?:y|ies)|echoes|topics)\b/i.test(request)||/^what.s new[?!.]*$/i.test(request);
   const post=request.match(/^(?:(?:can|could) you\s+)?(?:draft|write|create|prepare)\s+(?:a\s+)?(?:rizz\s+)?(?:post|channel update)(?:\s+(?:about|saying|that says)\s+(.+))?[.!]?$/i);
@@ -161,10 +167,10 @@ export default function ViolaWorkbox(p:Props){
  const recentPingResults=[...p.messages].reverse().find(message=>message.role==='assistant'&&message.pings?.length)?.pings??[];
  function eventCard(event:ViolaEventResult){
   return <article className="vw-event-card" key={`${event.reference.source}:${event.reference.id}`}>
-   <header><span><strong>{event.title}</strong><small>{event.source} · {event.status==='ongoing'?'Happening now':'Upcoming'}</small></span>{event.visibility==='private'&&<small>Private</small>}</header>
+   <header><span><button className="vw-event-title" type="button" onClick={()=>{p.onClose();p.open(event.reference.source==='zuri_entities'?'event':'external-event',event.reference.id);}}>{event.title}</button><small>{event.source} · {event.status==='ongoing'?'Happening now':'Upcoming'}</small></span>{event.visibility==='private'&&<small>Private</small>}</header>
    <p>{new Date(event.startsAt).toLocaleString('en-GB',{timeZone:'Africa/Kampala',dateStyle:'medium',timeStyle:'short'})} EAT{event.location.venue||event.location.city||event.location.country?` · ${[event.location.venue,event.location.city,event.location.country].filter(Boolean).join(', ')}`:''}</p>
    {event.description&&<p>{event.description}</p>}
-   <div className="vw-card-actions">{event.canonicalUrl&&<a href={event.canonicalUrl} target="_blank" rel="noopener noreferrer">Open event listing <AppGlyph name="next" size={16}/></a>}{event.reference.source==='zuri_entities'&&<button className="vw-text" onClick={()=>{p.onClose();p.open('event',event.reference.id);}}>Open in Motion <AppGlyph name="next" size={16}/></button>}</div>
+   <div className="vw-card-actions"><button className="vw-text" onClick={()=>{p.onClose();p.open(event.reference.source==='zuri_entities'?'event':'external-event',event.reference.id);}}>View event <AppGlyph name="next" size={16}/></button></div>
   </article>;
  }
  function pingCard(ping:ViolaPingResult){
@@ -202,10 +208,10 @@ export default function ViolaWorkbox(p:Props){
  }
  if(!p.visible)return null;
  return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><dialog ref={dialog} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal={false} onCancel={e=>{e.preventDefault();p.onClose();}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
- <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'work':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Robert</option></select></h2></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
+ <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Sanyu</option></select></h2></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
  {!p.messages.length&&!turns.length&&<div className="vw-ai-intro"><h3>{p.assistant==='robert'?'Work on your business':'What would you like to work on?'}</h3><p>{p.assistant==='robert'?'Explore a market, improve an offering, or plan your next customer conversation.':'Ask a question, work through an idea, study a topic, or find something to do.'}</p><div>{(p.assistant==='robert'?['Help me find customers for my business','Help me improve an offering']:['Explain Kirchhoff’s laws with an example','Help me plan my weekend']).map(text=><button type="button" key={text} onClick={()=>{p.setInput(text);input.current?.focus();}}>{text}</button>)}</div></div>}
- <div className="vw-conversation" role="log"  aria-label="Conversation with Viola" aria-live="polite">
+ <div className="vw-conversation" role="log"  aria-label={p.assistant==='robert'?'Conversation with Sanyu':'Conversation with Viola'} aria-live="polite">
   {turns.map((m,i)=><div key={'local'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}><p>{m.content}</p></div>)}
   {p.messages.map((m,i)=><div key={'ai'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}>
    <p>{m.content}</p>
@@ -215,6 +221,7 @@ export default function ViolaWorkbox(p:Props){
   </div>)}
   {p.busy&&<div className="vw-working" role="status"><span/><span/><span/><span className="zs-sr-only">Thinking</span></div>}
  </div>
+ {distribution!==null&&<DistributeConversation text={distribution} onClose={()=>setDistribution(null)}/>}
  {brief&&<AuraBrief format={brief} onOpen={(kind,id)=>{p.onClose();p.open(kind,id);}}/>}
  {rizzDraft!==null&&<RizzDraft initial={rizzDraft} onSaved={()=>{setRizzDraft(null);p.onClose();p.go({world:'rizz',tab:'Create'});}}/>}
  {reference&&<MotionReference key={JSON.stringify(reference)} request={reference} onOpen={(kind,id)=>{p.onClose();p.open(kind,id);}}/>}
@@ -239,18 +246,18 @@ export default function ViolaWorkbox(p:Props){
  <div className="vw-compose-tools">
   <button type="button" disabled={p.busy} aria-label="Attach text note" onClick={()=>textFile.current?.click()}><AppGlyph name="plus" size={19}/></button>
   <input type="file" accept=".txt,.md,text/plain,text/markdown" hidden ref={textFile} onChange={e=>{void attachNote(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
-  <button type="button" disabled={p.busy} aria-expanded={capabilities} aria-label="Choose Pamoja context" onClick={()=>void showCapabilities()}>@</button>
+  <button type="button" disabled={p.busy} aria-expanded={capabilities} aria-label="Choose Pamoja context" onClick={()=>{setCapabilities(value=>!value);setMotionMenu(false);}}>@</button>
+  <button type="button" disabled={p.busy} onClick={distribute}><AppGlyph name="Channels" size={17}/> Distribute</button>
+  <button type="button" disabled={p.busy} aria-expanded={motionMenu} onClick={()=>{setMotionMenu(value=>!value);setCapabilities(false);}}><AppGlyph name="motion" size={17}/> Create Motion</button>
   <button type="button" disabled={p.busy} onClick={recordToLore}><AppGlyph name="Chapters" size={17}/> Record to Lore</button>
  </div>
  {attachment&&<div className="vw-note-preview"><span>{attachment.name}</span><button type="button" onClick={()=>setAttachment(null)} aria-label="Remove note"><AppGlyph name="close" size={15}/></button></div>}
- {capabilities&&<div className="vw-context-menu" aria-label="Pamoja context">
-  <p>Choose an object to mention in your message.</p>
-  {contextLoading&&<small role="status">Loading your context…</small>}
-  {contextRows.slice(0,20).map(row=><button type="button" key={row.id} onClick={()=>{
-   p.setInput((p.input+'\nRegarding my '+row.kind+' “'+row.title+'”'+(row.description?': '+row.description.slice(0,220):'')).trim().slice(0,1500));setCapabilities(false);input.current?.focus();
-  }}><strong>{row.title}</strong><small>{row.kind} · {row.visibility}</small></button>)}
-  {!contextLoading&&!contextRows.length&&<small>No available Pamoja objects.</small>}
- </div>}
- <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Robert':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label="Send to Viola" disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
+ {capabilities&&<PamojaMentions onChoose={item=>{
+  const mention='\n@'+item.kind+': '+item.title+' ('+item.visibility+')'+(item.about?'\n'+item.about.slice(0,400):'');
+  if(p.input.length+mention.length>1500){setError('Shorten the message to add this context.');return;}
+  p.setInput((p.input+mention).trim());setCapabilities(false);input.current?.focus();
+ }}/>}
+ {motionMenu&&<div className="vw-motion-choices" aria-label="Create in Motion"><button type="button" onClick={()=>createMotion('ping')}>Create Ping</button><button type="button" onClick={()=>createMotion('event')}>Create Event</button><button type="button" onClick={()=>{p.onClose();p.open('new-task','new');}}>Add Planner task</button></div>}
+ <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Sanyu':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label={p.assistant==='robert'?'Send to Sanyu':'Send to Viola'} disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>
  </dialog></div>,document.body);
 }

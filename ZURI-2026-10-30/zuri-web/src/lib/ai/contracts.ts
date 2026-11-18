@@ -41,7 +41,7 @@ export const websiteConversationSchema={...conversationOutputSchema,properties:{
 export function interpretConversationReply(raw:unknown,messages:ChatMessage[],surface:'app'|'website',allowIntent=true){
   if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Invalid conversation reply.');
   const value=raw as Record<string,unknown>;
-  if(Object.keys(value).some(k=>!['reply','intent'].includes(k))||typeof value.reply!=='string'||!value.reply.trim()||value.reply.length>2000||value.intent===undefined)throw Error('Invalid conversation reply.');
+  if(Object.keys(value).some(k=>!['reply','intent'].includes(k))||typeof value.reply!=='string'||!value.reply.trim()||value.reply.length>6000||value.intent===undefined)throw Error('Invalid conversation reply.');
   if(!allowIntent&&value.intent!==null)throw Error('Website chat does not open goal-planning flows.');
   const intent=conversationIntent(messages,value.intent as {goal:string|null;sourceIndices:number[]}|null,surface);
   return {reply:value.reply.trim(),intent,execution:false as const};

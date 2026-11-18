@@ -1,3 +1,4 @@
+import WorldEntrance from './WorldEntrance';
 import SettingsScreen from './SettingsScreen';
 import {loadPreferences,storePreferences,textScale,type AppPreferences} from './appPreferences';
 import {screenTitle,creationAction} from './screenPresentation';
@@ -320,6 +321,7 @@ export default function Experience() {
   },[route,ready]);
   if (!ready) return <div className="zuri-exp zx-opening" role="status">✦ Opening your world…</div>;
   return <div className="zuri-exp" data-nav-hidden={navHidden} onWheelCapture={()=>{userScroll.current=Date.now()+1200;}} onTouchMoveCapture={()=>{userScroll.current=Date.now()+1200;}} onScrollCapture={e=>{const el=e.target;if(route.kind||!(el instanceof HTMLElement)||el!==main.current||Date.now()<dockInteraction.current||Date.now()>userScroll.current)return;navMotion.current=nextScrollNav(navMotion.current,el.scrollTop);setNavHidden(navMotion.current.hidden);}} data-mode={isDayMode?'day':'night'} data-palette={prefs.palette} data-font={prefs.font} data-density={prefs.density} data-world={route.world} data-tab={route.tab} data-detail={route.kind||''} data-chat-theme={route.kind==='chat'?(data.chatWallpapers?.[route.id||'']||'default'):undefined} data-wallpaper={prefs.customWallpaper?'custom':prefs.wallpaper} style={{'--zx-accent':theme.color,'--zuri-text-scale':textScale[prefs.size],'--zs-wallpaper-image':prefs.customWallpaper?`url("${prefs.customWallpaper}")`:undefined} as CSSProperties}>
+    <WorldEntrance world={route.world}/>
     <a href="#zx-main" className="zx-skip" onClick={e=>{e.preventDefault();main.current?.focus({preventScroll:true});}}>Skip to workspace</a>
     {import.meta.env.MODE==='website'&&<DesktopWorkspace local={deviceMode} route={route} data={deviceMode?data:initialData} launch={launch} go={go} open={open} onViola={()=>startViola()} onIntroduction={()=>setIntroductionOpen(true)}/>}
     <div className="zx-body">

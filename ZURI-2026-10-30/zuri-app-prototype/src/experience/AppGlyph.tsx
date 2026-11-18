@@ -48,7 +48,7 @@ export function AppGlyph({name,size=24}:{name:string;size?:number}){
   const asset=(import.meta.env?.BASE_URL||'/')+'brand/chevron.svg';
   return <span aria-hidden="true" className="zuri-chevron" style={{display:'inline-block',width:size,height:size,flexShrink:0,verticalAlign:'middle',backgroundColor:'currentColor',mask:`url(${asset}) center / contain no-repeat`,WebkitMask:`url(${asset}) center / contain no-repeat`,transform:name==='chevron'?'rotate(90deg)':undefined}}/>;
  }
- if(['aura','motion','rizz','lore','viola'].includes(name))return <img className="zuri-app-logo" src={(import.meta.env?.BASE_URL||'/')+'brand/'+name+'.svg'} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;
+ if(['aura','motion','rizz','lore','viola','sanyu'].includes(name))return <img className="zuri-app-logo" src={(import.meta.env?.BASE_URL||'/')+'brand/'+name+'.svg'} width={size} height={size} alt="" aria-hidden="true" draggable={false}/>;
  const Icon=icons[name]||Circle;return <Icon size={size} weight="regular" aria-hidden="true" className="zuri-ui-icon"/>;
 }
 const marks:Record<string,string>={'✦':'lounge','◇':'store','▱':'wallet','▧':'Moments','⌖':'Spaces','♧':'Societies','◒':'Chapters','✓':'check','◈':'Channels','◐':'palette','◉':'shield','↗':'next','◎':'Societies','◷':'event','✎':'note','⚑':'flag','⚙':'settings','⌘':'link','⌕':'Find','♡':'heart','☰':'note'};
