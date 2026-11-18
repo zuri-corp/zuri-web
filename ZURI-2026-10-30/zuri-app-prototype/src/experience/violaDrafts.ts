@@ -19,7 +19,7 @@ export function draftCopy(text:string,subject?:string){
 }
 
 function offering(text:string):OfferingFields{
- const title=first(text,/^(?:add|list|create|draft|publish)\s+(?:(?:a|an|the)\s+)?(?:offering\s+(?:called|named)\s+)?(.+?)(?=\s+to\s+|\s+(?:at|for)\s+UGX\b|[.!;]|$)/i);
+ const title=first(text,/^(?:add|list|create|draft|publish)\s+(?:(?:a|an|the)\s+)?(?:offering\s+(?:called|named)\s+)?(.+?)(?=\s+(?:to|in)\s+|\s+(?:at|for)\s+UGX\b|[.!;]|$)/i);
  const price=first(text,/\b(UGX\s*[\d,]+(?:\.\d+)?)/i);
  const space=first(text,/\b(?:to|in)\s+(.+?)(?=\s+(?:for|at)\s+UGX\b|[.!;]|$)/i);
  const delivery=first(text,/\b(?:we\s+deliver|delivery)\s+(?:in|to)\s+([^.!;]+)/i);
