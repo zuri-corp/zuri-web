@@ -1,10 +1,9 @@
 // GENERATED authentication adapter; canonical logic stays in src/lib/ai.
-import 'server-only';
 import {createHmac} from 'node:crypto';
-import {limitedBody} from '@/lib/http/body';
-import {zuriInstructions} from '@/lib/chat/conversation';
-import {violaInstructions} from '@/lib/experience/viola';
-import {intentCatalog,type IntentRequest} from '@/lib/intent/engine';
+import {limitedBody} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/http/body.ts';
+import {zuriInstructions} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/chat/conversation.ts';
+import {violaInstructions} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/experience/viola.ts';
+import {intentCatalog,type IntentRequest} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/intent/engine.ts';
 import {intentOutputSchema,conversationOutputSchema,websiteConversationSchema,interpretConversationReply,interpretAIIntent,validateAIInput,type AIMode} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/ai/contracts.ts';
 import {providerResponse,ProviderFailure,type AIProvider,type ProviderConfig,type ProviderPayload} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/ai/provider.ts';
 import {retrieveKnowledge} from 'C:/Users/L23/.codex/.chatgpt-projects/g-p-6aca61f20dd4819192f56640b29477f4/zuri-deployment-split/ZURI-2026-10-30/zuri-web/src/lib/ai/knowledge/retrieve.ts';

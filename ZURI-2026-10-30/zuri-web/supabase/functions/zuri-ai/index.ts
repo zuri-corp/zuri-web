@@ -1,5 +1,5 @@
 import {boundary,identity,reply,publicClient} from '../_shared/auth.ts';
-import {aiRequest,aiStatus} from '../../generated/ai-gateway.ts';
+import {aiRequest,aiStatus} from '../../deploy/zuri-ai.ts';
 export async function handler(request:Request){
  let headers:Record<string,string>={};
  try{
