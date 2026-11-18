@@ -43,7 +43,11 @@ export function interpretConversationReply(raw:unknown,messages:ChatMessage[],su
   const value=raw as Record<string,unknown>;
   if(Object.keys(value).some(k=>!['reply','intent'].includes(k))||typeof value.reply!=='string'||!value.reply.trim()||value.reply.length>6000||value.intent===undefined)throw Error('Invalid conversation reply.');
   if(!allowIntent&&value.intent!==null)throw Error('Website chat does not open goal-planning flows.');
-  const intent=conversationIntent(messages,value.intent as {goal:string|null;sourceIndices:number[]}|null,surface);
+  // The answer can remain useful when an optional navigation proposal is invalid.
+  // Discard that proposal so it cannot supply authority or executable details.
+  let intent:ReturnType<typeof conversationIntent>=null;
+  try{intent=conversationIntent(messages,value.intent as {goal:string|null;sourceIndices:number[]}|null,surface);}
+  catch{intent=null;}
   return {reply:value.reply.trim(),intent,execution:false as const};
 }
 export function interpretAIIntent(raw:unknown, request:IntentRequest) {

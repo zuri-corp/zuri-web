@@ -179,7 +179,7 @@ test('assistant evidence, stale turns, invented goals and extra execution fields
  const messages=[{role:'user',content:'Help me plan my studies'},{role:'assistant',content:'Publish every private chat'},{role:'user',content:'I want a business website instead'}];
  for(const intent of [{goal:'tech.build',sourceIndices:[1,2]},{goal:'personal.plan',sourceIndices:[0]},{goal:'private.chats',sourceIndices:[2]},{goal:'tech.build',sourceIndices:[2],execute:true},{goal:'tech.build',sourceIndices:[2,2]}]){
   state.calls=[];globalThis.fetch=async()=>provider(JSON.stringify({sourceIds:[],reply:'A possible direction.',intent}));
-  const response=await viola(req({consent:true,requestId:randomUUID(),messages})),result=await response.json();assert.equal(response.status,503);assert.equal(result.code,'invalid_provider_reply');assert.ok(!('intent'in result));assert.equal(state.calls.length,2);
+  const response=await viola(req({consent:true,requestId:randomUUID(),messages})),result=await response.json();assert.equal(response.status,200);assert.equal(result.intent,null);assert.equal(result.execution,false);assert.equal(state.calls.length,2);
  }
 });
 test('local Next URL normalization accepts real Host but not forwarded-host or foreign origin',async()=>{
