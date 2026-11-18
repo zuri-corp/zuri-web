@@ -29,7 +29,12 @@ export async function handler(request:Request){
   if(holdError||!hold?.reserved)return reply({error:holdError?.code==='P0001'?'Your AI allowance is unavailable for another poster right now.':'This poster request could not be reserved.',code:holdError?.code},databaseStatus(holdError?.code),headers);
   const imageConfig=model.startsWith('gemini-2.5-')?{aspectRatio}:{aspectRatio,imageSize:'1K'};
   const provider=await fetch(`https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseModalities:['TEXT','IMAGE'],imageConfig}}),signal:AbortSignal.timeout(55000)});
-  if(!provider.ok){console.error('Image provider rejected request',provider.status,await provider.text());return reply({error:provider.status===403?'Image generation is not enabled for the ZURI AI account yet.':provider.status===404?'The configured image model is not available.':'The image model could not make this poster. Your request is held for review.'},503,headers);}
+  if(!provider.ok){
+   console.error('Image provider rejected request',provider.status,await provider.text());
+   await admin.rpc('zuri_ai_settle',{actor:user.id,request_id:requestId,input_tokens:0,output_tokens:0,actual_micros:0});
+   const error=provider.status===403?'Image generation is not enabled for the ZURI AI account yet.':provider.status===404?'The configured image model is not available.':provider.status===400?'The image model rejected this poster request.':provider.status===429?'The image service is busy. Please try again shortly.':'The image model could not make this poster.';
+   return reply({error},503,headers);
+  }
   const result=await provider.json();
   const part=result?.candidates?.[0]?.content?.parts?.find((item:unknown)=>typeof item==='object'&&item&&'inlineData' in item)?.inlineData;
   const data=typeof part?.data==='string'?part.data:'';
@@ -37,7 +42,7 @@ export async function handler(request:Request){
   const usage=result?.usageMetadata;
   const inputs=Number.isInteger(usage?.promptTokenCount)?usage.promptTokenCount:Math.ceil(promptBytes/4);
   const outputs=Number.isInteger(usage?.candidatesTokenCount)?usage.candidatesTokenCount:imageTokens;
-  if(!data||inputs<0||inputs>1000000||outputs<0||outputs>1600)return reply({error:'The image reply was incomplete. Your request is held for review.'},503,headers);
+  if(!data||inputs<0||inputs>1000000||outputs<0||outputs>1600){await admin.rpc('zuri_ai_settle',{actor:user.id,request_id:requestId,input_tokens:0,output_tokens:0,actual_micros:0});return reply({error:'The image reply was incomplete.'},503,headers);}
   const actual=Math.ceil((inputs*inputRate+outputs*outputRate)/1000000);
   const {data:settled,error:settleError}=await admin.rpc('zuri_ai_settle',{actor:user.id,request_id:requestId,input_tokens:inputs,output_tokens:outputs,actual_micros:actual});
   if(settleError||!settled?.settled)return reply({error:'Poster usage could not be confirmed. Your request is held for review.'},503,headers);
