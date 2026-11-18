@@ -52,3 +52,11 @@ export async function getIntentAIStatus(signal?:AbortSignal):Promise<{enabled:bo
 export async function askIntentAI(input:unknown,requestId:string){
   return requestAI('intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'intent',requestId,consent:true,input}),signal:AbortSignal.timeout(55000)});
 }
+
+export async function makePoster(prompt:string,aspectRatio:'1:1'|'4:5'|'9:16'|'16:9'){
+  if(!directConfigured())throw Error('Poster generation is not connected to this app yet.');
+  const response=await fetch(`${publicConfig.url}/functions/v1/zuri-image`,{method:'POST',headers:{'Content-Type':'application/json',apikey:publicConfig.publishableKey,Authorization:`Bearer ${await cloudAccessToken()}`},body:JSON.stringify({prompt,aspectRatio,requestId:crypto.randomUUID()}),signal:AbortSignal.timeout(60000)});
+  const value=await response.json();
+  if(!response.ok||typeof value.image?.data!=='string'||typeof value.image?.mime!=='string')throw Error(typeof value.error==='string'?value.error:'Poster generation could not be completed.');
+  return value.image as {data:string;mime:'image/png'|'image/jpeg'|'image/webp'};
+}

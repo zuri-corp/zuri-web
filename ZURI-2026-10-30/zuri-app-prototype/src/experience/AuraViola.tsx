@@ -3,6 +3,7 @@ import {useEffect,useState} from 'react';
 import {browseEntities,cloudRequest,type CloudEntity} from './cloudClient';
 import {getPlacesPage,directionsUrl,type Business} from '../lib/geoapify-places';
 import OfferingEditor,{type OfferingDraft} from './OfferingEditor';
+import PosterMaker from './PosterMaker';
 import type {OfferingFields} from './violaDrafts';
 import type {Route} from './model';
 
@@ -35,7 +36,7 @@ export function AuraSearchCard({search,onOpen,go}:{search:AuraSearch;onOpen:(kin
 }
 
 export function AuraOfferingCard({currentSpace,initial}:{currentSpace?:string;initial?:OfferingFields}){
- const [spaces,setSpaces]=useState<CloudEntity[]|null>(null),[spaceId,setSpaceId]=useState(''),[error,setError]=useState(''),[saved,setSaved]=useState(''),[lookup,setLookup]=useState(initial?.space||''),[lookupBusy,setLookupBusy]=useState(false),[lookupNotice,setLookupNotice]=useState(''),[draft,setDraft]=useState<OfferingDraft|null>(null);
+ const [spaces,setSpaces]=useState<CloudEntity[]|null>(null),[spaceId,setSpaceId]=useState(''),[error,setError]=useState(''),[saved,setSaved]=useState(''),[lookup,setLookup]=useState(initial?.space||''),[lookupBusy,setLookupBusy]=useState(false),[lookupNotice,setLookupNotice]=useState(''),[draft,setDraft]=useState<OfferingDraft|null>(null),[poster,setPoster]=useState<File|null>(null);
  useEffect(()=>{let active=true;
   Promise.all([cloudRequest<{user_id:string}>('account.get'),cloudRequest<CloudEntity[]>('entities.list',{})]).then(([account,entities])=>{
    if(!active)return;
@@ -67,7 +68,7 @@ export function AuraOfferingCard({currentSpace,initial}:{currentSpace?:string;in
  return <section className="vw-compact vw-aura-card" aria-label="Offering draft"><strong>{saved?'Offering published':'Add an offering'}</strong>
   {error&&<p role="alert">{error}</p>}{!spaces&&!error&&<small role="status">Finding your Spaces…</small>}
   {spaces&&!saved&&!draft&&<details open={!spaces.length}><summary>{spaces.length?'Can’t see your Space?':'Which Space do you want to manage?'}</summary><form onSubmit={e=>{e.preventDefault();void findSpace();}}><label>Space name<input required maxLength={100} value={lookup} onChange={e=>setLookup(e.target.value)}/></label><button className="vw-text" disabled={lookupBusy}>{lookupBusy?'Checking access…':'Find my Space'}</button>{lookupNotice&&<small role="status">{lookupNotice}</small>}</form></details>}
-  {saved?<p>Published to {saved}.</p>:draft?<OfferingEditor entityId={spaceId} existing={null} initialDraft={draft} onCancel={()=>setDraft(null)} onSaved={()=>{setSaved(spaces?.find(row=>row.id===spaceId)?.title||'your Space');setDraft(null);}}/>:!!spaces?.length&&<form onSubmit={e=>{e.preventDefault();const fields=new FormData(e.currentTarget);const title=String(fields.get('name')||'').trim(),description=String(fields.get('included')||'').trim();if(title&&description&&spaceId)setDraft({title,description,priceLabel:String(fields.get('price')||'').trim(),category:initial?.category,delivery:initial?.delivery,priceMode:initial?.priceMode});}}>
+  {saved?<p>Published to {saved}.</p>:draft?<><PosterMaker draft={draft} onUse={file=>setPoster(file)}/><OfferingEditor key={poster?.name||'offering-editor'} entityId={spaceId} existing={null} initialDraft={draft} initialCover={poster} onCancel={()=>setDraft(null)} onSaved={()=>{setSaved(spaces?.find(row=>row.id===spaceId)?.title||'your Space');setDraft(null);}}/></>:!!spaces?.length&&<form onSubmit={e=>{e.preventDefault();const fields=new FormData(e.currentTarget);const title=String(fields.get('name')||'').trim(),description=String(fields.get('included')||'').trim();if(title&&description&&spaceId)setDraft({title,description,priceLabel:String(fields.get('price')||'').trim(),category:initial?.category,delivery:initial?.delivery,priceMode:initial?.priceMode});}}>
    <label>Which Space is this for?<select required value={spaceId} onChange={e=>setSpaceId(e.target.value)}><option value="">Choose a Space</option>{spaces.map(row=><option key={row.id} value={row.id}>{row.title}{row.details.location?' · '+String(row.details.location):''}</option>)}</select></label>
    {spaceId&&<><label>What are you offering?<input name="name" defaultValue={initial?.title} required maxLength={120} placeholder="Offering name"/></label><label>What’s included?<textarea name="included" defaultValue={initial?.description} required maxLength={3000} rows={2}/></label><label>Price or starting point · optional<input name="price" defaultValue={initial?.priceLabel} maxLength={100}/></label><button className="vw-primary">Review draft</button></>}
   </form>}
