@@ -75,6 +75,20 @@ test('Gemini uses the private key header, strict JSON schema and the same verifi
  };
  const response=await POST(req(request)),result=await response.json();assert.equal(response.status,200);assert.equal(result.provider,'Gemini');assert.equal(result.execution,false);assert.equal(result.plan.intentId,'personal.plan');assert.equal(result.plan.status,'ready');assert.equal(state.calls[1].rpc,'zuri_ai_settle');assert.equal(state.calls[1].args.actual_micros,205);assert.ok(!JSON.stringify(result).includes(process.env.GEMINI_API_KEY));
 });
+test('Sanyu can use a configured business model with its own exact allowance rates',async()=>{
+ process.env.ZURI_AI_PROVIDER='gemini';process.env.GEMINI_API_KEY='test-gemini-private-key';
+ Object.assign(process.env,{ZURI_AI_BUSINESS_MODEL:'gemini-3.5-flash',ZURI_AI_BUSINESS_INPUT_MICROS_PER_MILLION:'1500000',ZURI_AI_BUSINESS_OUTPUT_MICROS_PER_MILLION:'9000000'});
+ const valid=JSON.stringify({sourceIds:[],reply:'Start by naming five nearby businesses you can help.',intent:null});
+ globalThis.fetch=async(url,options)=>{
+  assert.equal(url,'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent');
+  assert.equal(options.headers['x-goog-api-key'],'test-gemini-private-key');
+  return geminiProvider(valid);
+ };
+ const response=await viola(req({...violaBody([{role:'user',content:'Help me find business customers.'}]),assistant:'robert'}));
+ assert.equal(response.status,200);assert.equal((await response.json()).reply,'Start by naming five nearby businesses you can help.');
+ const reservation=state.calls.find(call=>call.rpc==='zuri_ai_reserve');
+ assert.equal(reservation.args.model,'gemini-3.5-flash');assert.equal(reservation.args.input_rate,1500000);assert.equal(reservation.args.output_rate,9000000);
+});
 test('Gemini safety blocks and missing token usage withhold the reserved response',async()=>{
  process.env.ZURI_AI_PROVIDER='gemini';process.env.GEMINI_API_KEY='test-gemini-private-key';
  for(const response of [

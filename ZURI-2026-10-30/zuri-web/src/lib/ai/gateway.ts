@@ -27,10 +27,12 @@ function logAIRequestFailure(details:{
 }) {
   console.error('ZURI_AI_REQUEST_FAILED',JSON.stringify(details));
 }
-function configuration(mode:AIMode):ProviderConfig|null {
+function configuration(mode:AIMode,assistant?:'robert'):ProviderConfig|null {
   const provider=(process.env.ZURI_AI_PROVIDER||'openai').toLowerCase();
   if(provider!=='openai'&&provider!=='gemini')return null;
-  const prefix=mode==='intent'?'ZURI_AI_INTENT':'ZURI_AI_CHAT';
+  const defaultPrefix=mode==='intent'?'ZURI_AI_INTENT':'ZURI_AI_CHAT';
+  const businessKeys=['ZURI_AI_BUSINESS_MODEL','ZURI_AI_BUSINESS_INPUT_MICROS_PER_MILLION','ZURI_AI_BUSINESS_OUTPUT_MICROS_PER_MILLION'];
+  const prefix=mode==='viola'&&assistant==='robert'&&businessKeys.every(key=>process.env[key]!==undefined)?'ZURI_AI_BUSINESS':defaultPrefix;
   const configuredProvider=provider as AIProvider;
   const key=configuredProvider==='gemini'?process.env.GEMINI_API_KEY:process.env.OPENAI_API_KEY;
   const model=process.env[`${prefix}_MODEL`]||(configuredProvider==='gemini'?process.env.GEMINI_MODEL:undefined);
@@ -70,7 +72,7 @@ export async function aiRequest(request:Request, forcedMode?:AIMode) {
   const channelQuery=input.mode==='viola'?latestUser.match(/^(?:search|find) channel (?:experiences|posts)(?: about| on| for)?[: ]+(.{2,120})$/i)?.[1]?.trim():undefined;
   const allowGoalIntent=input.mode==='viola'&&!eventSearch&&!pingSearch&&!pingDraftRequest&&!channelQuery;
   if(process.env.ZURI_AI_EDGE_ENABLED==='true'&&!eventSearch&&!pingSearch&&!pingDraftRequest)return edgeAI(input.mode,input);
-  const config=configuration(input.mode);
+  const config=configuration(input.mode,input.assistant);
   if(!config&&!pingDraftRequest)return json({error:'ZURI AI is not connected. Use on-device planning or prepare a brief.',code:'ai_unavailable'},503);
   let actor:string|null;
   try{actor=await principal();}catch{return json({error:'Sign-in is unavailable.',code:'auth_unavailable'},503);}
