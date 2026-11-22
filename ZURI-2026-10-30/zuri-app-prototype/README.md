@@ -1,8 +1,8 @@
-p# ZURI app — primary development project
+# ZURI app — primary development project
 
-This is the standalone ZURI application we build and preview in this chat. It opens directly at `/` into Lounge. The current source of truth is `src/App.tsx` → `src/experience/Experience.tsx`. The old directory name `zuri-app-prototype` is retained to preserve project continuity.
+This is the standalone ZURI application. It opens directly at `/` into Lounge. The current source of truth is `src/App.tsx` → `src/experience/Experience.tsx`. The directory name `zuri-app-prototype` is retained to preserve deployment continuity.
 
-The sibling `zuri-web/` is the corporate website and existing Supabase/backend reference. It is not this app. Future app milestones should update this project and its running preview here.
+This is the only active product source. Its `database/` directory contains the Supabase schema and operational SQL; `supabase/` contains Edge Functions, configuration and deployment sources. Future milestones should update this project and its running preview here.
 
 ## Run
 

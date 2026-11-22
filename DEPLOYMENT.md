@@ -1,16 +1,17 @@
 # Deploying ZURI
 
-Open `ZURI.code-workspace` in VS Code. GitHub holds the two frontends in this repository, while Supabase hosts the shared accounts, records, storage, and Edge Functions for project `eghtvbqzytyxsdgvwkge`.
+ZURI is now a single standalone application. Open `ZURI.code-workspace` in VS Code and work only in `ZURI-2026-10-30/zuri-app-prototype`.
+
+Supabase hosts the shared accounts, records, storage and Edge Functions for project `eghtvbqzytyxsdgvwkge`. The database migrations and Edge Function source live alongside the app so there is one tracked codebase.
 
 | Vercel project | Root directory | Framework | Build |
 | --- | --- | --- | --- |
-| `zuri-preview-2026-10-30` | `ZURI-2026-10-30/zuri-web` | Next.js | `npm run build` |
-| `zuri-app-prototype` | `ZURI-2026-10-30/zuri-app-prototype` | Vite | `npm run build:standalone` → `dist` |
+| `zuri-app-prototype` | `ZURI-2026-10-30/zuri-app-prototype` | Vite | `npm run build` → `dist` |
 
-Connect both Vercel projects to `zuri-corp/zuri-web`. Enable **Include source files outside of the Root Directory** for the website. The website builds its `/app` experience from the sibling app source, so both deployments use the same app code. The standalone deployment signs in against Supabase and calls the authenticated ZURI Edge Functions. It does not require a browser request to the website’s private API.
+Connect that one Vercel project to `zuri-corp/zuri-web`. Do not set a monorepo root or enable source files outside the root directory.
 
-For the website, set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL` for the intended environment. Set server-only `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in the website project when enabling server features that require them. Use `zuri-web/.env.example` for optional feature flags and gateway settings. Configure hosted AI credentials in the server environment or Supabase Edge Function secrets, depending on the configured gateway.
+The public Supabase connection is already included for the app. If it must be overridden, configure `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` together. Do not add server credentials, provider keys or Supabase secret keys as `VITE_*` values. Leave `VITE_ZURI_API_BASE` unset unless a trusted same-origin proxy is deliberately deployed.
 
-For the standalone app, the repo includes the current public Supabase connection. Use `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` together when overriding it. Keep `VITE_ZURI_API_BASE` unset for the standalone Vercel project. Never expose Supabase server credentials or AI provider keys as `VITE_*` values. Keep Edge CORS origins and Supabase Auth redirect URLs limited to the app and website hosts you actually use.
+Deploy schema and Edge Functions separately from frontend releases. Database SQL is under `zuri-app-prototype/database`; Edge Functions and their deployment source are under `zuri-app-prototype/supabase`. Apply only unapplied migrations, in order. Keep Supabase Auth redirect URLs and `ZURI_ALLOWED_ORIGINS` limited to the live app domain(s) you use.
 
-Keep database SQL and Edge Function source under `zuri-web/database` and `zuri-web/supabase`. Deploy schema and Edge Functions separately from frontend releases. Apply only unapplied migrations, in order. The current shared project already has migrations 019–021 applied.
+The retired corporate website remains recoverable from Git history but is no longer part of the active codebase or release process.

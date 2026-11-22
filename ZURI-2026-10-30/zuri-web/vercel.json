@@ -1,5 +1,0 @@
-{
-  "framework": "nextjs",
-  "installCommand": "npm ci && npm --prefix ../zuri-app-prototype ci",
-  "buildCommand": "npm run build"
-}
