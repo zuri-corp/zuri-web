@@ -23,7 +23,7 @@ function EventManagement({entity,summary,onRefresh}:{entity:CloudEntity;summary:
 }
 function EntityDeletion({entity,onDeleted}:{entity:CloudEntity;onDeleted:(kind:string)=>void}){
  const [armed,setArmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
- async function remove(){if(busy)return;setBusy(true);setError('');try{await cloudRequest('entities.delete',{id:entity.id,expected_updated_at:entity.updated_at});onDeleted(entity.kind);}catch(e){setError(e instanceof Error?e.message:'Deletion could not be confirmed.');}finally{setBusy(false);}}
+ async function remove(){if(busy)return;setBusy(true);setError('');try{const result=await cloudRequest<{deleted?:boolean}>('entities.delete',{id:entity.id});if(result.deleted!==true)throw Error('Deletion could not be confirmed.');onDeleted(entity.kind);}catch(e){setError(e instanceof Error?e.message:'Deletion could not be confirmed.');}finally{setBusy(false);}}
  return <section className="oc-management"><h3>Remove {entity.kind}</h3>{error&&<p role="alert">{error}</p>}{armed?<p className="oc-danger-confirm">Remove this {entity.kind} from ZURI? It will no longer be visible or usable. <button className="zs-text-button" disabled={busy} onClick={()=>void remove()}>{busy?'Removing…':'Remove'}</button><button className="zs-text-button" disabled={busy} onClick={()=>setArmed(false)}>Keep it</button></p>:<button className="zs-text-button" onClick={()=>setArmed(true)}>Remove {entity.kind}</button>}</section>;
 }
 export default function ObjectWorkspace({id,onOpen,onPlanner,onDeleted,initialCollection,loadingWorld='aura'}:{loadingWorld?:string;initialCollection?:string;id:string;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onDeleted?:(kind:string)=>void}){
