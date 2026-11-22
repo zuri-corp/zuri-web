@@ -7,7 +7,7 @@ import {pamojaRoutes} from './pamojaRoutes';
 import type {Ping} from '../data/catalog';
 export const worlds = {
   lounge: { name: 'Lounge', mark: '✦', color: '#b7a2ff', description: 'A little space. A lot of possibility.', tabs: [] },
-  aura: { name: 'Aura', mark: '◎', color: '#00D4FF', description: 'Find your people. Feel your place.', tabs: ['Feed', 'Spaces', 'Societies', 'Find'] },
+  aura: { name: 'Aura', mark: '◎', color: '#00D4FF', description: 'Find your people. Feel your place.', tabs: ['Map', 'Spaces', 'Societies', 'Find'] },
   motion: { name: 'Motion', mark: '↗', color: '#FF6B1A', description: 'Make room for what moves you.', tabs: ['Planner', 'Events', 'Pings'] },
   rizz: { name: 'Rizz', mark: '◈', color: '#FF2878', description: 'Put a little of yourself out there.', tabs: ['Feed', 'Create', 'Channels', 'Chats'] },
   lore: { name: 'Lore', mark: '◒', color: '#4B8CF7', description: 'Your life, beautifully collected.', tabs: ['Moments', 'Discover', 'Chapters', 'Profile'] },

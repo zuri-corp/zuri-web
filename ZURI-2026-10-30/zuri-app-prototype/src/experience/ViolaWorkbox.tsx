@@ -57,6 +57,12 @@ export default function ViolaWorkbox(p:Props){
   const text=p.input.trim()||[...p.messages,...turns].reverse().find(message=>message.role==='assistant')?.content||'';
   setDistribution(text.slice(0,4000));setMotionMenu(false);setCapabilities(false);
  }
+ function addSpaceContext(){
+  if(!p.currentSpace){setCapabilities(true);setMotionMenu(false);return;}
+  const mention='\n@space: Current Space ('+p.currentSpace+')';
+  if(!p.input.includes(mention.trim()))p.setInput((p.input+mention).trim());
+  setCapabilities(false);input.current?.focus();
+ }
  function createMotion(kind:'event'|'ping'){
   const text=p.input.trim()||[...p.messages,...turns].reverse().find(message=>message.role==='user')?.content||'';
   clearArtifacts();
@@ -247,9 +253,10 @@ export default function ViolaWorkbox(p:Props){
   <button type="button" disabled={p.busy} aria-label="Attach text note" onClick={()=>textFile.current?.click()}><AppGlyph name="plus" size={19}/></button>
   <input type="file" accept=".txt,.md,text/plain,text/markdown" hidden ref={textFile} onChange={e=>{void attachNote(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
   <button type="button" disabled={p.busy} aria-expanded={capabilities} aria-label="Choose Pamoja context" onClick={()=>{setCapabilities(value=>!value);setMotionMenu(false);}}>@</button>
-  <button type="button" disabled={p.busy} onClick={distribute}><AppGlyph name="Channels" size={17}/> Distribute</button>
+  <button type="button" disabled={p.busy} onClick={distribute}><AppGlyph name="rizz" size={17}/> Distribute</button>
   <button type="button" disabled={p.busy} aria-expanded={motionMenu} onClick={()=>{setMotionMenu(value=>!value);setCapabilities(false);}}><AppGlyph name="motion" size={17}/> Create Motion</button>
-  <button type="button" disabled={p.busy} onClick={recordToLore}><AppGlyph name="Chapters" size={17}/> Record to Lore</button>
+  <button type="button" disabled={p.busy} onClick={recordToLore}><AppGlyph name="lore" size={17}/> Record to Lore</button>
+  <button type="button" disabled={p.busy} onClick={addSpaceContext}><AppGlyph name="aura" size={17}/> Space</button>
  </div>
  {attachment&&<div className="vw-note-preview"><span>{attachment.name}</span><button type="button" onClick={()=>setAttachment(null)} aria-label="Remove note"><AppGlyph name="close" size={15}/></button></div>}
  {capabilities&&<PamojaMentions onChoose={item=>{

@@ -28,7 +28,7 @@
 @media(prefers-reduced-transparency:reduce){.vw-minimized,.vw-compose form,.vw-artifact,.zuri-exp .zm-viola-orb,.zuri-exp[data-world=lounge] .zm-viola-bar{background:#292d43!important;-webkit-backdrop-filter:none;backdrop-filter:none}.vw-box{-webkit-backdrop-filter:none;backdrop-filter:none}.viola-edgeglow{display:none}}
 
 /* Bound the portal to ZURI's canvas, never the surrounding browser. */
-.vw-host{position:fixed;z-index:1000;pointer-events:none;overflow:hidden;container-type:inline-size;isolation:isolate}
+.vw-host{position:fixed;z-index:1000;pointer-events:none;overflow:hidden;container-type:inline-size;isolation:isolate;animation:vw-host-in .18s ease-out both}
 .vw-host .viola-edgeglow{position:absolute;border-radius:inherit}
 .vw-host .vw-box{position:absolute;box-sizing:border-box;bottom:8px;width:calc(100% - 16px);max-width:690px;min-height:min(300px,100%);max-height:calc(100% - 16px);pointer-events:auto}
 .vw-host .vw-expanded{height:calc(100% - 16px);max-width:960px}
@@ -135,3 +135,4 @@
 .vw-motion-choices{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .vw-motion-choices button{min-height:40px;padding:8px 12px;border-radius:12px;border:1px solid #ffffff25;background:#ffffff08;color:inherit}
 .vw-ai-message p{white-space:pre-wrap}
+@keyframes vw-host-in{from{opacity:0;transform:translateY(8px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}

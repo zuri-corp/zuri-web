@@ -23,7 +23,7 @@
 .ux-hero-photo{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;z-index:-2;opacity:0;transition:opacity .3s ease}.ux-hero-photo.is-loaded{opacity:1}.oc-hero::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#10121c08 15%,#10121ce6 100%)}.oc-has-cover .oc-hero-art{display:block}.ux-hero-ready .oc-hero-art{display:none}@media(prefers-reduced-motion:reduce){.ux-hero-photo{transition:none}}
 
 .zuri-exp .ux-entity-card.ux-rect-entity{display:grid;grid-template-columns:35% minmax(0,1fr) auto;gap:12px;min-height:112px;padding:0 10px 0 0;overflow:hidden;text-align:left}
-.zuri-exp .ux-entity-card.ux-rect-entity.ux-society-card{min-height:145px}
+.zuri-exp .ux-entity-card.ux-rect-entity{min-height:132px}
 .ux-rect-photo{position:relative;align-self:stretch;display:grid;place-items:center;min-height:112px;overflow:hidden;background:var(--zs-raised)}
 .zuri-exp .ux-rect-photo>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;border:0;border-radius:0;object-fit:cover}
 .ux-rect-entity .ux-entity-copy{padding:9px 0;gap:5px;min-width:0}.ux-rect-bio{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.85em}
