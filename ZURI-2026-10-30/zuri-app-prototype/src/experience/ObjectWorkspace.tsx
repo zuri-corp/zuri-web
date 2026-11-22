@@ -18,18 +18,21 @@ import {SpaceConnections} from './SpaceUI';
 import {safeEventUrl} from '../lib/motion-event-dates';
 export const objectSections:Record<string,string[]>={space:['Overview','Offerings','Media','Events','Societies','Channels','Echoes'],society:['Topics','Chats','Media','Members','Plans'],ping:['Overview'],event:['Overview','Media','People'],channel:['Updates','Collections','Media','People']};
 export type ObjectSummary={viewer_id?:string;entity:CloudEntity;owner:boolean;joined:boolean;readable:boolean;can_post:boolean;member_count:number|null};
-function EventManagement({entity,summary,onRefresh,onDeleted}:{entity:CloudEntity;summary:ObjectSummary;onRefresh:()=>void;onDeleted:()=>void}){
- const [armed,setArmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
- async function remove(){if(busy)return;setBusy(true);setError('');try{await cloudRequest('entities.delete',{id:entity.id,expected_updated_at:entity.updated_at});onDeleted();}catch(e){setError(e instanceof Error?e.message:'Event deletion could not be confirmed.');}finally{setBusy(false);}}
- return <><section className="oc-management"><h3>Event statistics</h3><ObjectFacts facts={[{label:'People',value:summary.member_count??0},{label:'Capacity',value:entity.capacity||'Not set'},{label:'Status',value:entity.status}]}/></section><EntityEditor kind="event" id={entity.id} inline onCreated={()=>onRefresh()} onCancel={()=>{}}/><section className="oc-management"><h3>Event controls</h3>{error&&<p role="alert">{error}</p>}{armed?<p className="oc-danger-confirm">Delete this event? This removes it from ZURI. <button className="zs-text-button" disabled={busy} onClick={()=>void remove()}>{busy?'Deleting…':'Delete'}</button><button className="zs-text-button" disabled={busy} onClick={()=>setArmed(false)}>Keep event</button></p>:<button className="zs-text-button" onClick={()=>setArmed(true)}>Delete event</button>}</section></>;
+function EventManagement({entity,summary,onRefresh}:{entity:CloudEntity;summary:ObjectSummary;onRefresh:()=>void}){
+ return <><section className="oc-management"><h3>Event statistics</h3><ObjectFacts facts={[{label:'People',value:summary.member_count??0},{label:'Capacity',value:entity.capacity||'Not set'},{label:'Status',value:entity.status}]}/></section><EntityEditor kind="event" id={entity.id} inline onCreated={()=>onRefresh()} onCancel={()=>{}}/></>;
 }
-export default function ObjectWorkspace({id,onOpen,onPlanner,onDeleted,initialCollection,loadingWorld='aura'}:{loadingWorld?:string;initialCollection?:string;id:string;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onDeleted?:()=>void}){
+function EntityDeletion({entity,onDeleted}:{entity:CloudEntity;onDeleted:(kind:string)=>void}){
+ const [armed,setArmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ async function remove(){if(busy)return;setBusy(true);setError('');try{await cloudRequest('entities.delete',{id:entity.id,expected_updated_at:entity.updated_at});onDeleted(entity.kind);}catch(e){setError(e instanceof Error?e.message:'Deletion could not be confirmed.');}finally{setBusy(false);}}
+ return <section className="oc-management"><h3>Remove {entity.kind}</h3>{error&&<p role="alert">{error}</p>}{armed?<p className="oc-danger-confirm">Remove this {entity.kind} from ZURI? It will no longer be visible or usable. <button className="zs-text-button" disabled={busy} onClick={()=>void remove()}>{busy?'Removing…':'Remove'}</button><button className="zs-text-button" disabled={busy} onClick={()=>setArmed(false)}>Keep it</button></p>:<button className="zs-text-button" onClick={()=>setArmed(true)}>Remove {entity.kind}</button>}</section>;
+}
+export default function ObjectWorkspace({id,onOpen,onPlanner,onDeleted,initialCollection,loadingWorld='aura'}:{loadingWorld?:string;initialCollection?:string;id:string;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onDeleted?:(kind:string)=>void}){
  const [summary,setSummary]=useState<ObjectSummary|null>(null),[version,setVersion]=useState(0),[error,setError]=useState('');
  useEffect(()=>{let active=true;cloudRequest<ObjectSummary>('objects.summary',{id}).then(value=>{if(active){setSummary(value);setError('');}}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[id,version]);
  if(!summary)return <section>{error?<p role="alert">{error}</p>:<WorldLoader world={loadingWorld} label="Opening…"/>}<button className="zs-text-button" onClick={()=>setVersion(v=>v+1)}>Refresh</button></section>;
  return <ObjectScreen initialCollection={initialCollection} summary={summary} onOpen={onOpen} onPlanner={onPlanner} onDeleted={onDeleted||(()=>setVersion(v=>v+1))} onRefresh={()=>setVersion(v=>v+1)}/>;
 }
-export function ObjectScreen({summary,onOpen,onPlanner,onRefresh,onDeleted,initialCollection}:{initialCollection?:string;summary:ObjectSummary;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onRefresh:()=>void;onDeleted:()=>void}){
+export function ObjectScreen({summary,onOpen,onPlanner,onRefresh,onDeleted,initialCollection}:{initialCollection?:string;summary:ObjectSummary;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onRefresh:()=>void;onDeleted:(kind:string)=>void}){
  const historyRoom=window.history.state?.zuriSocietyRoom as {societyId:string;viewerId?:string;room:SocietyRoom}|undefined;
  const restored=historyRoom?.societyId===summary.entity.id&&historyRoom.viewerId===summary.viewer_id?historyRoom.room:null;
  const [chatRoom,setChatRoom]=useState<SocietyRoom|null>(restored);
@@ -59,7 +62,8 @@ export function ObjectScreen({summary,onOpen,onPlanner,onRefresh,onDeleted,initi
  {selected==='Chats'&&!chatRoom&&(participating?<SocietyChatRooms id={id} owner={owner} onOpen={selectRoom}/>:joinButton)}
  {selected==='Chats'&&chatRoom&&<button type="button" className="zs-text-button oc-chat-back" onClick={()=>selectRoom(null)}>← All chats</button>}
  {selected==='Manage'&&owner&&kind==='space'&&<><SpaceReviewPanel key={id} id={id}/><EntityEditor kind="space" id={id} inline onCreated={()=>{onRefresh();setNotice('Space saved.');}} onCancel={()=>setTab('Overview')}/></>}
- {selected==='Manage'&&owner&&kind==='event'&&<EventManagement entity={entity} summary={summary} onRefresh={()=>{onRefresh();setNotice('Event saved.');}} onDeleted={onDeleted}/>}
+ {selected==='Manage'&&owner&&kind==='event'&&<EventManagement entity={entity} summary={summary} onRefresh={()=>{onRefresh();setNotice('Event saved.');}}/>}
  {selected==='Manage'&&owner&&kind!=='space'&&kind!=='event'&&<><InlineAction label={'Edit '+name} onClick={()=>onOpen('edit-'+kind,id)}/><ObjectInvites entityId={id}/><h3>Members & requests</h3><ObjectPeople entityId={id} owner/></>}
+ {selected==='Manage'&&owner&&<EntityDeletion entity={entity} onDeleted={onDeleted}/>}
  </div></article>;
 }

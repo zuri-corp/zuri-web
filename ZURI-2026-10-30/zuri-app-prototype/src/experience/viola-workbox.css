@@ -79,9 +79,8 @@
 .oc-crop-preview:active{cursor:grabbing}
 .oc-crop-preview img{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none}
 .oc-crop-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
-.oc-crop-actions button,.oc-photo-picker input::file-selector-button{min-height:44px}
-.oc-photo-picker{min-width:0;max-width:100%}
-.oc-photo-picker input{max-width:100%;font-size:16px}
+.oc-crop-actions button{min-height:44px}
+.oc-photo-picker{min-width:0;max-width:100%;display:grid;gap:8px}.oc-media-sources{display:flex;gap:9px;flex-wrap:wrap}.oc-media-sources label{display:inline-flex;align-items:center;justify-content:center;min-height:42px;cursor:pointer}.oc-media-sources input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .oc-attachment-preview{margin:8px 0;display:grid;justify-items:start;gap:6px;max-width:100%}
 .oc-attachment-preview :is(img,video){display:block;width:auto;max-width:100%;max-height:34dvh;border-radius:12px;object-fit:contain}
 @media(max-width:600px){.oc-composer textarea{font-size:16px}.oc-crop-actions button{flex:1}}

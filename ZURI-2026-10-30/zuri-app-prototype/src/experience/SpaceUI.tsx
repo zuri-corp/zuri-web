@@ -42,6 +42,12 @@ export function CropPhotoInput({label,onChange,ratio=1,video=false}:{label:strin
  const clamp=(value:number)=>Math.max(0,Math.min(100,value));
 
  function close(){setDraft(null);setImage(null);drag.current=null;}
+ function choose(file:File|undefined){
+  if(!file)return;
+  setError('');
+  if(file.type==='video/mp4'&&video){onChange(file);return;}
+  setImage(null);setZoom(1);setX(50);setY(50);setDraft({file,url:URL.createObjectURL(file)});
+ }
  async function crop(){
   if(!draft||!image||saving)return;
   setSaving(true);setError('');
@@ -61,13 +67,7 @@ export function CropPhotoInput({label,onChange,ratio=1,video=false}:{label:strin
   finally{setSaving(false);}
  }
  return <>
-  <label className="oc-photo-picker">{label}<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{
-   const file=e.currentTarget.files?.[0];e.currentTarget.value='';
-   if(!file)return;
-   setError('');
-   if(file.type==='video/mp4'&&video){onChange(file);return;}
-   setImage(null);setZoom(1);setX(50);setY(50);setDraft({file,url:URL.createObjectURL(file)});
-  }}/></label>
+  <div className="oc-photo-picker"><span>{label}</span><div className="oc-media-sources"><label className="zs-primary">Use camera<input type="file" accept={video?'image/*,video/mp4':'image/*'} capture="environment" onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label><label className="zs-text-button">Choose from device<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label></div></div>
   {draft&&<Modal label="Crop photo" onClose={()=>{if(!saving)close();}}><div className="oc-crop-dialog">
    <h3>Crop photo</h3>
    <div className="oc-crop-preview" style={{aspectRatio:ratio,width:`min(100%, ${36*ratio}dvh)`}}
