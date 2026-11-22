@@ -333,7 +333,7 @@ export default function Experience() {
           <strong className="zs-screen-title">{contextTitle||screenTitle(route)}</strong></>}
         </div>
         <div className="zs-header-actions">
-          {route.world==='lounge'&&!route.kind&&<button className="zs-icon-button" aria-label="Notifications" onClick={()=>open('notifications','home')}><AppGlyph name="bell" size={21}/></button>}
+          <button className="zs-icon-button" aria-label="Notifications" onClick={()=>open('notifications','home')}><AppGlyph name="bell" size={21}/></button>
           {!settingsRoute&&<button className="zs-icon-button" aria-label="Settings" onClick={()=>open('settings','home')}><AppGlyph name="settings" size={21}/></button>}
           {createAction&&<button className="zs-icon-button zs-create-button" aria-label={createAction.label} onClick={()=>open(createAction.kind,'new')}><AppGlyph name="plus" size={24}/></button>}
         </div>

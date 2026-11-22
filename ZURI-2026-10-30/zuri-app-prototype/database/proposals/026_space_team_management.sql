@@ -80,6 +80,7 @@ begin
   if not zuri_internal.active_user(target) then raise exception 'That person needs a verified ZURI account' using errcode='42501'; end if;
   insert into public.zuri_space_team(space_id,user_id,role,state,invited_by) values(space_row.id,target,requested_role,'active',actor)
   on conflict(space_id,user_id) do update set role=excluded.role,state='active',invited_by=actor,updated_at=now();
+  insert into public.zuri_notifications(user_id,kind,reference_id) values(target,'space-team-invitation',space_row.id);
   insert into public.zuri_space_team_activity(space_id,actor_id,action) values(space_row.id,actor,'added a '+requested_role);
   return jsonb_build_object('ok',true);
  elsif action='spaces.team.role' then
@@ -97,6 +98,7 @@ begin
  elsif action='spaces.transfer.request' then
   if not exists(select 1 from public.zuri_space_team where space_id=space_row.id and user_id=target and role='admin' and state='active') then raise exception 'Choose an active administrator before transferring ownership' using errcode='22023'; end if;
   insert into public.zuri_space_transfers(space_id,from_owner,to_owner) values(space_row.id,actor,target);
+  insert into public.zuri_notifications(user_id,kind,reference_id) values(target,'space-transfer',space_row.id);
   insert into public.zuri_space_team_activity(space_id,actor_id,action) values(space_row.id,actor,'requested an ownership transfer');
   return jsonb_build_object('ok',true,'message','Transfer requested. The administrator must accept it before ownership changes.');
  end if;
