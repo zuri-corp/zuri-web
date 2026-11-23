@@ -1,3 +1,6 @@
+// @ts-nocheck
+// This is a generated, self-contained Edge Function bundle. Runtime validation
+// remains in place; suppress editor-only inference diagnostics for the bundle.
 import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 import { Buffer } from "node:buffer";
 import process from "node:process";
