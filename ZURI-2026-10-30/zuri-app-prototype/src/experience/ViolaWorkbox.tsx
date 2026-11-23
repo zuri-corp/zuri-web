@@ -27,7 +27,8 @@ export default function ViolaWorkbox(p:Props){
  const [brief,setBrief]=useState<'updates'|'report'|null>(null),[rizzDraft,setRizzDraft]=useState<string|null>(null);
  const [capabilities,setCapabilities]=useState(false),[motionMenu,setMotionMenu]=useState(false),[distribution,setDistribution]=useState<string|null>(null);
  const [attachment,setAttachment]=useState<{name:string;text:string}|null>(null);
- const textFile=useRef<HTMLInputElement>(null);
+ const [media,setMedia]=useState<{file:File;url:string}|null>(null);
+ const textFile=useRef<HTMLInputElement>(null),mediaFile=useRef<HTMLInputElement>(null),cameraFile=useRef<HTMLInputElement>(null);
  const [lore,setLore]=useState<LoreRequest|null>(null);
  const [plan,setPlan]=useState<IntentPlan|null>(null),[turns,setTurns]=useState<Message[]>([]),[taskOpen,setTaskOpen]=useState(false),[task,setTask]=useState(''),[date,setDate]=useState(''),[approval,setApproval]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [pingDraft,setPingDraft]=useState<ViolaPingDraft|null>(null),[pingApproved,setPingApproved]=useState(false),[pingBusy,setPingBusy]=useState(false),[publishedPing,setPublishedPing]=useState(''),[pingError,setPingError]=useState('');
@@ -39,6 +40,7 @@ export default function ViolaWorkbox(p:Props){
  useLayoutEffect(()=>{if(!p.visible)return;const app=document.querySelector('.zuri-exp');if(!app)return;const measure=()=>{const r=app.getBoundingClientRect();setFrame({left:r.left,top:r.top,width:r.width,height:r.height,borderRadius:getComputedStyle(app).borderRadius});};measure();const observer=new ResizeObserver(measure);observer.observe(app);window.addEventListener('resize',measure);window.addEventListener('scroll',measure,true);return()=>{observer.disconnect();window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};},[p.visible]);
  const dialog=useRef<HTMLElement>(null),input=useRef<HTMLTextAreaElement>(null),body=useRef<HTMLDivElement>(null),restoreFocus=useRef<HTMLElement|null>(null),pingRequest=useRef({key:'',id:''});
  useEffect(()=>{if(!p.visible)return;setFullMode(true);restoreFocus.current=document.activeElement as HTMLElement|null;const focus=requestAnimationFrame(()=>input.current?.focus({preventScroll:true}));return()=>{cancelAnimationFrame(focus);requestAnimationFrame(()=>restoreFocus.current?.focus({preventScroll:true}));};},[p.visible]);
+ useEffect(()=>()=>{if(media?.url)URL.revokeObjectURL(media.url);},[media?.url]);
  useEffect(()=>{if(body.current)body.current.scrollTop=body.current.scrollHeight;},[p.messages,p.busy,p.intent,turns,plan,taskOpen,notice]);
  useEffect(()=>{const draft=[...p.messages].reverse().find(message=>message.pingDraft)?.pingDraft;if(draft){setPingDraft({...draft});setPingApproved(false);setPublishedPing('');setPingError('');}},[p.messages]);
  function analyse(text:string,goal='',details:IntentDetails={}){
@@ -93,6 +95,14 @@ export default function ViolaWorkbox(p:Props){
   try{const text=(await file.text()).trim();if(!text||text.includes('\u0000'))throw Error();if(text.length>1200){setError('Choose a note up to 1,200 characters so you can review it in the message.');return;}setAttachment({name:file.name,text:text.slice(0,3000)});setError('');}
   catch{setError('Choose a readable .txt or .md note.');}
  }
+ function attachMedia(file?:File){
+  if(!file)return;
+  if(!/^(?:image|video)\//.test(file.type)){setError('Choose an image or video from your device.');return;}
+  if(file.size>12*1024*1024){setError('Choose media smaller than 12 MB.');return;}
+  setMedia(current=>{if(current?.url)URL.revokeObjectURL(current.url);return {file,url:URL.createObjectURL(file)};});
+  setError('');
+ }
+ function removeMedia(){setMedia(current=>{if(current?.url)URL.revokeObjectURL(current.url);return null;});}
  function submit(){
   if(!p.input.trim()||p.busy)return;
   if(attachment){
@@ -120,6 +130,14 @@ export default function ViolaWorkbox(p:Props){
    if(next.kind!=='offering'&&next.fields.visibility)setDraftVisibility(next.fields.visibility);
    const question=next.kind==='offering'?!next.fields.space?'Which Space should this offering go in?':!next.fields.description?'What’s included in the offering?':'Check the offering details below.':!next.fields.title?`What should the ${next.kind} be called?`:!next.fields.starts&&['event','ping'].includes(next.kind)?'When does it start? Enter the date and time in EAT.':!next.fields.location&&['event','ping','space'].includes(next.kind)?'Where is it?':!next.fields.visibility&&(fresh||!draftVisibility)?'Who should be able to see it?':`Check the ${next.kind} details below.`;
    setTurns(previous=>[...(fresh?[]:previous),{role:'user',content:request},{role:'assistant',content:question}]);
+   return;
+  }
+  if(media){
+   const marker=`[Media attached: ${media.file.name}. The image stays on this device until you choose where to publish it; ask me to use it in a creation.]`;
+   if(p.input.trim().length+marker.length>1500){setError('Shorten the message before sending it with this attachment.');return;}
+   p.setInput(`${p.input.trim()}\n\n${marker}`.trim());
+   removeMedia();
+   setError('Media is attached safely. Add a short instruction, then send.');
    return;
   }
   const match=motionReference(request);
@@ -217,7 +235,7 @@ export default function ViolaWorkbox(p:Props){
  return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><section ref={dialog} role="dialog" tabIndex={-1} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal="true" onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
  <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Sanyu</option></select></h2><small className="vw-workspace-name">{p.workspace.title}{p.workspace.contexts.length?' · '+p.workspace.contexts.map(context=>context.label||context.kind).join(', '):''}</small></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
- {!p.messages.length&&!turns.length&&<div className="vw-ai-intro"><h3>{p.assistant==='robert'?'Work on your business':'What would you like to work on?'}</h3><p>{p.assistant==='robert'?'Explore a market, improve an offering, or plan your next customer conversation.':'Ask a question, work through an idea, study a topic, or find something to do.'}</p><div>{(p.assistant==='robert'?['Help me find customers for my business','Help me improve an offering']:['Explain Kirchhoff’s laws with an example','Help me plan my weekend']).map(text=><button type="button" key={text} onClick={()=>{p.setInput(text);input.current?.focus();}}>{text}</button>)}</div></div>}
+ {!p.messages.length&&!turns.length&&<p className="vw-ai-welcome">{p.assistant==='robert'?'Let’s find the next useful move for your work.':'I’m here. Start wherever you are.'}</p>}
  <div className="vw-conversation" role="log"  aria-label={p.assistant==='robert'?'Conversation with Sanyu':'Conversation with Viola'} aria-live="polite">
   {turns.map((m,i)=><div key={'local'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}><p>{m.content}</p></div>)}
   {p.messages.map((m,i)=><div key={'ai'+i} className={m.role==='user'?'vw-user':'vw-ai-message'}>
@@ -251,7 +269,11 @@ export default function ViolaWorkbox(p:Props){
  </div>
  <footer className="vw-compose">
  <div className="vw-compose-tools">
-  <button type="button" disabled={p.busy} aria-label="Attach text note" onClick={()=>textFile.current?.click()}><AppGlyph name="plus" size={19}/></button>
+  <button type="button" disabled={p.busy} aria-label="Take a photo or video" title="Camera" onClick={()=>cameraFile.current?.click()}><AppGlyph name="camera" size={19}/></button>
+  <input type="file" accept="image/*,video/*" capture="environment" hidden ref={cameraFile} onChange={e=>{attachMedia(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
+  <button type="button" disabled={p.busy} aria-label="Choose photo or video" title="Photo library" onClick={()=>mediaFile.current?.click()}><AppGlyph name="media" size={19}/></button>
+  <input type="file" accept="image/*,video/*" hidden ref={mediaFile} onChange={e=>{attachMedia(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
+  <button type="button" disabled={p.busy} aria-label="Attach text note" title="Text note" onClick={()=>textFile.current?.click()}><AppGlyph name="note" size={19}/></button>
   <input type="file" accept=".txt,.md,text/plain,text/markdown" hidden ref={textFile} onChange={e=>{void attachNote(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
   <button type="button" disabled={p.busy} aria-expanded={capabilities} aria-label="Choose Pamoja context" onClick={()=>{setCapabilities(value=>!value);setMotionMenu(false);}}>@</button>
   <button type="button" disabled={p.busy} onClick={distribute}><AppGlyph name="rizz" size={17}/> Distribute</button>
@@ -260,6 +282,7 @@ export default function ViolaWorkbox(p:Props){
   <button type="button" disabled={p.busy} onClick={addSpaceContext}><AppGlyph name="aura" size={17}/> Space</button>
  </div>
  {attachment&&<div className="vw-note-preview"><span>{attachment.name}</span><button type="button" onClick={()=>setAttachment(null)} aria-label="Remove note"><AppGlyph name="close" size={15}/></button></div>}
+ {media&&<div className="vw-media-preview"><span>{media.file.type.startsWith('video/')?<video src={media.url} muted playsInline/>:<img src={media.url} alt="Attachment preview"/>}</span><small>{media.file.name}<br/>Private until you choose where it belongs.</small><button type="button" onClick={removeMedia} aria-label="Remove attachment"><AppGlyph name="close" size={15}/></button></div>}
  {capabilities&&<PamojaMentions onChoose={item=>{
   const mention='\n@'+item.kind+': '+item.title+' ('+item.visibility+')'+(item.about?'\n'+item.about.slice(0,400):'');
   if(p.input.length+mention.length>1500){setError('Shorten the message to add this context.');return;}
