@@ -9,6 +9,7 @@ import {captureNotifications,unreadNotices} from './notifications';
 import type {KnowledgeSource} from '../core/knowledge';
 import ViolaWorkbox from './ViolaWorkbox';
 import type {ConversationIntent} from '../core/intents';
+import {addConversationTurn,createConversationWorkspace,readConversationWorkspace,replaceConversationContext,resetConversationTopic,type ConversationWorkspace} from '../core/conversationEngine';
 import {PrivacyCore} from './PrivacyCore';
 import IntentWorkspace from './IntentWorkspace';
 import {reviewedAIMessages} from '../core/privacy';
@@ -86,13 +87,16 @@ export default function Experience() {
   const aiEpoch=useRef(0);
   const [violaSession,setViolaSession]=useState(0);
   const [assistant,setAssistant]=useState<'viola'|'robert'>('viola');
+  const [aiWorkspace,setAIWorkspace]=useState<ConversationWorkspace>(()=>{try{return readConversationWorkspace(JSON.parse(sessionStorage.getItem('zuri-ai-workspace:viola')||'null'),'viola');}catch{return createConversationWorkspace('viola');}});
   function startViola(text=''){if(text)setAiInput(text);setViola(true);}
   function closeViola(){setViola(false);}
-  function resetViola(){aiEpoch.current++;setAiMessages([]);setAIIntent(null);setAiError('');setAiBusy(false);setAiInput('');}
+  function resetViola(){aiEpoch.current++;setAiMessages([]);setAIIntent(null);setAiError('');setAiBusy(false);setAiInput('');setAIWorkspace(workspace=>resetConversationTopic(workspace));}
   const [aiError, setAiError] = useState('');
   const [aiIntent,setAIIntent]=useState<ConversationIntent|null>(null);
   const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>([]);
   const [aiInput, setAiInput] = useState('');
+  useEffect(()=>{try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The conversation remains available for this page session. */}},[aiWorkspace]);
+  useEffect(()=>{const kind=route.kind;if(!kind||!route.id||!['space','society','channel','event','ping','chapter','moment','edit-task'].includes(kind))return;const contextKind=kind==='edit-task'?'task':kind;setAIWorkspace(workspace=>replaceConversationContext(workspace,[...workspace.contexts,{kind:contextKind as ConversationWorkspace['contexts'][number]['kind'],id:route.id!,label:contextTitle||screenTitle(route)}]));},[route.kind,route.id,contextTitle]);
   useEffect(()=>{
    const clear=()=>{setViola(false);resetViola();setViolaSession(value=>value+1);};
    window.addEventListener('zuri-account-changed',clear);
@@ -243,8 +247,8 @@ export default function Experience() {
     const previousPings=[...displayMessages].reverse().find(message=>message.role==='assistant'&&message.pings?.length)?.pings??[];
     const eventReferences=[...new Map(previousEvents.map(event=>[event.reference.source+':'+event.reference.id,event.reference])).values()].slice(0,6);
     const pingReferences=[...new Set(previousPings.map(ping=>ping.reference.id))].slice(0,6);
-    setAIIntent(null);setAiMessages(displayMessages); setAiInput(''); setAiBusy(true); setAiError('');
-    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant); if(epoch!==aiEpoch.current)return;setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIIntent(result.intent); }
+    setAIIntent(null);setAiMessages(displayMessages);setAIWorkspace(workspace=>addConversationTurn(workspace,{role:'user',content:aiInput.trim()}));setAiInput(''); setAiBusy(true); setAiError('');
+    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant); if(epoch!==aiEpoch.current)return;setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIWorkspace(workspace=>addConversationTurn(workspace,{role:'assistant',content:result.reply}));setAIIntent(result.intent); }
     catch (error) { if(epoch!==aiEpoch.current)return;setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1)); } finally {if(epoch===aiEpoch.current)setAiBusy(false);}
   }
   function detail() {
@@ -342,7 +346,7 @@ export default function Experience() {
       <main id="zx-main" ref={main} tabIndex={-1} className="zx-main"><div className="zx-content">{!online && <div className="zx-offline" role="status">You’re offline. Account operations need a connection. Existing device drafts remain available separately.</div>}{storageError && <div className="zx-alert" role="alert"><p>{storageError}</p><button onClick={exportData}>Export current data</button><button onClick={() => {localStorage.removeItem(STORAGE);storageSafe.current=true;setStorageError('');setData(structuredClone(initialData));}}>Reset local workspace</button></div>}<h1 className="zs-sr-only" ref={heading} tabIndex={-1}>{screenTitle(route)}</h1>{import.meta.env.MODE==='website'&&route.world==='lounge'&&!route.kind&&<DesktopLaunchpad launch={launch}/>}{deviceMode&&<div className="cw-device-banner"><strong>On this device · not your live account</strong><p>Existing drafts are preserved. Old examples may need review. Nothing here is automatically uploaded or delivered.</p><button onClick={()=>setDeviceMode(false)}>Return to your ZURI account</button></div>}{renderPage()}{deviceMode&&route.kind&&['space','society','event','ping','offer','chapter','person','order','enquiry-draft'].includes(route.kind)&&route.id&&<ConnectedActions key={'connections-'+routeHash(route)} source={{kind:route.kind as ObjectRef['kind'],id:route.id}} data={data} update={update} open={open} go={go} notify={notify}/>}</div></main>
     </div>{!route.kind&&theme.tabs.length>0&&<nav className="zx-tabs zn-app-dock" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label={`${theme.name} sections`}>{theme.tabs.map(t=><button key={t} aria-current={route.tab===t?'page':undefined} onClick={()=>go({world:route.world,tab:t})}><SectionGlyph name={t} active={route.tab===t}/><span>{t}</span></button>)}</nav>}{route.world==='lounge'&&!route.kind&&<nav className="zx-mobile-nav" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label="ZURI mobile destinations">{(Object.keys(worlds) as World[]).filter(w=>w!=='lounge').map(w => <button key={w} aria-current={route.world === w ? 'page' : undefined} onClick={() => launch(w)}><span style={{color:worlds[w].color}}><AppGlyph name={w}/><span className="zp-sr">{worlds[w].mark}</span></span>{worlds[w].name}</button>)}</nav>}<button className="zm-viola-orb" hidden={route.world==='lounge'||!!route.kind} onClick={()=>startViola()} aria-label="Open Viola" aria-haspopup="dialog"><AppGlyph name="viola" size={25}/></button>
     <div className="zx-toast" role="status">{notice}</div>
-    <ViolaWorkbox assistant={assistant} onAssistant={value=>{resetViola();setAssistant(value);}} key={violaSession} notify={notify} visible={viola} canPublish={!deviceMode} onClose={closeViola} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} currentSpace={route.kind==='space'?route.id:undefined} onReset={resetViola} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()}/>
+    <ViolaWorkbox assistant={assistant} workspace={aiWorkspace} onAssistant={value=>{setAssistant(value);setAIWorkspace(createConversationWorkspace(value));resetViola();}} key={violaSession} notify={notify} visible={viola} canPublish={!deviceMode} onClose={closeViola} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} currentSpace={route.kind==='space'?route.id:undefined} onReset={resetViola} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()}/>
     {import.meta.env.MODE==='website'&&introductionOpen&&<AppIntroduction onClose={()=>setIntroductionOpen(false)} launch={launch}/>}
   </div>;
 }
