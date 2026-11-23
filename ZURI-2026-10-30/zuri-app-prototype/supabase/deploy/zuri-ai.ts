@@ -678,6 +678,9 @@ function interpretAIIntent(raw, request) {
 //#endregion
 //#region src/lib/ai/provider.ts
 var ProviderFailure = class extends Error {
+	category;
+	httpStatus;
+	finishReason;
 	constructor(category, httpStatus, finishReason) {
 		super(category);
 		this.category = category;
