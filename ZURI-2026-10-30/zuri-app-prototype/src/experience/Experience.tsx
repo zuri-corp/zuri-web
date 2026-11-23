@@ -40,6 +40,7 @@ import {opportunityEndpoint} from './services';
 import { HomeDashboard, MobileDestination } from './MobileWorlds';
 import { getViolaStatus, askViola, violaDestination } from './services';
 import type {ViolaEventResult,ViolaPingResult,ViolaPingDraft} from './services';
+import {cloudRequest} from './cloudClient';
 import { mergeBackup, migrateLegacy } from './backup';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { worlds, home, parseRoute, routeHash, objectRoute, initialData, readData, runFocus, today, type World, type Route, type LocalData } from './model';
@@ -95,6 +96,10 @@ export default function Experience() {
   const [aiIntent,setAIIntent]=useState<ConversationIntent|null>(null);
   const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>([]);
   const [aiInput, setAiInput] = useState('');
+  async function saveConversation(workspace:ConversationWorkspace,messages:{id:string;role:'user'|'assistant';content:string;sources?:KnowledgeSource[]}[]){
+    await cloudRequest('ai.threads.save',{id:workspace.id,assistant:workspace.assistant,title:workspace.title,contexts:workspace.contexts.map(({kind,id})=>({kind,id}))});
+    await Promise.all(messages.map(message=>cloudRequest('ai.threads.message',{id:workspace.id,message_id:message.id,role:message.role,content:message.content,sources:(message.sources||[]).slice(0,12)})));
+  }
   useEffect(()=>{try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The conversation remains available for this page session. */}},[aiWorkspace]);
   useEffect(()=>{const kind=route.kind;if(!kind||!route.id||!['space','society','channel','event','ping','chapter','moment','edit-task'].includes(kind))return;const contextKind=kind==='edit-task'?'task':kind;setAIWorkspace(workspace=>replaceConversationContext(workspace,[...workspace.contexts,{kind:contextKind as ConversationWorkspace['contexts'][number]['kind'],id:route.id!,label:contextTitle||screenTitle(route)}]));},[route.kind,route.id,contextTitle]);
   useEffect(()=>{
@@ -247,8 +252,10 @@ export default function Experience() {
     const previousPings=[...displayMessages].reverse().find(message=>message.role==='assistant'&&message.pings?.length)?.pings??[];
     const eventReferences=[...new Map(previousEvents.map(event=>[event.reference.source+':'+event.reference.id,event.reference])).values()].slice(0,6);
     const pingReferences=[...new Set(previousPings.map(ping=>ping.reference.id))].slice(0,6);
-    setAIIntent(null);setAiMessages(displayMessages);setAIWorkspace(workspace=>addConversationTurn(workspace,{role:'user',content:aiInput.trim()}));setAiInput(''); setAiBusy(true); setAiError('');
-    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant); if(epoch!==aiEpoch.current)return;setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIWorkspace(workspace=>addConversationTurn(workspace,{role:'assistant',content:result.reply}));setAIIntent(result.intent); }
+    const userMessage={id:crypto.randomUUID(),role:'user' as const,content:aiInput.trim()};
+    const workspaceWithUser=addConversationTurn(aiWorkspace,{role:'user',content:userMessage.content});
+    setAIIntent(null);setAiMessages(displayMessages);setAIWorkspace(workspaceWithUser);setAiInput(''); setAiBusy(true); setAiError('');
+    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant,workspaceWithUser.contexts); if(epoch!==aiEpoch.current)return;const assistantMessage={id:crypto.randomUUID(),role:'assistant' as const,content:result.reply,sources:result.sources};const workspaceWithReply=addConversationTurn(workspaceWithUser,{role:'assistant',content:result.reply});setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIWorkspace(workspaceWithReply);setAIIntent(result.intent);void saveConversation(workspaceWithReply,[userMessage,assistantMessage]).catch(()=>{/* The private device workspace remains available and can sync on a later reply. */}); }
     catch (error) { if(epoch!==aiEpoch.current)return;setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1)); } finally {if(epoch===aiEpoch.current)setAiBusy(false);}
   }
   function detail() {
