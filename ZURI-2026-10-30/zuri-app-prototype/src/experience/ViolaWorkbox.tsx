@@ -8,7 +8,7 @@ import {AppGlyph} from './AppGlyph';
 import type {KnowledgeSource} from '../core/knowledge';
 import ConversationNextStep from './ConversationNextStep';
 import {createPortal} from 'react-dom';
-import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {resolveIntent,intentTarget,intentTaskReview,addIntentTask,type IntentPlan,type IntentDetails,type ConversationIntent,type IntentRequest} from '../core/intents';
 import {parseRoute} from './model';
 import type {MobileProps} from './MobileWorlds';
@@ -36,8 +36,6 @@ export default function ViolaWorkbox(p:Props){
  const [creationSession,setCreationSession]=useState(0);
  const [creation,setCreation]=useState<CreationDraft|null>(null),[draftVisibility,setDraftVisibility]=useState<'public'|'private'|null>(null),[savedEntity,setSavedEntity]=useState<{id:string;title:string}|null>(null);
  const [aura,setAura]=useState<AuraSearch|'offering'|null>(null);
- const [frame,setFrame]=useState<CSSProperties>({visibility:'hidden'});
- useLayoutEffect(()=>{if(!p.visible)return;const app=document.querySelector('.zuri-exp');if(!app)return;const measure=()=>{const r=app.getBoundingClientRect();setFrame({left:r.left,top:r.top,width:r.width,height:r.height,borderRadius:getComputedStyle(app).borderRadius});};measure();const observer=new ResizeObserver(measure);observer.observe(app);window.addEventListener('resize',measure);window.addEventListener('scroll',measure,true);return()=>{observer.disconnect();window.removeEventListener('resize',measure);window.removeEventListener('scroll',measure,true);};},[p.visible]);
  const dialog=useRef<HTMLElement>(null),input=useRef<HTMLTextAreaElement>(null),body=useRef<HTMLDivElement>(null),restoreFocus=useRef<HTMLElement|null>(null),pingRequest=useRef({key:'',id:''});
  useEffect(()=>{if(!p.visible)return;setFullMode(true);restoreFocus.current=document.activeElement as HTMLElement|null;const focus=requestAnimationFrame(()=>input.current?.focus({preventScroll:true}));return()=>{cancelAnimationFrame(focus);requestAnimationFrame(()=>restoreFocus.current?.focus({preventScroll:true}));};},[p.visible]);
  useEffect(()=>()=>{if(media?.url)URL.revokeObjectURL(media.url);},[media?.url]);
@@ -232,8 +230,8 @@ export default function ViolaWorkbox(p:Props){
   </section>;
  }
  if(!p.visible)return null;
- return createPortal(<div className="vw-host" style={frame}><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><section ref={dialog} role="dialog" tabIndex={-1} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal="true" onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
- <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><select aria-label="Assistant" value={p.assistant} disabled={p.busy} onChange={e=>p.onAssistant(e.target.value==='robert'?'robert':'viola')}><option value="viola">Viola</option><option value="robert">Sanyu</option></select></h2><small className="vw-workspace-name">{p.workspace.title}{p.workspace.contexts.length?' · '+p.workspace.contexts.map(context=>context.label||context.kind).join(', '):''}</small></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
+ return createPortal(<div className="vw-host"><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><section ref={dialog} role="dialog" tabIndex={-1} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal="true" onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
+ <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><button type="button" className="vw-assistant-switch" disabled={p.busy} aria-label={'Switch assistant. Current: '+(p.assistant==='robert'?'Sanyu':'Viola')} onClick={()=>p.onAssistant(p.assistant==='robert'?'viola':'robert')}>{p.assistant==='robert'?'Sanyu':'Viola'}<AppGlyph name="chevron" size={14}/></button></h2><small className="vw-workspace-name">{p.workspace.title}{p.workspace.contexts.length?' · '+p.workspace.contexts.map(context=>context.label||context.kind).join(', '):''}</small></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
  {!p.messages.length&&!turns.length&&<p className="vw-ai-welcome">{p.assistant==='robert'?'Let’s find the next useful move for your work.':'I’m here. Start wherever you are.'}</p>}
  <div className="vw-conversation" role="log"  aria-label={p.assistant==='robert'?'Conversation with Sanyu':'Conversation with Viola'} aria-live="polite">
@@ -248,7 +246,7 @@ export default function ViolaWorkbox(p:Props){
  </div>
  {distribution!==null&&<DistributeConversation text={distribution} onClose={()=>setDistribution(null)}/>}
  {brief&&<AuraBrief format={brief} onOpen={(kind,id)=>{p.onClose();p.open(kind,id);}}/>}
- {rizzDraft!==null&&<RizzDraft initial={rizzDraft} onSaved={()=>{setRizzDraft(null);p.onClose();p.go({world:'rizz',tab:'Create'});}}/>}
+ {rizzDraft!==null&&<RizzDraft initial={rizzDraft} onSaved={()=>{setRizzDraft(null);p.onClose();p.go({world:'rizz',tab:'Studio'});}}/>}
  {reference&&<MotionReference key={JSON.stringify(reference)} request={reference} onOpen={(kind,id)=>{p.onClose();p.open(kind,id);}}/>}
  {lore&&<LoreViola key={JSON.stringify(lore)} request={lore} onOpen={(kind,id)=>{p.onClose();p.open(kind,id);}}/>}
  {creation?.kind==='offering'&&<AuraOfferingCard key={JSON.stringify(creation)} initial={creation.fields} currentSpace={p.currentSpace}/>}

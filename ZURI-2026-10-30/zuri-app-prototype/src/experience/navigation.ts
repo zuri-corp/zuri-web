@@ -10,5 +10,5 @@ export function nextScrollNav(state:ScrollNav,top:number):ScrollNav{
 }
 
 import type {Route} from './model';
-export function isCreationRoute(r:Route){return r.world==='rizz'&&r.tab==='Create'&&!r.kind||!!r.kind&&(r.kind.startsWith('new-')||['event-create','offer-editor','space-settings','manage-channel','checkout','enquiry','echo-compose'].includes(r.kind));}
+export function isCreationRoute(r:Route){return r.world==='rizz'&&r.tab==='Studio'&&!r.kind||!!r.kind&&(r.kind.startsWith('new-')||['event-create','offer-editor','space-settings','manage-channel','checkout','enquiry','echo-compose'].includes(r.kind));}
 export function replacesCreation(current:Route,next:Route){return isCreationRoute(current)&&(!isCreationRoute(next)||current.kind===next.kind);}

@@ -28,7 +28,7 @@
 @media(prefers-reduced-transparency:reduce){.vw-minimized,.vw-compose form,.vw-artifact,.zuri-exp .zm-viola-orb,.zuri-exp[data-world=lounge] .zm-viola-bar{background:#292d43!important;-webkit-backdrop-filter:none;backdrop-filter:none}.vw-box{-webkit-backdrop-filter:none;backdrop-filter:none}.viola-edgeglow{display:none}}
 
 /* Bound the portal to ZURI's canvas, never the surrounding browser. */
-.vw-host{position:fixed;z-index:1000;pointer-events:none;overflow:hidden;container-type:inline-size;isolation:isolate;animation:vw-host-in .18s ease-out both}
+.vw-host{position:fixed;inset:0;z-index:1000;pointer-events:none;overflow:hidden;container-type:inline-size;isolation:isolate}
 .vw-host .viola-edgeglow{position:absolute;border-radius:inherit}
 .vw-host .vw-box{position:absolute;box-sizing:border-box;bottom:8px;width:calc(100% - 16px);max-width:690px;min-height:min(300px,100%);max-height:calc(100% - 16px);pointer-events:auto}
 .vw-host .vw-expanded{height:calc(100% - 16px);max-width:960px}
@@ -107,7 +107,7 @@
 .vw-full-mode .vw-compose{padding-inline:max(18px,calc((100% - 840px)/2))}
 .vw-full-mode .vw-conversation{min-height:0}
 .vw-ai-welcome{margin:6px 0 16px;color:var(--vw-muted);font-size:14px;line-height:1.5}
-.vw-header select{max-width:110px;background:transparent;color:inherit;border:0;font:inherit}
+.vw-header .vw-assistant-switch{display:inline-flex;align-items:center;gap:3px;padding:3px 4px;border:0;background:transparent;color:inherit;font:600 16px inherit;cursor:pointer}.vw-header .vw-assistant-switch:disabled{opacity:.55}
 
 .zs-ai-entry{position:relative;cursor:pointer}
 .zs-ai-entry-open{position:absolute;inset:0;background:transparent;border:0;border-radius:inherit}

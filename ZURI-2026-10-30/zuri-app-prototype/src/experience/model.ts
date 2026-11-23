@@ -9,7 +9,7 @@ export const worlds = {
   lounge: { name: 'Lounge', mark: '✦', color: '#b7a2ff', description: 'A little space. A lot of possibility.', tabs: [] },
   aura: { name: 'Aura', mark: '◎', color: '#00D4FF', description: 'Find your people. Feel your place.', tabs: ['Map', 'Spaces', 'Societies', 'Find'] },
   motion: { name: 'Motion', mark: '↗', color: '#FF6B1A', description: 'Make room for what moves you.', tabs: ['Planner', 'Events', 'Pings'] },
-  rizz: { name: 'Rizz', mark: '◈', color: '#FF2878', description: 'Put a little of yourself out there.', tabs: ['Feed', 'Create', 'Channels', 'Chats'] },
+  rizz: { name: 'Rizz', mark: '◈', color: '#FF2878', description: 'Put a little of yourself out there.', tabs: ['Feed', 'Studio', 'Channels', 'Chats'] },
   lore: { name: 'Lore', mark: '◒', color: '#4B8CF7', description: 'Your life, beautifully collected.', tabs: ['Moments', 'Discover', 'Chapters', 'Profile'] },
 } as const;
 export type World = keyof typeof worlds;
@@ -58,7 +58,7 @@ export function parseRoute(hash: string): Route {
     if (!Object.prototype.hasOwnProperty.call(worlds, name)) return home;
     const world = name as World;
     const tabs: readonly string[] = worlds[world].tabs;
-    const aliases:Record<string,string>={home:tabs[0]?.toLowerCase()||'',music:'channels',reels:'create',chat:world==='rizz'?'chats':tabs[0]?.toLowerCase()||'',events_list:'events',pings_list:world==='motion'?'pings':tabs[0]?.toLowerCase()||'',search:world==='aura'?'find':tabs[0]?.toLowerCase()||''};
+    const aliases:Record<string,string>={home:tabs[0]?.toLowerCase()||'',music:'channels',reels:'studio',create:'studio',chat:world==='rizz'?'chats':tabs[0]?.toLowerCase()||'',events_list:'events',pings_list:world==='motion'?'pings':tabs[0]?.toLowerCase()||'',search:world==='aura'?'find':tabs[0]?.toLowerCase()||''};
     segment=aliases[segment]||segment;
     const tab = tabs.find(t => t.toLowerCase() === segment) || tabs[0] || '';
     const kind = url.searchParams.get('kind') || undefined;
