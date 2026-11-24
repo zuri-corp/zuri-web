@@ -12,7 +12,7 @@ import {matchesArea,resolvePlaceArea,type AuraSearch} from './auraSearch';
 export function AuraSearchCard({search,onOpen,go}:{search:AuraSearch;onOpen:(kind:string,id:string)=>void;go:(route:Route)=>void}){
  const [area,setArea]=useState(search.area),[query,setQuery]=useState(search),[result,setResult]=useState<{spaces:CloudEntity[];places:Business[]}|null>(null),[error,setError]=useState('');
  useEffect(()=>{const controller=new AbortController();setResult(null);setError('');
-  if(!query.area)return ()=>controller.abort();
+  if(!query.area&&query.mode!=='spaces')return ()=>controller.abort();
   async function load(){
    if(query.mode==='spaces'){
     const rows=await browseEntities('space',query.term||query.area);
@@ -26,7 +26,7 @@ export function AuraSearchCard({search,onOpen,go}:{search:AuraSearch;onOpen:(kin
   return ()=>controller.abort();
  },[query]);
  return <section className="vw-compact vw-aura-card" aria-label="Aura search"><strong>{query.term||'Spaces'}{query.area&&` · ${query.area}`}</strong>
-  {!query.area||error?<form onSubmit={e=>{e.preventDefault();if(area.trim())setQuery({...query,area:area.trim()});}}><label>Which town or area?<input value={area} onChange={e=>setArea(e.target.value)} required maxLength={80}/></label><button className="vw-primary">Search</button></form>:null}
+  {(!query.area&&query.mode!=='spaces')||error?<form onSubmit={e=>{e.preventDefault();if(area.trim())setQuery({...query,area:area.trim()});}}><label>Which town or area?<input value={area} onChange={e=>setArea(e.target.value)} required maxLength={80}/></label><button className="vw-primary">Search</button></form>:null}
   {!result&&query.area&&!error&&<small role="status">Searching Aura…</small>}{error&&<small role="alert">{error}</small>}
   {result?.spaces.map(row=><button className="vw-choice" key={row.id} onClick={()=>onOpen('space',row.id)}>{row.title}<small>{String(row.details.location||'')}</small></button>)}
   {result?.places.map(row=><a className="vw-choice" key={row.id} href={directionsUrl(row)} target="_blank" rel="noopener noreferrer">{row.name}<small>{row.address}</small></a>)}
