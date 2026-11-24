@@ -3,6 +3,7 @@ import {cloudRequest,browseEntities,type CloudEntity} from './cloudClient';
 import EntityEditor from './EntityScreens';
 import EntityCard from './EntityCard';
 import {Modal} from './UsabilityUI';
+import {AppGlyph} from './AppGlyph';
 
 export const spaceCategories=['Food & hospitality','Retail','Health & wellness','Sports & recreation','Technology','Creative services','Education','Professional services','Community','Accommodation','Other'];
 export const offeringCategories=['Food & drink','Furniture & home','Fashion','Electronics','Beauty & wellness','Sport','Education','Software & technology','Creative services','Professional services','Accommodation','Other'];
@@ -67,7 +68,7 @@ export function CropPhotoInput({label,onChange,ratio=1,video=false}:{label:strin
   finally{setSaving(false);}
  }
  return <>
-  <div className="oc-photo-picker"><span>{label}</span><div className="oc-media-sources"><label className="zs-primary">Use camera<input type="file" accept={video?'image/*,video/mp4':'image/*'} capture="environment" onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label><label className="zs-text-button">Choose from device<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label></div></div>
+   <div className="oc-photo-picker"><span><AppGlyph name={video?'Moments':'camera'} size={18}/>{label}</span><div className="oc-media-sources"><label className="zs-primary"><AppGlyph name="camera" size={17}/>Use camera<input type="file" accept={video?'image/*,video/mp4':'image/*'} capture="environment" onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label><label className="zs-text-button"><AppGlyph name="Moments" size={17}/>Choose from device<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label></div></div>
   {draft&&<Modal label="Crop photo" onClose={()=>{if(!saving)close();}}><div className="oc-crop-dialog">
    <h3>Crop photo</h3>
    <div className="oc-crop-preview" style={{aspectRatio:ratio,width:`min(100%, ${36*ratio}dvh)`}}

@@ -33,3 +33,5 @@
 .zuri-exp[data-palette] .oc-external-event .cw-event-poster{max-width:none;height:auto;max-height:none;object-fit:contain}
 .zuri-exp[data-palette] .oc-workspace{max-width:none}
 .oc-moment-media{max-width:none}
+.oc-offering-editor{gap:14px}.oc-offering-editor>header{display:grid;gap:3px}.oc-offering-editor>header small{font-size:.68rem;letter-spacing:.1em;color:var(--zx-accent)}.oc-offering-editor>header h3{margin:0}.oc-offering-editor>header p{margin:0;color:var(--zi-secondary,#b7b2c5);font-size:.86rem}.oc-offering-media{display:grid;gap:10px;padding:12px;border:1px solid var(--zi-border,#3c4a62);border-radius:16px;background:color-mix(in srgb,var(--zi-surface,#172238) 88%,transparent)}.oc-offering-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}.oc-offering-details{border-top:1px solid var(--zi-border,#3c4a62);padding-top:10px}.oc-offering-details summary{cursor:pointer;font-weight:700}.oc-offering-details[open]{display:grid;gap:11px}.oc-photo-picker>span{display:flex;align-items:center;gap:7px;font-weight:700}.oc-media-sources label{gap:6px}
+@media(max-width:420px){.oc-offering-pair{grid-template-columns:1fr}}
