@@ -23,6 +23,10 @@ export type ObjectSummary={viewer_id?:string;entity:CloudEntity;owner:boolean;jo
 function EventManagement({entity,summary,onRefresh}:{entity:CloudEntity;summary:ObjectSummary;onRefresh:()=>void}){
  return <><section className="oc-management"><h3>Event statistics</h3><ObjectFacts facts={[{label:'People',value:summary.member_count??0},{label:'Capacity',value:entity.capacity||'Not set'},{label:'Status',value:entity.status}]}/></section><EntityEditor kind="event" id={entity.id} inline onCreated={()=>onRefresh()} onCancel={()=>{}}/></>;
 }
+function ChannelManagement({entity,summary,onTab,onRefresh}:{entity:CloudEntity;summary:ObjectSummary;onTab:(tab:string)=>void;onRefresh:()=>void}){
+ const [scheduled,setScheduled]=useState('');
+ return <><section className="oc-management oc-channel-metrics"><h3>Channel pulse</h3><ObjectFacts facts={[{label:'Followers',value:summary.member_count??0},{label:'Visibility',value:entity.visibility},{label:'Status',value:entity.status}]}/><div className="oc-quick-links"><button onClick={()=>onTab('Updates')}><strong>Updates</strong><span><AppGlyph name="next" size={16}/></span></button><button onClick={()=>onTab('Media')}><strong>Media gallery</strong><span><AppGlyph name="next" size={16}/></span></button><button onClick={()=>onTab('Collections')}><strong>Collections</strong><span><AppGlyph name="next" size={16}/></span></button></div></section><section className="oc-management"><h3>Distribution calendar</h3><p className="zx-muted">Keep the next update intentional. Scheduling does not publish automatically.</p><label>Plan a posting day<input type="date" value={scheduled} onChange={e=>setScheduled(e.target.value)}/></label>{scheduled&&<p role="status">Next publishing reminder: {new Date(scheduled+'T12:00:00').toLocaleDateString('en-UG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}.</p>}</section><EntityEditor kind="channel" id={entity.id} inline onCreated={()=>onRefresh()} onCancel={()=>{}}/></>;
+}
 function EntityDeletion({entity,onDeleted}:{entity:CloudEntity;onDeleted:(kind:string)=>void}){
  const [armed,setArmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  async function remove(){if(busy)return;setBusy(true);setError('');try{const result=await cloudRequest<{deleted?:boolean}>('entities.delete',{id:entity.id});if(result.deleted!==true)throw Error('Deletion could not be confirmed.');onDeleted(entity.kind);}catch(e){setError(e instanceof Error?e.message:'Deletion could not be confirmed.');}finally{setBusy(false);}}
@@ -65,7 +69,8 @@ export function ObjectScreen({summary,onOpen,onPlanner,onRefresh,onDeleted,initi
  {selected==='Chats'&&chatRoom&&<button type="button" className="zs-text-button oc-chat-back" onClick={()=>selectRoom(null)}>← All chats</button>}
  {selected==='Manage'&&owner&&kind==='space'&&<><SpaceTeamManager key={'team-'+id} id={id}/><SpaceReviewPanel key={id} id={id}/><EntityEditor kind="space" id={id} inline onCreated={()=>{onRefresh();setNotice('Space saved.');}} onCancel={()=>setTab('Overview')}/></>}
  {selected==='Manage'&&owner&&kind==='event'&&<EventManagement entity={entity} summary={summary} onRefresh={()=>{onRefresh();setNotice('Event saved.');}}/>}
- {selected==='Manage'&&owner&&kind!=='space'&&kind!=='event'&&<><InlineAction label={'Edit '+name} onClick={()=>onOpen('edit-'+kind,id)}/><ObjectInvites entityId={id}/><h3>Members & requests</h3><ObjectPeople entityId={id} owner/></>}
+ {selected==='Manage'&&owner&&kind==='channel'&&<><ChannelManagement entity={entity} summary={summary} onTab={setTab} onRefresh={()=>{onRefresh();setNotice('Channel saved.');}}/><ObjectInvites entityId={id}/><h3>Members & requests</h3><ObjectPeople entityId={id} owner/></>}
+ {selected==='Manage'&&owner&&kind!=='space'&&kind!=='event'&&kind!=='channel'&&<><InlineAction label={'Edit '+name} onClick={()=>onOpen('edit-'+kind,id)}/><ObjectInvites entityId={id}/><h3>Members & requests</h3><ObjectPeople entityId={id} owner/></>}
  {selected==='Manage'&&owner&&<EntityDeletion entity={entity} onDeleted={onDeleted}/>}
  </div></article>;
 }

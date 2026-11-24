@@ -1,6 +1,7 @@
 import {getMotionEvents} from '../lib/motion-events';
 import {useEffect,useState} from 'react';
 import {cloudRequest,discoverCloud,type CloudEntity,type CloudRecord} from './cloudClient';
+import {AppGlyph} from './AppGlyph';
 
 type Mention={id:string;kind:string;title:string;about:string;visibility:string};
 export default function PamojaMentions({onChoose}:{onChoose:(mention:Mention)=>void}){
@@ -45,10 +46,8 @@ export default function PamojaMentions({onChoose}:{onChoose:(mention:Mention)=>v
  const matches=[...new Map([...rows,...people,...related].map(item=>[item.kind+':'+item.id,item])).values()]
   .filter(item=>(kind==='all'||kind===item.kind)&&(item.title+' '+item.about).toLowerCase().includes(query.trim().toLowerCase())).slice(0,30);
  return <div className="vw-context-menu" aria-label="Pamoja context">
-  <label>Find a person, place or object<input autoFocus type="search" maxLength={100} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by name, topic or skill"/></label>
-  <label>Type<select value={kind} onChange={e=>setKind(e.target.value)}>
-   <option value="all">All Pamoja</option>{['space','society','channel','event','ping','chapter','moment','task','person','business','offering','collection'].map(type=><option key={type} value={type}>{type[0].toUpperCase()+type.slice(1)}</option>)}
-  </select></label>
+  <div className="vw-mention-search"><AppGlyph name="lounge" size={18}/><input autoFocus type="search" maxLength={100} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a person, place, plan or moment"/></div>
+  <div className="vw-mention-kinds">{['all','space','society','channel','event','ping','chapter','moment','task','person'].map(type=><button type="button" key={type} aria-pressed={kind===type} onClick={()=>setKind(type)}>{type==='all'?'All':<><AppGlyph name={type==='person'?'Profile':type==='task'?'Planner':type==='moment'?'Moments':type==='chapter'?'Chapters':type==='space'||type==='society'?'aura':type==='channel'?'rizz':'motion'} size={14}/>{type}</>}</button>)}</div>
   {loading&&<small role="status">Loading your context…</small>}
   {matches.map(item=><button key={item.kind+':'+item.id} type="button" onClick={()=>onChoose(item)}><strong>{item.title}</strong><small>{item.kind} · {item.visibility}</small></button>)}
   {!loading&&!matches.length&&<small>No matching objects.</small>}
