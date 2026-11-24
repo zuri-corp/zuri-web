@@ -15,7 +15,9 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.118.0",
+    "@types/leaflet": "^1.9.22",
     "@zuri/intent-engine": "file:vendor/zuri-intent-engine-0.4.0.tgz",
+    "leaflet": "^1.9.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
