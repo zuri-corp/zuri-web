@@ -1,5 +1,7 @@
 /* Cache the application shell only. Never cache API responses or third-party resources. */
-const CACHE='zuri-app-shell-v2-20261017';
+// Bump this whenever the application shell changes, so an installed app never
+// remains pinned to an earlier interface after a production release.
+const CACHE='zuri-app-shell-v3-20261124';
 const local=(path)=>new URL(path,self.registration.scope).href;
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
@@ -9,6 +11,7 @@ self.addEventListener('install',event=>{
     const assets=[...html.matchAll(/(?:src|href)=["']([^"']+\.(?:js|css))["']/g)].map(match=>new URL(match[1],local('./'))).filter(url=>url.origin===self.location.origin).map(url=>url.href);
     await cache.put(local('./'),response);
     await cache.addAll([local('icon.svg'),local('manifest.webmanifest'),...assets]);
+    await self.skipWaiting();
   })());
 });
 self.addEventListener('activate',event=>{
