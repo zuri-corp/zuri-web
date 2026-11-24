@@ -22,5 +22,45 @@ export default function CloudCreate({userId,drafts,onOpen}:{userId:string;drafts
  const toggle=(values:string[],value:string)=>values.includes(value)?values.filter(v=>v!==value):[...values,value].slice(0,12);
  const destinations=[...entities.map(e=>({id:e.id,kind:e.kind,title:e.title,visibility:e.visibility})),...chapters.map(ch=>({id:'chapter:'+ch.id,kind:'chapter',title:String(ch.content.title||'Chapter'),visibility:'private'}))];
  const shareDraft=async(network:'tiktok'|'snapchat'|'youtube')=>{try{await navigator.clipboard.writeText(shared);window.open(network==='youtube'?'https://www.youtube.com/upload':network==='tiktok'?'https://www.tiktok.com/upload':'https://www.snapchat.com/','_blank','noopener,noreferrer');}catch{setError('Your draft is ready. Copy it from Studio before opening that app.');}};
- return <section className="oc-create">{surface==='camera'&&!draft?<StudioCamera onText={()=>setSurface('compose')} onPhoto={file=>{setStudioFile(file);setSurface('compose');}}/>:<><header className="oc-post-head"><button type="button" className="zs-text-button" onClick={()=>setSurface('camera')}><AppGlyph name="back" size={18}/></button><strong>New post</strong><button className="zs-primary" onClick={()=>setAdding(true)}>Next</button></header><ObjectComposer key={draft?.id||'new'} entityId={id} canPublish={!!id} onNeedsDestination={()=>setAdding(true)} privateOnly={privateOnly} prefillFile={studioFile} contexts={privateOnly?[]:contexts} chapters={[...new Set([...(primaryChapter?[primaryChapter]:[]),...chapterIds])]} collectionId={collection||undefined} initialText={String(draft?.content.text||'')} initialMediaId={String(draft?.content.mediaId||'')} onSaved={saved=>{setShared(saved?.body||'');setSharedId(saved?.id||'');setStudioFile(null);}}/><button className="oc-action" aria-expanded={adding} onClick={()=>setAdding(!adding)}>{id?'Change destination':'Choose a destination'}</button>{adding&&<><ContextPicker multiple={false} label="Share with" options={destinations} value={id?[id]:[]} onChange={values=>{setId(values[0]||'');setContexts([]);setChapterIds([]);}}/>{id&&<ContextPicker label="Add context · optional" options={[...(!privateOnly?allowed.map(e=>({id:e.id,kind:e.kind,title:e.title,visibility:e.visibility})):[]),...chapters.filter(ch=>ch.id!==primaryChapter).map(ch=>({id:'chapter:'+ch.id,kind:'chapter',title:String(ch.content.title||'Chapter'),visibility:'private'}))]} value={[...contexts,...chapterIds.map(id=>'chapter:'+id)]} onChange={values=>{setContexts(values.filter(value=>!value.startsWith('chapter:')));setChapterIds(values.filter(value=>value.startsWith('chapter:')).map(value=>value.slice(8)));}}/></>}</>}{shared&&<section className="oc-draft-export"><strong>Also share this draft</strong><div><a href={'https://wa.me/?text='+encodeURIComponent(shared)} target="_blank" rel="noreferrer">WhatsApp</a><a href={'https://twitter.com/intent/tweet?text='+encodeURIComponent(shared)} target="_blank" rel="noreferrer">X</a><button onClick={()=>void shareDraft('tiktok')}>TikTok</button><button onClick={()=>void shareDraft('snapchat')}>Snapchat</button><button onClick={()=>void shareDraft('youtube')}>YouTube</button>{sharedId&&<button onClick={()=>onOpen(privateOnly?'moment':destination!.kind,privateOnly?sharedId:id)}>View post</button>}</div></section>}</>}{!loading&&!entities.length&&<button className="zs-primary" onClick={()=>onOpen('new-channel','new')}>Create a Channel</button>}{loading&&<WorldLoader world="rizz" label="Opening your studio…"/>}{error&&<p role="alert">{error}</p>}{drafts.length>0&&<details className="oc-management"><summary>Saved private drafts</summary>{drafts.map(row=><div className="oc-draft" key={row.id}><strong>{String(row.content.title||'Draft')}</strong><p>{String(row.content.text||'')}</p><button className="zs-text-button" onClick={()=>{setDraft(row);setSurface('compose');}}>Use this draft</button></div>)}</details>}</section>;
+ return <section className="oc-create">
+  {surface==='camera'&&!draft?<StudioCamera onText={()=>setSurface('compose')} onPhoto={file=>{setStudioFile(file);setSurface('compose');}}/>:<>
+   <header className="oc-post-head"><button type="button" className="zs-text-button" onClick={()=>setSurface('camera')}><AppGlyph name="back" size={18}/></button><strong>New post</strong><button className="zs-primary" onClick={()=>setAdding(true)}>Next</button></header>
+   <ObjectComposer key={draft?.id||'new'} entityId={id} canPublish={!!id} onNeedsDestination={()=>setAdding(true)} privateOnly={privateOnly} prefillFile={studioFile} contexts={privateOnly?[]:contexts} chapters={[...new Set([...(primaryChapter?[primaryChapter]:[]),...chapterIds])]} collectionId={collection||undefined} initialText={String(draft?.content.text||'')} initialMediaId={String(draft?.content.mediaId||'')} onSaved={saved=>{setShared(saved?.body||'');setSharedId(saved?.id||'');setStudioFile(null);}}/>
+   <button className="oc-action" aria-expanded={adding} onClick={()=>setAdding(!adding)}>{id?'Change destination':'Choose a destination'}</button>
+   {adding ? (
+    <>
+     <ContextPicker
+      multiple={false}
+      label="Share with"
+      options={destinations}
+      value={id ? [id] : []}
+      onChange={values=>{
+       setId(values[0] || '');
+       setContexts([]);
+       setChapterIds([]);
+      }}
+     />
+     {id ? (
+      <ContextPicker
+       label="Add context · optional"
+       options={[
+        ...(!privateOnly ? allowed.map(entity=>({id:entity.id,kind:entity.kind,title:entity.title,visibility:entity.visibility})) : []),
+        ...chapters
+         .filter(chapter=>chapter.id!==primaryChapter)
+         .map(chapter=>({id:'chapter:'+chapter.id,kind:'chapter',title:String(chapter.content.title||'Chapter'),visibility:'private'})),
+       ]}
+       value={[...contexts,...chapterIds.map(chapterId=>'chapter:'+chapterId)]}
+       onChange={values=>{
+        setContexts(values.filter(value=>!value.startsWith('chapter:')));
+        setChapterIds(values.filter(value=>value.startsWith('chapter:')).map(value=>value.slice(8)));
+       }}
+      />
+     ) : null}
+    </>
+   ) : null}
+   {shared&&<section className="oc-draft-export"><strong>Also share this draft</strong><div><a href={'https://wa.me/?text='+encodeURIComponent(shared)} target="_blank" rel="noreferrer">WhatsApp</a><a href={'https://twitter.com/intent/tweet?text='+encodeURIComponent(shared)} target="_blank" rel="noreferrer">X</a><button onClick={()=>void shareDraft('tiktok')}>TikTok</button><button onClick={()=>void shareDraft('snapchat')}>Snapchat</button><button onClick={()=>void shareDraft('youtube')}>YouTube</button>{sharedId&&<button onClick={()=>onOpen(privateOnly?'moment':destination!.kind,privateOnly?sharedId:id)}>View post</button>}</div></section>}
+  </>}
+  {!loading&&!entities.length&&<button className="zs-primary" onClick={()=>onOpen('new-channel','new')}>Create a Channel</button>}{loading&&<WorldLoader world="rizz" label="Opening your studio…"/>}{error&&<p role="alert">{error}</p>}
+  {drafts.length>0&&<details className="oc-management"><summary>Saved private drafts</summary>{drafts.map(row=><div className="oc-draft" key={row.id}><strong>{String(row.content.title||'Draft')}</strong><p>{String(row.content.text||'')}</p><button className="zs-text-button" onClick={()=>{setDraft(row);setSurface('compose');}}>Use this draft</button></div>)}</details>}
+ </section>;
 }
