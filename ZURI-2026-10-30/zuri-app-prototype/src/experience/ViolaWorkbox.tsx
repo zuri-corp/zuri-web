@@ -17,10 +17,10 @@ import {auraSearch,type AuraSearch} from './auraSearch';
 import LoreViola,{loreRequest,type LoreRequest} from './LoreViola';
 import type {ViolaEventResult,ViolaPingResult,ViolaPingDraft} from './services';
 import {cloudRequest,type CloudEntity} from './cloudClient';
-import type {ConversationWorkspace} from '../core/conversationEngine';
+import {validConversationContext,type ConversationContext,type ConversationWorkspace} from '../core/conversationEngine';
 
 type Message={role:'user'|'assistant';content:string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null};
-type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'viola'|'robert';workspace:ConversationWorkspace;onAssistant:(value:'viola'|'robert')=>void;visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
+type Props=Pick<MobileProps,'data'|'update'|'go'|'open'|'notify'> & {assistant:'viola'|'robert';workspace:ConversationWorkspace;onAssistant:(value:'viola'|'robert')=>void;onContextSelect:(context:ConversationContext)=>boolean;onContextRemove:(context:ConversationContext)=>void;visible:boolean;canPublish:boolean;onClose:()=>void;input:string;setInput:(s:string)=>void;messages:Message[];intent:ConversationIntent|null;currentSpace?:string;onReset:()=>void;enabled:boolean|null;busy:boolean;error:string;onAsk:()=>void;};
 
 export default function ViolaWorkbox(p:Props){
  const [fullMode,setFullMode]=useState(true);
@@ -60,9 +60,9 @@ export default function ViolaWorkbox(p:Props){
  }
  function addSpaceContext(){
   if(!p.currentSpace){setCapabilities(true);setMotionMenu(false);return;}
-  const mention='\n@space: Current Space ('+p.currentSpace+')';
-  if(!p.input.includes(mention.trim()))p.setInput((p.input+mention).trim());
-  setCapabilities(false);input.current?.focus();
+  const existing=p.workspace.contexts.find(item=>item.kind==='space'&&item.id===p.currentSpace);
+  if(!p.onContextSelect({kind:'space',id:p.currentSpace,label:existing?.label||'Current Space'})){setError('Choose up to four valid items. Remove one before adding another.');return;}
+  setError('');setCapabilities(false);input.current?.focus();
  }
  function createMotion(kind:'event'|'ping'){
   const text=p.input.trim()||[...p.messages,...turns].reverse().find(message=>message.role==='user')?.content||'';
@@ -116,7 +116,8 @@ export default function ViolaWorkbox(p:Props){
   const greet=/^(?:hi|hey|hello|good morning|good afternoon|good evening)(?:\s+viola)?[.!]*$/i.test(request);
   const updates=/\b(?:updates|news|report|brief|summari[sz]e|what.s new)\b/i.test(request)&&/\b(?:aura|spaces?|societ(?:y|ies)|echoes|topics)\b/i.test(request)||/^what.s new[?!.]*$/i.test(request);
   const post=request.match(/^(?:(?:can|could) you\s+)?(?:draft|write|create|prepare)\s+(?:a\s+)?(?:rizz\s+)?(?:post|channel update)(?:\s+(?:about|saying|that says)\s+(.+))?[.!]?$/i);
-  if(greet||updates||post){clearArtifacts();p.onReset();setTurns([{role:'user',content:request},...(greet?[{role:'assistant' as const,content:zuriGreeting(p.data.name)}]:[])]);if(post)setRizzDraft(post[1]||'');else setBrief(/\breport\b/i.test(request)?'report':'updates');return;}
+  if(greet&&!p.enabled){setTurns(previous=>[...previous,{role:'user',content:request},{role:'assistant',content:zuriGreeting(p.data.name)}]);p.setInput('');return;}
+  if(updates||post){clearArtifacts();p.onReset();setTurns([{role:'user',content:request}]);if(post)setRizzDraft(post[1]||'');else setBrief(/\breport\b/i.test(request)?'report':'updates');return;}
   if(/^(?:open|show(?: me)?)\s+(?:my\s+)?(?:rizz\s+)?(?:chats|channels|rizz feed)[.!]*$/i.test(request)){p.onClose();p.go({world:'rizz',tab:/chats/i.test(request)?'Chats':/channels/i.test(request)?'Channels':'Feed'});return;}
   const fresh=creationDraft(request);
   const correction=creation&&!savedEntity&&/^(?:actually\b|change\b|make it\b|call it\b|name it\b|rename it\b|(?:title|name|about|venue|location|description|category|visibility|capacity|price|admission)\s*:|UGX\b|we deliver\b)/i.test(request)?reviseCreation(creation,request):null;
@@ -231,7 +232,7 @@ export default function ViolaWorkbox(p:Props){
  }
  if(!p.visible)return null;
  return createPortal(<div className="vw-host"><div className={'viola-edgeglow'+(p.busy?' viola-edgeglow-active':'')} aria-hidden="true"/><section ref={dialog} role="dialog" tabIndex={-1} className={'vw-box vw-glass vw-simple'+(fullMode?' vw-full-mode':'')} aria-labelledby="vw-title" aria-modal="true" onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();p.onClose();}}}>
- <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><button type="button" className="vw-assistant-switch" disabled={p.busy} aria-label={'Switch assistant. Current: '+(p.assistant==='robert'?'Sanyu':'Viola')} onClick={()=>p.onAssistant(p.assistant==='robert'?'viola':'robert')}>{p.assistant==='robert'?'Sanyu':'Viola'}<AppGlyph name="chevron" size={14}/></button></h2><small className="vw-workspace-name">{p.workspace.title}{p.workspace.contexts.length?' · '+p.workspace.contexts.map(context=>context.label||context.kind).join(', '):''}</small></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
+ <header className="vw-header"><div><h2 id="vw-title"><AppGlyph name={p.assistant==='robert'?'sanyu':'viola'} size={22}/><button type="button" className="vw-assistant-switch" disabled={p.busy} aria-label={'Switch assistant. Current: '+(p.assistant==='robert'?'Sanyu':'Viola')} onClick={()=>p.onAssistant(p.assistant==='robert'?'viola':'robert')}>{p.assistant==='robert'?'Sanyu':'Viola'}<AppGlyph name="chevron" size={14}/></button></h2><small className="vw-workspace-name">{p.workspace.title}</small></div><button type="button" aria-label={fullMode?'Return to compact chat':'Open Full AI Mode'} aria-pressed={fullMode} onClick={()=>setFullMode(value=>!value)}><AppGlyph name={fullMode?'back':'work'} size={18}/></button><button type="button" onClick={newTopic} aria-label="New topic" title="New topic">↺</button><button type="button" aria-label="Close Viola" onClick={p.onClose}>×</button></header>
  <div ref={body} className="vw-body" aria-busy={p.busy}>
  {!p.messages.length&&!turns.length&&<p className="vw-ai-welcome">{p.assistant==='robert'?'Let’s find the next useful move for your work.':'I’m here. Start wherever you are.'}</p>}
  <div className="vw-conversation" role="log"  aria-label={p.assistant==='robert'?'Conversation with Sanyu':'Conversation with Viola'} aria-live="polite">
@@ -266,6 +267,7 @@ export default function ViolaWorkbox(p:Props){
  {error&&<p className="vw-error" role="alert">{error}</p>}{p.error&&p.enabled!==false&&<p className="vw-error" role="alert">{p.error}</p>}
  </div>
  <footer className="vw-compose">
+ {p.workspace.contexts.length>0&&<div className="vw-selected-contexts" aria-label="Conversation context">{p.workspace.contexts.map(context=><span key={context.kind+':'+context.id}><AppGlyph name={context.kind==='space'||context.kind==='society'?'aura':context.kind==='channel'?'rizz':context.kind==='event'||context.kind==='ping'?'motion':'lore'} size={15}/><span>{context.label||context.kind}</span><button type="button" disabled={p.busy} aria-label={'Remove '+(context.label||context.kind)+' from conversation'} onClick={()=>p.onContextRemove(context)}><AppGlyph name="close" size={13}/></button></span>)}</div>}
  <div className="vw-compose-tools">
   <button type="button" disabled={p.busy} aria-label="Take a photo or video" title="Camera" onClick={()=>cameraFile.current?.click()}><AppGlyph name="camera" size={19}/></button>
   <input type="file" accept="image/*,video/*" capture="environment" hidden ref={cameraFile} onChange={e=>{attachMedia(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
@@ -279,9 +281,10 @@ export default function ViolaWorkbox(p:Props){
  {attachment&&<div className="vw-note-preview"><span>{attachment.name}</span><button type="button" onClick={()=>setAttachment(null)} aria-label="Remove note"><AppGlyph name="close" size={15}/></button></div>}
  {media&&<div className="vw-media-preview"><span>{media.file.type.startsWith('video/')?<video src={media.url} muted playsInline/>:<img src={media.url} alt="Attachment preview"/>}</span><small>{media.file.name}<br/>Private until you choose where it belongs.</small><button type="button" onClick={removeMedia} aria-label="Remove attachment"><AppGlyph name="close" size={15}/></button></div>}
  {capabilities&&<PamojaMentions onChoose={item=>{
-  const mention='\n@'+item.kind+': '+item.title+' ('+item.visibility+')'+(item.about?'\n'+item.about.slice(0,400):'');
-  if(p.input.length+mention.length>1500){setError('Shorten the message to add this context.');return;}
-  p.setInput((p.input.replace(/(?:^|\s)@$/,'')+mention).trim());setCapabilities(false);input.current?.focus();
+  const context={kind:item.kind,id:item.id,label:item.title};
+  if(item.imported||!validConversationContext(context)){setError('This item cannot be attached as conversation context yet. Open it in ZURI to check its details.');return;}
+  if(!p.onContextSelect(context)){setError('You can attach up to four items. Remove one to add another.');return;}
+  p.setInput(p.input.replace(/(?:^|\s)@$/,'').trim());setError('');setCapabilities(false);input.current?.focus();
  }}/>}
  {motionMenu&&<div className="vw-motion-choices" aria-label="Create in Motion"><button type="button" onClick={()=>createMotion('ping')}>Create Ping</button><button type="button" onClick={()=>createMotion('event')}>Create Event</button><button type="button" onClick={()=>{p.onClose();p.open('new-task','new');}}>Add Planner task</button></div>}
  <form onSubmit={e=>{e.preventDefault();submit();}}><textarea ref={input} aria-label={p.assistant==='robert'?'Message Sanyu':'Message Viola'} placeholder="What do you wanna get done?" value={p.input} onChange={e=>{p.setInput(e.target.value);setApproval('');if(/(?:^|\s)@$/.test(e.target.value)){setCapabilities(true);setMotionMenu(false);}}} rows={2} maxLength={1500} required disabled={p.busy}/><button aria-label={p.assistant==='robert'?'Send to Sanyu':'Send to Viola'} disabled={p.busy||!p.input.trim()}><AppGlyph name="send" size={20}/></button></form></footer>

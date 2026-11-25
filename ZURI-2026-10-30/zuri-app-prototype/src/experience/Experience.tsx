@@ -9,7 +9,7 @@ import {captureNotifications,unreadNotices} from './notifications';
 import type {KnowledgeSource} from '../core/knowledge';
 import ViolaWorkbox from './ViolaWorkbox';
 import type {ConversationIntent} from '../core/intents';
-import {addConversationTurn,createConversationWorkspace,readConversationWorkspace,replaceConversationContext,resetConversationTopic,type ConversationWorkspace} from '../core/conversationEngine';
+import {addConversationTurn,createConversationWorkspace,readConversationWorkspace,replaceConversationContext,resetConversationTopic,validConversationContext,type ConversationContext,type ConversationWorkspace} from '../core/conversationEngine';
 import {PrivacyCore} from './PrivacyCore';
 import IntentWorkspace from './IntentWorkspace';
 import {reviewedAIMessages} from '../core/privacy';
@@ -41,6 +41,7 @@ import { HomeDashboard, MobileDestination } from './MobileWorlds';
 import { getViolaStatus, askViola, violaDestination } from './services';
 import type {ViolaEventResult,ViolaPingResult,ViolaPingDraft} from './services';
 import {cloudRequest} from './cloudClient';
+import {verifyConversationContexts} from './conversationContextAccess';
 import { mergeBackup, migrateLegacy } from './backup';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { worlds, home, parseRoute, routeHash, objectRoute, initialData, readData, runFocus, today, type World, type Route, type LocalData } from './model';
@@ -89,21 +90,26 @@ export default function Experience() {
   const [violaSession,setViolaSession]=useState(0);
   const [assistant,setAssistant]=useState<'viola'|'robert'>('viola');
   const [aiWorkspace,setAIWorkspace]=useState<ConversationWorkspace>(()=>{try{return readConversationWorkspace(JSON.parse(sessionStorage.getItem('zuri-ai-workspace:viola')||'null'),'viola');}catch{return createConversationWorkspace('viola');}});
-  function startViola(text=''){if(text)setAiInput(text);setViola(true);}
+  function addAIContext(context:ConversationContext){if(!validConversationContext(context))return false;if(!aiWorkspace.contexts.some(item=>item.kind===context.kind&&item.id===context.id)&&aiWorkspace.contexts.length>=4)return false;setAIWorkspace(workspace=>replaceConversationContext(workspace,[...workspace.contexts,context]));return true;}
+  function startViola(text=''){if(text)setAiInput(text);const kind=route.kind==='edit-task'?'task':route.kind;const current={kind,id:route.id,label:contextTitle||screenTitle(route)};if(validConversationContext(current))addAIContext(current);setViola(true);}
   function closeViola(){setViola(false);}
   function resetViola(){aiEpoch.current++;setAiMessages([]);setAIIntent(null);setAiError('');setAiBusy(false);setAiInput('');setAIWorkspace(workspace=>resetConversationTopic(workspace));}
   const [aiError, setAiError] = useState('');
   const [aiIntent,setAIIntent]=useState<ConversationIntent|null>(null);
-  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>([]);
+  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant'; content: string;sources?:KnowledgeSource[];events?:ViolaEventResult[];pings?:ViolaPingResult[];pingDraft?:ViolaPingDraft|null}[]>(()=>aiWorkspace.turns);
   const [aiInput, setAiInput] = useState('');
   async function saveConversation(workspace:ConversationWorkspace,messages:{id:string;role:'user'|'assistant';content:string;sources?:KnowledgeSource[]}[]){
     await cloudRequest('ai.threads.save',{id:workspace.id,assistant:workspace.assistant,title:workspace.title,contexts:workspace.contexts.map(({kind,id})=>({kind,id}))});
-    await Promise.all(messages.map(message=>cloudRequest('ai.threads.message',{id:workspace.id,message_id:message.id,role:message.role,content:message.content,sources:(message.sources||[]).slice(0,12)})));
+    for(const message of messages)await cloudRequest('ai.threads.message',{id:workspace.id,message_id:message.id,role:message.role,content:message.content,sources:(message.sources||[]).slice(0,12)});
+  }
+  function switchAssistant(value:'viola'|'robert'){
+    aiEpoch.current++;try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The current conversation remains in memory. */}
+    let next:ConversationWorkspace;try{next=readConversationWorkspace(JSON.parse(sessionStorage.getItem('zuri-ai-workspace:'+value)||'null'),value);}catch{next=createConversationWorkspace(value);}
+    setAssistant(value);setAIWorkspace(next);setAiMessages(next.turns);setAIIntent(null);setAiError('');setAiInput('');setAiBusy(false);setViolaSession(session=>session+1);
   }
   useEffect(()=>{try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The conversation remains available for this page session. */}},[aiWorkspace]);
-  useEffect(()=>{const kind=route.kind;if(!kind||!route.id||!['space','society','channel','event','ping','chapter','moment','edit-task'].includes(kind))return;const contextKind=kind==='edit-task'?'task':kind;setAIWorkspace(workspace=>replaceConversationContext(workspace,[...workspace.contexts,{kind:contextKind as ConversationWorkspace['contexts'][number]['kind'],id:route.id!,label:contextTitle||screenTitle(route)}]));},[route.kind,route.id,contextTitle]);
   useEffect(()=>{
-   const clear=()=>{setViola(false);resetViola();setViolaSession(value=>value+1);};
+   const clear=()=>{try{sessionStorage.removeItem('zuri-ai-workspace:viola');sessionStorage.removeItem('zuri-ai-workspace:robert');}catch{}setViola(false);resetViola();setViolaSession(value=>value+1);};
    window.addEventListener('zuri-account-changed',clear);
    return()=>window.removeEventListener('zuri-account-changed',clear);
   },[]);
@@ -255,8 +261,8 @@ export default function Experience() {
     const userMessage={id:crypto.randomUUID(),role:'user' as const,content:aiInput.trim()};
     const workspaceWithUser=addConversationTurn(aiWorkspace,{role:'user',content:userMessage.content});
     setAIIntent(null);setAiMessages(displayMessages);setAIWorkspace(workspaceWithUser);setAiInput(''); setAiBusy(true); setAiError('');
-    try { const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant,workspaceWithUser.contexts); if(epoch!==aiEpoch.current)return;const assistantMessage={id:crypto.randomUUID(),role:'assistant' as const,content:result.reply,sources:result.sources};const workspaceWithReply=addConversationTurn(workspaceWithUser,{role:'assistant',content:result.reply});setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIWorkspace(workspaceWithReply);setAIIntent(result.intent);void saveConversation(workspaceWithReply,[userMessage,assistantMessage]).catch(()=>{/* The private device workspace remains available and can sync on a later reply. */}); }
-    catch (error) { if(epoch!==aiEpoch.current)return;setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1)); } finally {if(epoch===aiEpoch.current)setAiBusy(false);}
+    try { await verifyConversationContexts(workspaceWithUser.contexts,cloudRequest);if(epoch!==aiEpoch.current)return;const result = await askViola(next,JSON.stringify(next),eventReferences,pingReferences,assistant,workspaceWithUser.contexts); if(epoch!==aiEpoch.current)return;const assistantMessage={id:crypto.randomUUID(),role:'assistant' as const,content:result.reply,sources:result.sources};const workspaceWithReply=addConversationTurn(workspaceWithUser,{role:'assistant',content:result.reply});setAiMessages([...displayMessages, {role:'assistant', content:result.reply,sources:result.sources,events:result.events,pings:result.pings,pingDraft:result.pingDraft}]);setAIWorkspace(workspaceWithReply);setAIIntent(result.intent);void saveConversation(workspaceWithReply,[userMessage,assistantMessage]).catch(()=>{/* The private device workspace remains available and can sync on a later reply. */}); }
+    catch (error) { if(epoch!==aiEpoch.current)return;setAiError(error instanceof Error ? error.message : 'Connection failed. Please retry.'); setAiInput(next.at(-1)?.content || ''); setAiMessages(displayMessages.slice(0,-1));setAIWorkspace(aiWorkspace); } finally {if(epoch===aiEpoch.current)setAiBusy(false);}
   }
   function detail() {
     const {kind, id} = route;
@@ -353,7 +359,7 @@ export default function Experience() {
       <main id="zx-main" ref={main} tabIndex={-1} className="zx-main"><div className="zx-content">{!online && <div className="zx-offline" role="status"><span aria-hidden="true">•</span> Reconnecting</div>}{storageError && <div className="zx-alert" role="alert"><p>{storageError}</p><button onClick={exportData}>Export current data</button><button onClick={() => {localStorage.removeItem(STORAGE);storageSafe.current=true;setStorageError('');setData(structuredClone(initialData));}}>Reset local workspace</button></div>}<h1 className="zs-sr-only" ref={heading} tabIndex={-1}>{screenTitle(route)}</h1>{import.meta.env.MODE==='website'&&route.world==='lounge'&&!route.kind&&<DesktopLaunchpad launch={launch}/>}{deviceMode&&<div className="cw-device-banner"><strong>On this device · not your live account</strong><p>Existing drafts are preserved. Old examples may need review. Nothing here is automatically uploaded or delivered.</p><button onClick={()=>setDeviceMode(false)}>Return to your ZURI account</button></div>}{renderPage()}{deviceMode&&route.kind&&['space','society','event','ping','offer','chapter','person','order','enquiry-draft'].includes(route.kind)&&route.id&&<ConnectedActions key={'connections-'+routeHash(route)} source={{kind:route.kind as ObjectRef['kind'],id:route.id}} data={data} update={update} open={open} go={go} notify={notify}/>}</div></main>
     </div>{!route.kind&&theme.tabs.length>0&&<nav className="zx-tabs zn-app-dock" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label={`${theme.name} sections`}>{theme.tabs.map(t=><button key={t} aria-current={route.tab===t?'page':undefined} onClick={()=>go({world:route.world,tab:t})}><SectionGlyph name={t} active={route.tab===t}/><span>{t}</span></button>)}</nav>}{route.world==='lounge'&&!route.kind&&<nav className="zx-mobile-nav" onPointerDownCapture={holdDock} onFocusCapture={holdDock} aria-label="ZURI mobile destinations">{(Object.keys(worlds) as World[]).filter(w=>w!=='lounge').map(w => <button key={w} aria-current={route.world === w ? 'page' : undefined} onClick={() => launch(w)}><span style={{color:worlds[w].color}}><AppGlyph name={w}/><span className="zp-sr">{worlds[w].mark}</span></span>{worlds[w].name}</button>)}</nav>}<button className="zm-viola-orb" hidden={route.world==='lounge'||!!route.kind} onClick={()=>startViola()} aria-label="Open Viola" aria-haspopup="dialog"><AppGlyph name="viola" size={25}/></button>
     <div className="zx-toast" role="status">{notice}</div>
-    <ViolaWorkbox assistant={assistant} workspace={aiWorkspace} onAssistant={value=>{setAssistant(value);setAIWorkspace(createConversationWorkspace(value));resetViola();}} key={violaSession} notify={notify} visible={viola} canPublish={!deviceMode} onClose={closeViola} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} currentSpace={route.kind==='space'?route.id:undefined} onReset={resetViola} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()}/>
+    <ViolaWorkbox assistant={assistant} workspace={aiWorkspace} onAssistant={switchAssistant} onContextSelect={addAIContext} onContextRemove={context=>setAIWorkspace(workspace=>replaceConversationContext(workspace,workspace.contexts.filter(item=>item.kind!==context.kind||item.id!==context.id)))} key={violaSession} notify={notify} visible={viola} canPublish={!deviceMode} onClose={closeViola} data={{...data,name:data.name==='Alex Kato'?'there':data.name}} update={update} open={open} go={go} input={aiInput} setInput={setAiInput} messages={aiMessages} intent={aiIntent} currentSpace={route.kind==='space'?route.id:undefined} onReset={resetViola} enabled={aiEnabled} busy={aiBusy} error={aiError} onAsk={()=>void submitAI()}/>
     {import.meta.env.MODE==='website'&&introductionOpen&&<AppIntroduction onClose={()=>setIntroductionOpen(false)} launch={launch}/>}
   </div>;
 }

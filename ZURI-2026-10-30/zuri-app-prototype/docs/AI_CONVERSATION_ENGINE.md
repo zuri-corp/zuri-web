@@ -82,6 +82,12 @@ Every tool declares required fields, allowed context, whether it creates a draft
 5. **Persistence:** encrypted-at-rest server-side AI threads, resumable workspaces and user-controlled deletion.
 6. **Quality:** evaluation conversations, model routing, cost dashboards and failure fallbacks.
 
+### Current context and continuity slice
+
+The composer attaches up to four selected Spaces, Societies, Channels, ZURI Events, Pings, Chapters, Moments or Planner tasks as removable references. It checks that the signed-in user can still access each reference before making a model request; the gateway independently fetches a bounded summary using the user's permissions. An unavailable context blocks the request and leaves the message ready to retry. Opening the assistant from an object can attach that object, while simply browsing other pages does not accumulate context. New topic clears it.
+
+Viola and Sanyu have separate bounded workspaces in the current browser session. Switching assistants restores their text turns and selected contexts; account changes clear both session workspaces. Cloud thread writes remain best-effort and are not presented as confirmed cross-device history. Imported Events, people, offerings and collections do not yet have this attachment contract and must not be presented as attached context. Media attached in the chat is not model vision.
+
 ## Acceptance checks
 
 - Changing topic removes previous pending actions and context from the active request.

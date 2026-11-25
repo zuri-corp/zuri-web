@@ -3,7 +3,7 @@ import {useEffect,useState} from 'react';
 import {cloudRequest,discoverCloud,type CloudEntity,type CloudRecord} from './cloudClient';
 import {AppGlyph} from './AppGlyph';
 
-type Mention={id:string;kind:string;title:string;about:string;visibility:string};
+type Mention={id:string;kind:string;title:string;about:string;visibility:string;imported?:boolean};
 export default function PamojaMentions({onChoose}:{onChoose:(mention:Mention)=>void}){
  const [rows,setRows]=useState<Mention[]>([]),[query,setQuery]=useState(''),[kind,setKind]=useState('all');
  const [related,setRelated]=useState<Mention[]>([]);
@@ -11,7 +11,7 @@ export default function PamojaMentions({onChoose}:{onChoose:(mention:Mention)=>v
  useEffect(()=>{
   let active=true;
   const reads=[
-   getMotionEvents().then(items=>items.map(item=>({id:item.id,kind:'event',title:item.title,about:[item.next_occurrence_at,item.location?.venue,item.description?.slice(0,220)].filter(Boolean).join(' · '),visibility:'public'}))),
+   getMotionEvents().then(items=>items.map(item=>({id:item.id,kind:'event',title:item.title,about:[item.next_occurrence_at,item.location?.venue,item.description?.slice(0,220)].filter(Boolean).join(' · '),visibility:'public',imported:true}))),
    cloudRequest<CloudEntity[]>('entities.contexts').then(items=>items.map(item=>({id:item.id,kind:item.kind,title:item.title,about:item.description,visibility:item.visibility}))),
    ...['chapter','moment','task'].map(kind=>cloudRequest<CloudRecord[]>('records.list',{kind}).then(items=>items.map(item=>({id:item.id,kind,title:String(item.content.title||item.content.text||'Untitled').slice(0,120),about:String(item.content.text||'').slice(0,400),visibility:'private'}))))
   ];

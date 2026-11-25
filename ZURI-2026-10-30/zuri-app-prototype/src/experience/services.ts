@@ -142,7 +142,7 @@ export async function askViola(messages: {role:'user'|'assistant'; content:strin
   if(!approvedJson||!matchesAIReview(messages,approvedJson))throw Error('Review the exact conversation before sending.');
   messages=reviewedAIMessages(messages);
   const json=JSON.stringify({assistant,messages,eventReferences,pingReferences,contexts:contexts.map(({kind,id})=>({kind,id}))});if(lastReviewedAI.json!==json)lastReviewedAI={json,id:crypto.randomUUID()};
-  const {response,value}=await (await import('./aiService')).requestAI('viola',{method:'POST',body:JSON.stringify({assistant,messages,eventReferences,pingReferences,contexts,consent:true,requestId:lastReviewedAI.id}),signal:AbortSignal.timeout(50000)});
+  const {response,value}=await (await import('./aiService')).requestAI('viola',{method:'POST',body:JSON.stringify({assistant,messages,eventReferences,pingReferences,contexts:contexts.map(({kind,id})=>({kind,id})),consent:true,requestId:lastReviewedAI.id}),signal:AbortSignal.timeout(50000)});
   if (!response.ok || typeof value.reply !== 'string' || !value.reply.trim()) throw new Error(typeof value.error === 'string' ? value.error : 'Viola could not finish. Please retry.');
   return {reply:value.reply,intent:readConversationIntent(value.intent,messages,'app'),sources:sourceLinks(value.sources),events:readViolaEvents(value.events),pings:readViolaPings(value.pings),pingDraft:readViolaPingDraft(value.pingDraft)};
 }
