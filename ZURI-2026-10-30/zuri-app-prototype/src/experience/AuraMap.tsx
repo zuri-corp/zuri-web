@@ -26,7 +26,7 @@ function youMarker(){
 const markers={space:mapMarker('space'),society:mapMarker('society'),event:mapMarker('event'),ping:mapMarker('ping')};
 const myMarker=youMarker();
 
-export default function AuraMap({entities,onOpen,onFind}:{entities:CloudEntity[];onOpen:(kind:string,id:string)=>void;onFind:()=>void}){
+export default function AuraMap({entities,onOpen,onFind,onLounge}:{entities:CloudEntity[];onOpen:(kind:string,id:string)=>void;onFind:()=>void;onLounge:()=>void}){
  const [points,setPoints]=useState<PamojaMapPoint[]>([]);
  const [loading,setLoading]=useState(true);
  const [error,setError]=useState('');
@@ -97,8 +97,8 @@ export default function AuraMap({entities,onOpen,onFind}:{entities:CloudEntity[]
  return <section className="am-map" aria-label="Aura map">
   <div ref={canvas} className="am-leaflet" aria-label="Interactive Pamoja map"/>
   <header className="am-map-header">
-   <span className="am-brand"><AppGlyph name="aura" size={25}/>Aura</span>
-   <button className="am-search" type="button" onClick={onFind}><AppGlyph name="Find" size={18}/><span>Find a place, event or people</span></button>
+   <button className="am-brand" type="button" onClick={onLounge} aria-label="Return to Lounge"><AppGlyph name="aura" size={25}/>Aura</button>
+   <button className="am-search" type="button" onClick={onFind} aria-label="Search Aura"><AppGlyph name="Find" size={18}/><span>Search</span></button>
    <button type="button" aria-label="Locate me" className="am-locate" onClick={locate}><AppGlyph name="Map" size={19}/></button>
   </header>
   {loading&&!points.length&&<div className="am-loading" role="status">Finding public places…</div>}
