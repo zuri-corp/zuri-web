@@ -6,7 +6,7 @@ import SpaceTeamAccess from './SpaceTeamAccess';
 import {visibleSpaceSections} from './spaceSections';
 import {eventPriceLabel} from './eventPricing';
 import {useEffect,useState} from 'react';
-import {cloudRequest,type CloudEntity} from './cloudClient';
+import {CloudError,cloudRequest,type CloudEntity} from './cloudClient';
 import {ObjectHero,ObjectTabs,ObjectFacts,InlineAction} from './ObjectLayout';
 import {WorldLoader,PersonAvatar,PersonName} from './UsabilityUI';
 import Conversation from './Conversation';
@@ -29,8 +29,8 @@ function ChannelManagement({entity,summary,onTab,onRefresh}:{entity:CloudEntity;
 }
 function EntityDeletion({entity,onDeleted}:{entity:CloudEntity;onDeleted:(kind:string)=>void}){
  const [armed,setArmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
- async function remove(){if(busy)return;setBusy(true);setError('');try{const result=await cloudRequest<{deleted?:boolean}>('entities.delete',{id:entity.id});if(result.deleted!==true)throw Error('Deletion could not be confirmed.');onDeleted(entity.kind);}catch(e){setError(e instanceof Error?e.message:'Deletion could not be confirmed.');}finally{setBusy(false);}}
- return <section className="oc-management"><h3>Remove {entity.kind}</h3>{error&&<p role="alert">{error}</p>}{armed?<p className="oc-danger-confirm">Remove this {entity.kind} from ZURI? It will no longer be visible or usable. <button className="zs-text-button" disabled={busy} onClick={()=>void remove()}>{busy?'Removing…':'Remove'}</button><button className="zs-text-button" disabled={busy} onClick={()=>setArmed(false)}>Keep it</button></p>:<button className="zs-text-button" onClick={()=>setArmed(true)}>Remove {entity.kind}</button>}</section>;
+ async function remove(){if(busy)return;setBusy(true);setError('');try{const result=await cloudRequest<{deleted?:boolean}>('entities.delete',{id:entity.id});if(result?.deleted!==true)throw Error('Removal could not be confirmed. Refresh before trying again.');onDeleted(entity.kind);}catch(e){setError(e instanceof CloudError&&(e.status>=500||e.status===0)?'ZURI could not confirm the removal. Refresh this page to check whether it was removed before trying again.':e instanceof Error?e.message:'Removal could not be confirmed. Refresh before trying again.');}finally{setBusy(false);}}
+ return <section className="oc-management"><h3>Remove {entity.kind}</h3>{armed?<div className="oc-danger-confirm"><p>Remove this {entity.kind} from ZURI? It will no longer be visible or usable.</p>{error&&<p role="alert">{error}</p>}<button className="zs-text-button" disabled={busy} onClick={()=>void remove()}>{busy?'Removing…':'Remove'}</button><button className="zs-text-button" disabled={busy} onClick={()=>{setArmed(false);setError('');}}>Keep it</button></div>:<button className="zs-text-button" onClick={()=>setArmed(true)}>Remove {entity.kind}</button>}</section>;
 }
 export default function ObjectWorkspace({id,onOpen,onPlanner,onDeleted,initialCollection,loadingWorld='aura'}:{loadingWorld?:string;initialCollection?:string;id:string;onOpen:(kind:string,id:string)=>void;onPlanner:()=>void;onDeleted?:(kind:string)=>void}){
  const [summary,setSummary]=useState<ObjectSummary|null>(null),[version,setVersion]=useState(0),[error,setError]=useState('');

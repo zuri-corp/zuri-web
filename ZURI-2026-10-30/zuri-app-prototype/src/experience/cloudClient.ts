@@ -43,7 +43,11 @@ export async function cloudAccessToken(){return token();}
 export async function cloudRequest<T=any>(action:string,payload:unknown={},signal?:AbortSignal):Promise<T>{
  const endpoint=backendEndpoint(),start=epoch;
  try{const result=endpoint?await jsonRequest(endpoint,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,payload}),signal}):directConfigured()?await jsonRequest(publicConfig.url+'/functions/v1/zuri-api',{method:'POST',headers:{apikey:publicConfig.publishableKey,Authorization:'Bearer '+await token(),'Content-Type':'application/json'},body:JSON.stringify({action,payload}),signal}):(()=>{throw new CloudError('Account services are not configured.');})();
- if(start!==epoch)throw new CloudError('Your account changed. Refresh before continuing.');if(!('data'in result))throw new CloudError('The operation was not confirmed.');if(['profile.save','entities.update','entities.create'].includes(action))signedCache.clear();return result.data as T;
+ if(start!==epoch)throw new CloudError('Your account changed. Refresh before continuing.');if(!('data'in result))throw new CloudError('The operation was not confirmed.');if(['profile.save','entities.update','entities.create'].includes(action))signedCache.clear();
+ // Older server deployments can include archived entities in workspace lists.
+ // The database must also filter before pagination; this prevents stale clients showing them meanwhile.
+ if(action==='entities.list'&&Array.isArray(result.data))return result.data.filter((item:unknown)=>!item||typeof item!=='object'||(item as {status?:unknown}).status!=='archived') as T;
+ return result.data as T;
  }catch(e){if(e instanceof CloudError&&e.status===401&&savedSession())clearCloudSession();throw e;}
 }
 export async function discoverCloud(query:string,signal?:AbortSignal):Promise<DirectoryItem[]>{if(query.trim().length<2)throw Error('Enter at least two characters.');const endpoint=backendEndpoint();const result=endpoint?await jsonRequest(endpoint+'/discover?q='+encodeURIComponent(query.trim()),{credentials:'include',signal}):directConfigured()?await jsonRequest(publicConfig.url+'/rest/v1/rpc/zuri_discover',{method:'POST',headers:{apikey:publicConfig.publishableKey,'Content-Type':'application/json'},body:JSON.stringify({query:query.trim()}),signal}):(()=>{throw Error('Discovery is not configured.');})();const rows=endpoint?result.data:result;return normalizeDirectory(rows);}
