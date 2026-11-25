@@ -30,51 +30,61 @@ export function SpaceConnections({space,kind,owner,onOpen}:{space:CloudEntity;ki
  </section>;
 }
 
-export function CropPhotoInput({label,onChange,ratio=1,video=false,compact=false,sourceFile}:{label:string;video?:boolean;compact?:boolean;sourceFile?:File;onChange:(file:File|null)=>void;ratio?:number}){
+export function CropPhotoInput({label,onChange,ratio=1,video=false,compact=false,sourceFile,preview=false}:{label:string;video?:boolean;compact?:boolean;preview?:boolean;sourceFile?:File;onChange:(file:File|null)=>void;ratio?:number}){
  const [draft,setDraft]=useState<{file:File;url:string}|null>(null);
+ const [selected,setSelected]=useState<File|null>(null);
+ const [cropRatio,setCropRatio]=useState(ratio);
  const [image,setImage]=useState<HTMLImageElement|null>(null);
  const [zoom,setZoom]=useState(1),[x,setX]=useState(50),[y,setY]=useState(50);
  const [error,setError]=useState(''),[saving,setSaving]=useState(false);
  const drag=useRef<{id:number;left:number;top:number;x:number;y:number}|null>(null);
  const touches=useRef(new Map<number,{x:number;y:number}>()),pinch=useRef<{distance:number;zoom:number}|null>(null);
  useEffect(()=>()=>{if(draft)URL.revokeObjectURL(draft.url);},[draft]);
- const width=image?Math.min(image.naturalWidth,image.naturalHeight*ratio)/zoom:0;
- const height=width/ratio;
+ const width=image?Math.min(image.naturalWidth,image.naturalHeight*cropRatio)/zoom:0;
+ const height=width/cropRatio;
  const excessX=image?image.naturalWidth-width:0,excessY=image?image.naturalHeight-height:0;
  const clamp=(value:number)=>Math.max(0,Math.min(100,value));
 
  function close(){setDraft(null);setImage(null);drag.current=null;touches.current.clear();pinch.current=null;}
+ function openCrop(file:File){
+  setImage(null);setZoom(1);setX(50);setY(50);setCropRatio(ratio);setDraft({file,url:URL.createObjectURL(file)});
+ }
  function choose(file:File|undefined){
   if(!file)return;
   setError('');
-  if(file.type==='video/mp4'&&video){onChange(file);return;}
+  if(file.type==='video/mp4'&&video){setSelected(file);onChange(file);return;}
   if(file.type.startsWith('video/')){setError('Choose an MP4 video. Other video formats are not supported yet.');return;}
-  setImage(null);setZoom(1);setX(50);setY(50);setDraft({file,url:URL.createObjectURL(file)});
+  if(!file.type.startsWith('image/')){setError('Choose a photo or a supported video.');return;}
+  setSelected(file);onChange(file);
  }
  async function crop(){
   if(!draft||!image||saving)return;
   setSaving(true);setError('');
   try{
    const canvas=document.createElement('canvas');
-   canvas.width=Math.max(1,Math.min(1600,Math.round(width)));
-   canvas.height=Math.max(1,Math.round(canvas.width/ratio));
+   const scale=Math.min(1,4096/Math.max(width,height));
+   canvas.width=Math.max(1,Math.round(width*scale));
+   canvas.height=Math.max(1,Math.round(height*scale));
    const context=canvas.getContext('2d');
    if(!context)throw Error('Photo cropping is unavailable.');
    context.drawImage(image,excessX*x/100,excessY*y/100,width,height,0,0,canvas.width,canvas.height);
    const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,'image/webp',0.88));
    if(!blob)throw Error('Could not crop this photo.');
    const extension=blob.type==='image/webp'?'webp':'png';
-   onChange(new File([blob],draft.file.name.replace(/\.[^.]+$/,'')+'.'+extension,{type:blob.type}));
+   const result=new File([blob],draft.file.name.replace(/\.[^.]+$/,'')+'.'+extension,{type:blob.type});
+   setSelected(result);onChange(result);
    close();
   }catch(e){setError(e instanceof Error?e.message:'Could not crop this photo.');}
   finally{setSaving(false);}
  }
  return <>
-   {sourceFile?<button type="button" className="zs-text-button" onClick={()=>choose(sourceFile)}>Crop photo</button>:<div className={'oc-photo-picker'+(compact?' oc-photo-picker-compact':'')}><span>{!compact&&<AppGlyph name={video?'Moments':'camera'} size={18}/>} {label}</span><div className="oc-media-sources"><label className={compact?'oc-media-icon':'zs-primary'} aria-label={'Take a photo for '+label}><AppGlyph name="camera" size={19}/>{!compact&&'Use camera'}<input type="file" accept="image/*" capture="environment" onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label><label className={compact?'oc-media-icon':'zs-text-button'} aria-label={'Choose '+label+' from device'}><AppGlyph name="Moments" size={19}/>{!compact&&'Choose from device'}<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label></div></div>}
-  {error&&!draft&&<p role="alert">{error}</p>}
+   {sourceFile?<button type="button" className="zs-text-button" onClick={()=>openCrop(sourceFile)}>Edit crop</button>:<><div className={'oc-photo-picker'+(compact?' oc-photo-picker-compact':'')}><span>{!compact&&<AppGlyph name={video?'Moments':'camera'} size={18}/>} {label}</span><div className="oc-media-sources"><label className={compact?'oc-media-icon':'zs-primary'} aria-label={'Take a photo for '+label}><AppGlyph name="camera" size={19}/>{!compact&&'Use camera'}<input type="file" accept="image/*" capture="environment" onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label><label className={compact?'oc-media-icon':'zs-text-button'} aria-label={'Choose '+label+' from device'}><AppGlyph name="Moments" size={19}/>{!compact&&'Choose from device'}<input type="file" accept={video?'image/*,video/mp4':'image/*'} onChange={e=>{choose(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/></label></div></div>{selected?.type.startsWith('image/')&&<div className="oc-photo-selected"><span>Full photo selected</span><button type="button" className="zs-text-button" onClick={()=>openCrop(selected)}>Edit crop</button></div>}</>}
+   {preview&&selected&&<AttachmentPreview file={selected} onRemove={()=>{setSelected(null);onChange(null);}}/>}
+   {error&&!draft&&<p role="alert">{error}</p>}
   {draft&&<Modal label="Crop photo" onClose={()=>{if(!saving)close();}}><div className="oc-crop-dialog">
    <h3>Crop photo</h3>
-   <div className="oc-crop-preview" style={{aspectRatio:ratio,width:`min(100%, ${36*ratio}dvh)`}}
+   <div className="oc-crop-ratios" aria-label="Crop shape">{[{label:'Suggested',value:ratio},{label:'Square',value:1},{label:'Portrait',value:4/5},{label:'Landscape',value:16/9}].map(option=><button type="button" key={option.label} aria-pressed={cropRatio===option.value} onClick={()=>{setCropRatio(option.value);setZoom(1);setX(50);setY(50);}}>{option.label}</button>)}</div>
+   <div className="oc-crop-preview" style={{aspectRatio:cropRatio,width:`min(100%, ${42*cropRatio}dvh)`}}
     onPointerDown={e=>{
      if(!image||saving||e.button!==0)return;
      e.currentTarget.setPointerCapture(e.pointerId);
@@ -104,7 +114,7 @@ export function CropPhotoInput({label,onChange,ratio=1,video=false,compact=false
    </details>
    {error&&<p role="alert">{error}</p>}
    <div className="oc-crop-actions">
-    <button type="button" className="zs-text-button" disabled={saving||!['image/jpeg','image/png','image/webp'].includes(draft.file.type)} onClick={()=>{onChange(draft.file);close();}}>Keep original</button>
+    <button type="button" className="zs-text-button" disabled={saving} onClick={close}>Keep full photo</button>
     <button type="button" className="zs-primary" disabled={!image||saving} onClick={()=>void crop()}>{saving?'Preparing…':'Use crop'}</button>
    </div>
   </div></Modal>}

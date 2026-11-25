@@ -25,7 +25,7 @@ export function loreRequest(text:string):LoreRequest|null{
 
 export default function LoreViola({request,onOpen}:{request:LoreRequest;onOpen:(kind:string,id:string)=>void}){
  const [query,setQuery]=useState(request.term),[filter,setFilter]=useState(request.term),[people,setPeople]=useState<DirectoryItem[]>([]),[records,setRecords]=useState<CloudRecord[]>([]),[title,setTitle]=useState(request.term),[text,setText]=useState(request.body||''),[file,setFile]=useState<File|null>(null),[review,setReview]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[saved,setSaved]=useState<CloudRecord|null>(null);
- const submission=useRef(false),saveId=useRef(''),uploaded=useRef<{file:File;id:string}|null>(null);
+ const submission=useRef(false),saveId=useRef(''),uploaded=useRef<{file:File;id:string;mime:string}|null>(null);
  const noun=request.kind==='chapter'?'Chapter':'Moment';
  useEffect(()=>{
   if(request.mode!=='find')return;
@@ -40,9 +40,9 @@ export default function LoreViola({request,onOpen}:{request:LoreRequest;onOpen:(
   if(submission.current||!review||!title.trim())return;
   submission.current=true;setBusy(true);setError('');
   try{
-   if(file&&uploaded.current?.file!==file){const media=await uploadCloud(file);if(!media.id)throw Error('The photo upload could not be confirmed.');uploaded.current={file,id:media.id};}
+   if(file&&uploaded.current?.file!==file){const media=await uploadCloud(file);if(!media.id)throw Error('The photo upload could not be confirmed.');uploaded.current={file,id:media.id,mime:media.mime};}
    saveId.current ||= crypto.randomUUID();
-   const content={title:title.trim(),text:text.trim(),...(file&&uploaded.current?.file===file?{mediaId:uploaded.current.id,mime:file.type}:{})};
+   const content={title:title.trim(),text:text.trim(),...(file&&uploaded.current?.file===file?{mediaId:uploaded.current.id,mime:uploaded.current.mime}:{})};
    const row=await cloudRequest<CloudRecord>('records.put',{id:saveId.current,kind:request.kind,revision:0,content});
    setSaved(row);
   }catch(error){setError(error instanceof Error?error.message:'Saving could not be confirmed.');}

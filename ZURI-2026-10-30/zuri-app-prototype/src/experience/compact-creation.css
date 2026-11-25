@@ -41,3 +41,15 @@
 .zuri-exp .cw-profile-view>p{margin:5px 0;font-size:14px;line-height:1.4}.zuri-exp .cw-profile-links{gap:5px;margin:3px 0}.zuri-exp .cw-profile-view>small{letter-spacing:0;margin:8px 0}
 .zuri-exp[data-offline=true] .cw-connection-error{display:none}
 @media(max-width:360px){.zs-time-grid{grid-template-columns:1fr}.zuri-exp .zs-form-section{padding:12px}}
+.oc-photo-selected{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--zs-muted);font-size:12px;margin-top:4px}
+.oc-photo-selected button{min-height:40px}
+.oc-crop-ratios{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.oc-crop-ratios button{flex:none;min-height:40px;padding:0 12px;border:1px solid var(--zs-border);border-radius:999px;background:var(--zs-raised);color:var(--zs-text)}
+.oc-crop-ratios button[aria-pressed=true]{border-color:var(--zs-accent);background:color-mix(in srgb,var(--zs-accent) 22%,var(--zs-raised))}
+.zuri-exp .oc-studio-media{position:relative;margin:0 0 10px}
+.zuri-exp .oc-studio-media .oc-attachment-preview{margin:0;display:block}
+.zuri-exp .oc-studio-media .oc-attachment-preview :is(img,video){width:100%;max-height:50dvh;object-fit:contain;border-radius:14px;background:#08090d}
+.zuri-exp .oc-studio-media .oc-attachment-preview>button,.zuri-exp .oc-studio-media>button{position:absolute;bottom:8px;min-height:36px;padding:7px 11px;border-radius:999px;background:#121722dc;color:#fff;font-size:12px}
+.zuri-exp .oc-studio-media .oc-attachment-preview>button{left:8px}.zuri-exp .oc-studio-media>button{right:8px}
+.zuri-exp .oc-caption-composer>div:last-of-type{margin:0}.zuri-exp .oc-create .ux-context-picker{margin:8px 0}
+.zuri-exp[data-palette] .zx-content:has(.zs-create-screen),.zuri-exp[data-palette] .zx-content:has(.cw-event-detail){padding-bottom:max(16px,env(safe-area-inset-bottom))}
