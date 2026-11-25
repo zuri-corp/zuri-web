@@ -1,0 +1,43 @@
+/* Compact forms keep the user's content and the action in view on a phone. */
+.zuri-exp .zs-create-screen{padding-bottom:0}
+.zuri-exp .zs-create-screen form{gap:12px}
+.zuri-exp .zs-create-screen .zs-lead{margin:0 0 12px}
+.zuri-exp .zs-form-section{padding:15px;border-radius:16px}
+.zuri-exp .zs-form-section h2{font-size:16px!important;margin:0 0 12px}
+.zuri-exp .zs-form-section label{gap:5px;margin:0 0 10px;font-size:13px}
+.zuri-exp :is(.zs-create-screen,.oc-composer,.cw-card form) :is(input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea){min-height:44px;padding:10px 12px;font-size:16px;line-height:1.4;border-radius:12px}
+.zuri-exp :is(.zs-create-screen,.oc-composer,.cw-card form) textarea{height:46px;min-height:46px;resize:vertical;overflow:auto}
+.zuri-exp .zs-visibility-options{gap:7px;margin-bottom:12px}
+.zuri-exp .zs-visibility-options label{padding:10px;margin:0}
+.zuri-exp .zs-visibility-options small{margin-top:1px}
+.zs-time-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.zs-time-grid input{min-width:0;max-width:100%}
+.zs-capacity{display:flex;align-items:center;gap:6px;max-width:220px}
+.zs-capacity input{text-align:center;min-width:0;flex:1}
+.zs-capacity button{width:44px;height:44px;flex-shrink:0;border:1px solid var(--zs-border);border-radius:12px;background:var(--zs-raised);color:var(--zs-text);font-size:20px}
+.zuri-exp .oc-space-field-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.zuri-exp .oc-space-field-grid label{display:flex!important;align-items:center;min-height:44px;padding:7px 9px;margin:0;border-radius:11px;background:var(--zs-raised);line-height:1.25}
+.oc-custom-fields{margin-top:8px}.oc-custom-field{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;align-items:end}.oc-custom-field label{min-width:0}.oc-custom-field button{min-height:44px}
+.zuri-exp .oc-photo-picker-compact{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.zuri-exp .oc-photo-picker-compact>span{font-size:13px}
+.zuri-exp .oc-photo-picker-compact .oc-media-sources{display:flex;gap:5px}
+.zuri-exp .oc-photo-picker-compact .oc-media-icon{position:relative;display:grid;place-items:center;width:44px;height:44px;overflow:hidden;border:1px solid var(--zs-border);border-radius:12px;background:var(--zs-raised);color:var(--zs-text)}
+.oc-photo-picker-compact input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.zuri-exp .oc-composer{padding:12px;margin-bottom:12px}
+.zuri-exp .oc-caption-composer{padding:0!important}
+.zuri-exp .oc-caption-composer textarea{height:46px;min-height:46px!important}
+.zuri-exp .oc-caption-composer .oc-attachment-preview{margin:0 0 8px}
+.zuri-exp .oc-create .oc-post-head{margin-bottom:8px}
+.zuri-exp .oc-create .oc-action{min-height:44px;margin:6px 0}
+.zuri-exp .oc-camera-drafts{width:auto!important;padding:0 14px;border-radius:16px!important}
+.oc-camera-modes button[aria-pressed=true]{color:#fff;font-weight:800}
+.oc-shutter.is-recording span{width:30px;height:30px;border-radius:7px;background:#ff426b}
+.oc-studio-drafts{padding:12px 0}.oc-studio-drafts .oc-draft{padding:12px 0;border-bottom:1px solid var(--zs-border)}
+.oc-create{position:relative}.oc-share-overlay{position:absolute;z-index:8;left:12px;right:12px;bottom:95px;padding:16px;border:1px solid var(--zs-border);border-radius:18px;background:var(--zs-surface);box-shadow:0 10px 35px #0009}.oc-share-overlay>button:first-child{float:right}.oc-share-overlay p{font-size:12px;margin:5px 0}.oc-share-overlay div{display:flex;gap:8px;overflow:auto}.oc-share-overlay div>*{padding:8px 12px;border-radius:10px;background:var(--zs-raised);white-space:nowrap}
+.zuri-exp .oc-profile-shell .cw-profile-view{padding:0}
+.zuri-exp .oc-profile-shell .cw-profile-identity{display:flex;align-items:center;margin:0 0 12px;gap:12px}
+.zuri-exp .oc-profile-shell .cw-profile-identity img,.zuri-exp .oc-profile-shell .cw-profile-initial{width:76px;height:76px;border:2px solid var(--zs-border);font-size:28px}
+.cw-profile-heading{min-width:0;flex:1}.cw-profile-heading h2{margin:0!important;font-size:18px}.cw-profile-heading p{margin:2px 0 0!important;font-size:13px}
+.zuri-exp .cw-profile-view>p{margin:5px 0;font-size:14px;line-height:1.4}.zuri-exp .cw-profile-links{gap:5px;margin:3px 0}.zuri-exp .cw-profile-view>small{letter-spacing:0;margin:8px 0}
+.zuri-exp[data-offline=true] .cw-connection-error{display:none}
+@media(max-width:360px){.zs-time-grid{grid-template-columns:1fr}.zuri-exp .zs-form-section{padding:12px}}

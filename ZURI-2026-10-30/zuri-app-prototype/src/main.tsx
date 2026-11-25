@@ -77,3 +77,4 @@ import './experience/object-experiences.css';
 import './experience/social-refinements.css';
 
 import './experience/usability.css';
+import './experience/compact-creation.css';
