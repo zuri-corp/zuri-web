@@ -6,7 +6,7 @@ import {threadComments} from '../src/experience/threadModel.ts';
 import {freshSocietyTopics} from '../src/experience/freshSocieties.ts';
 test('completed creation replaces the form history entry across worlds',()=>{
  for(const [from,to] of [['new-topic','topic'],['new-ping','ping'],['new-space','space-wall'],['new-society','society'],['new-moment','chapter'],['new-channel','channel'],['checkout','order']])assert.equal(replacesCreation(objectRoute(from,'create'),objectRoute(to,'saved')),true);
- assert.equal(replacesCreation({world:'rizz',tab:'Create'},{world:'rizz',tab:'Feed'}),true);
+ assert.equal(replacesCreation({world:'rizz',tab:'Studio'},{world:'rizz',tab:'Feed'}),true);
  assert.equal(replacesCreation(objectRoute('event-create','create'),objectRoute('event-create','saved')),true);
  assert.equal(replacesCreation(objectRoute('society','s'),objectRoute('topic','t')),false);
 });
