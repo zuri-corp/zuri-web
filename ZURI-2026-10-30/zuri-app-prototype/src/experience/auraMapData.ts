@@ -22,16 +22,23 @@ async function resolveOne(entity:CloudEntity&{kind:PamojaMapPoint['kind']},signa
  const cacheKey=`${entity.id}:${entity.updated_at}:${location.toLowerCase()}`;
  const cached=geocodeCache.get(cacheKey);
  if(cached)return fromEntity(entity,location,cached);
+ const requestController=new AbortController();
+ const abort=()=>requestController.abort();
+ signal?.addEventListener('abort',abort,{once:true});
+ const timer=setTimeout(abort,8000);
  try{
-  const match=(await placeSuggestions(location,signal))[0];
+  const match=(await placeSuggestions(location,requestController.signal))[0];
   if(!match)return null;
   const coordinates={latitude:match.latitude,longitude:match.longitude};
   if(geocodeCache.size>=80)geocodeCache.delete(geocodeCache.keys().next().value!);
   geocodeCache.set(cacheKey,coordinates);
   return fromEntity(entity,location,coordinates);
  }catch(error){
-  if((error as DOMException).name==='AbortError')throw error;
+  if(signal?.aborted)throw error;
   return null;
+ }finally{
+  clearTimeout(timer);
+  signal?.removeEventListener('abort',abort);
  }
 }
 
@@ -44,7 +51,13 @@ async function resolveInSmallBatches<T>(items:T[],work:(item:T)=>Promise<PamojaM
 }
 
 /** Resolves only public locations a creator deliberately chose to publish. */
-export async function resolvePamojaMapPoints(entities:CloudEntity[],signal?:AbortSignal):Promise<PamojaMapPoint[]>{
+export async function resolvePamojaMapPoints(entities:CloudEntity[],signal?:AbortSignal,onImmediate?:(points:PamojaMapPoint[])=>void):Promise<PamojaMapPoint[]>{
  const candidates=entities.filter(isMappable).slice(0,24);
+ const immediate=candidates.flatMap(entity=>{
+  const location=locationOf(entity),latitude=number(entity.details.latitude),longitude=number(entity.details.longitude);
+  const coordinates=Number.isFinite(latitude)&&Number.isFinite(longitude)?{latitude,longitude}:geocodeCache.get(`${entity.id}:${entity.updated_at}:${location.toLowerCase()}`);
+  return coordinates?[fromEntity(entity,location||'Published location',coordinates)]:[];
+ });
+ onImmediate?.(immediate);
  return resolveInSmallBatches(candidates,entity=>resolveOne(entity,signal));
 }

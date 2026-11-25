@@ -1,7 +1,7 @@
 @import 'leaflet/dist/leaflet.css';
 
 /* Aura Map is an immersive surface, not another page inside the app shell. */
-.aura-map-fullscreen .zx-topbar{display:none}
+.zuri-exp .aura-map-fullscreen .zx-topbar{display:none!important}
 .aura-map-fullscreen .zx-main{position:relative;z-index:0;overflow:hidden!important;padding:0!important;background:#08111d!important}
 .aura-map-fullscreen .zx-content{width:100%;height:100%;min-height:0;max-width:none;margin:0;padding:0!important}
 .zuri-exp:has(.aura-map-fullscreen) .zm-viola-orb{display:none}
@@ -43,3 +43,27 @@
  .am-place-card{left:calc(50% - 345px);right:auto;width:690px}
 }
 @media(max-height:650px){.am-sheet{bottom:86px}.am-place-card{bottom:190px}.am-filter-row button{padding-block:6px}}
+
+/* Clear place details and a lightweight glass panel over the map. */
+.aura-map-fullscreen .am-leaflet .leaflet-tile{filter:none}
+.aura-map-fullscreen .am-leaflet:after{background:linear-gradient(180deg,#07121e50,transparent 20%,transparent 75%,#07121e55)}
+.aura-map-fullscreen .am-place-card{background:rgba(13,28,42,.94);border:1px solid rgba(255,255,255,.3);color:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}
+.aura-map-fullscreen .am-place-card strong{color:#fff!important;font-size:15px;line-height:1.35}
+.aura-map-fullscreen .am-place-card small,.aura-map-fullscreen .am-place-card p{color:#d6e7f2!important;letter-spacing:normal;line-height:1.45}
+.aura-map-fullscreen .am-place-card>span{color:#fff}
+.aura-map-fullscreen .am-sheet{background:rgba(226,240,243,.52);border:1px solid rgba(255,255,255,.56);color:#102a37;box-shadow:0 -5px 20px #07182520;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:0 14px 12px;transition:background-color .2s ease}
+.aura-map-fullscreen .am-sheet-handle{display:flex;align-items:center;justify-content:center;width:100%;height:32px;margin:0;border:0;background:transparent;touch-action:none;cursor:grab}
+.aura-map-fullscreen .am-sheet-handle:active{cursor:grabbing}
+.aura-map-fullscreen .am-sheet-handle span{width:38px;height:4px;border-radius:20px;background:#17354380}
+.aura-map-fullscreen .am-filter-row button{background:rgba(255,255,255,.58);border-color:rgba(255,255,255,.65);color:#16333f;font-weight:700}
+.aura-map-fullscreen .am-filter-row button[aria-pressed=true]{background:#146c7edb;border-color:#74e5ed;color:#fff}
+.aura-map-fullscreen .am-sheet p{color:#173944!important;font-weight:600}
+.aura-map-fullscreen .am-sheet p button{color:#075e70!important;font-weight:750}
+.aura-map-fullscreen .am-sheet>small:not(.am-attribution){color:#672c19}
+.aura-map-fullscreen .cw-world{height:100%;min-height:0;padding:0;overflow:hidden}
+.aura-map-fullscreen .am-sheet-content{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;overflow:hidden}
+.aura-map-fullscreen .am-sheet-content[data-expanded=true]{grid-template-rows:1fr}
+.aura-map-fullscreen .am-sheet-content>div{min-height:0;overflow:hidden}
+.aura-map-fullscreen .am-attribution{position:absolute;z-index:6;right:10px;top:65px;bottom:auto;color:#102e39;background:rgba(255,255,255,.85);padding:2px 5px;border-radius:4px;letter-spacing:normal;font-size:10px;text-decoration:none;line-height:1.3}
+@media(prefers-reduced-transparency:reduce){.aura-map-fullscreen .am-sheet{background:#e3f0f2;backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.aura-map-fullscreen .am-sheet,.aura-map-fullscreen .am-sheet-content{transition:none}}
