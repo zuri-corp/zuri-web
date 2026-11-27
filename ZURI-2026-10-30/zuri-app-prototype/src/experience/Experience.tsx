@@ -102,11 +102,13 @@ export default function Experience() {
     await cloudRequest('ai.threads.save',{id:workspace.id,assistant:workspace.assistant,title:workspace.title,contexts:workspace.contexts.map(({kind,id})=>({kind,id}))});
     for(const message of messages)await cloudRequest('ai.threads.message',{id:workspace.id,message_id:message.id,role:message.role,content:message.content,sources:(message.sources||[]).slice(0,12)});
   }
-  function switchAssistant(value:'viola'|'robert'){
+  function switchAssistant(value:'viola'|'robert',context?:ConversationContext){
     aiEpoch.current++;try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The current conversation remains in memory. */}
     let next:ConversationWorkspace;try{next=readConversationWorkspace(JSON.parse(sessionStorage.getItem('zuri-ai-workspace:'+value)||'null'),value);}catch{next=createConversationWorkspace(value);}
+    if(context&&validConversationContext(context))next=replaceConversationContext(next,[context,...next.contexts]);
     setAssistant(value);setAIWorkspace(next);setAiMessages(next.turns);setAIIntent(null);setAiError('');setAiInput('');setAiBusy(false);setViolaSession(session=>session+1);
   }
+  useEffect(()=>{const openSpace=(event:Event)=>{const detail=(event as CustomEvent).detail;if(!detail||typeof detail.id!=='string'||typeof detail.title!=='string')return;switchAssistant('robert',{kind:'space',id:detail.id,label:detail.title});setAiInput(detail.owner?'Help me manage and grow this Space.':'What can you tell me about this Space?');setViola(true);};window.addEventListener('zuri-space-sanyu',openSpace);return()=>window.removeEventListener('zuri-space-sanyu',openSpace);});
   useEffect(()=>{try{sessionStorage.setItem('zuri-ai-workspace:'+aiWorkspace.assistant,JSON.stringify(aiWorkspace));}catch{/* The conversation remains available for this page session. */}},[aiWorkspace]);
   useEffect(()=>{
    const clear=()=>{try{sessionStorage.removeItem('zuri-ai-workspace:viola');sessionStorage.removeItem('zuri-ai-workspace:robert');}catch{}setViola(false);resetViola();setViolaSession(value=>value+1);};
