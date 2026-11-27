@@ -1,0 +1,5 @@
+# Sanyu Space knowledge foundation
+
+The proposed database table separates customer-visible information from owner-only entries. Only the Space owner may edit entries. Signed-in visitors may read customer entries only for a published public Space; private or unpublished Spaces do not expose them. Manager access is intentionally not granted until role permissions are specified and enforced server-side.
+
+The proposal is not deployed and does not yet connect to Sanyu or provide an editor. Before enabling it, verify existing entity row-level policies and run owner, unrelated-user, public visitor, private-Space, and ownership-transfer tests against the actual database. Access must be checked on each request. Add explicit source references (entry ID, title, timestamp) to retrieved answers; when no permitted evidence supports an answer, Sanyu should say it does not know. Never include owner-only rows in a customer prompt or client response. Integrate current catalog and Space details as separate permission-checked sources rather than duplicating them as unverified facts.

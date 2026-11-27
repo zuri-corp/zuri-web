@@ -49,7 +49,7 @@ export default function MomentViewer({record,busy,onSave,onDelete,onDismiss}:{re
    <div className="oc-moment-actions">
     <strong>{title}</strong>
     {!action&&<>
-     <button onClick={()=>setAction('publish')}>Publish to Channel</button>
+     <button onClick={()=>{dismiss();window.dispatchEvent(new CustomEvent('zuri-ask-object',{detail:{kind:'moment',id:record.id,label:title}}));}}>Ask Viola</button><button onClick={()=>setAction('publish')}>Publish to Channel</button>
      <button onClick={()=>setAction('rename')}>Rename</button>
      <button onClick={()=>void work(async()=>{setChapters(await cloudRequest<CloudRecord[]>('records.list',{kind:'chapter'}));setAction('context');},false)} disabled={working}>Add to a Chapter</button>
      <button onClick={()=>setAction('replace')}>Replace media</button>

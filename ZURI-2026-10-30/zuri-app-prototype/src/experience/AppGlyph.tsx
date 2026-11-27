@@ -1,3 +1,5 @@
+import {BookmarkSimple} from '@phosphor-icons/react/dist/csr/BookmarkSimple';
+import {ShareNetwork} from '@phosphor-icons/react/dist/csr/ShareNetwork';
 import {House} from '@phosphor-icons/react/dist/csr/House';
 import {ArrowLeft} from '@phosphor-icons/react/dist/csr/ArrowLeft';
 import {Camera} from '@phosphor-icons/react/dist/csr/Camera';
@@ -43,7 +45,7 @@ import {Sun} from '@phosphor-icons/react/dist/csr/Sun';
 import {Circle} from '@phosphor-icons/react/dist/csr/Circle';
 import {ArrowClockwise} from '@phosphor-icons/react/dist/csr/ArrowClockwise';
 import {CameraRotate} from '@phosphor-icons/react/dist/csr/CameraRotate';
-const icons:Record<string,typeof House>={home:House,back:ArrowLeft,camera:Camera,flipCamera:CameraRotate,media:Images,tag:Tag,chevron:CaretDown,plus:Plus,note:Note,event:CalendarDots,check:Check,send:ArrowUp,options:SlidersHorizontal,more:DotsThree,microphone:Microphone,close:X,delete:Trash,heart:Heart,bell:Bell,settings:Gear,sun:Sun,moon:Moon,refresh:ArrowClockwise,lounge:Sparkle,Feed:Newspaper,Map:MapPin,Spaces:MapPin,Societies:UsersThree,Find:MagnifyingGlass,Planner:CalendarCheck,Events:Ticket,Pings:Broadcast,Create:PencilSimple,Channels:Megaphone,Chats:ChatCircle,Moments:Images,Discover:Compass,Chapters:BookOpen,Profile:UserCircle,shield:ShieldCheck,palette:Palette,flag:Flag,work:Briefcase,wallet:Wallet,store:Storefront,link:LinkSimple};
+const icons:Record<string,typeof House>={home:House,back:ArrowLeft,camera:Camera,flipCamera:CameraRotate,media:Images,tag:Tag,chevron:CaretDown,plus:Plus,note:Note,event:CalendarDots,check:Check,send:ArrowUp,options:SlidersHorizontal,more:DotsThree,share:ShareNetwork,bookmark:BookmarkSimple,microphone:Microphone,close:X,delete:Trash,heart:Heart,bell:Bell,settings:Gear,sun:Sun,moon:Moon,refresh:ArrowClockwise,lounge:Sparkle,Feed:Newspaper,Map:MapPin,Spaces:MapPin,Societies:UsersThree,Find:MagnifyingGlass,Planner:CalendarCheck,Events:Ticket,Pings:Broadcast,Create:PencilSimple,Channels:Megaphone,Chats:ChatCircle,Moments:Images,Discover:Compass,Chapters:BookOpen,Profile:UserCircle,shield:ShieldCheck,palette:Palette,flag:Flag,work:Briefcase,wallet:Wallet,store:Storefront,link:LinkSimple};
 export function SectionGlyph({name,active=false}:{name:string;active?:boolean}){if(name==='next'||name==='chevron')return <AppGlyph name={name}/>;const Icon=icons[name]||Circle;return <Icon size={24} weight={active?'fill':'regular'} aria-hidden="true" className="zuri-ui-icon"/>;}
 export function AppGlyph({name,size=24}:{name:string;size?:number}){
  if(name==='next'||name==='chevron'){

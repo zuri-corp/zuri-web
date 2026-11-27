@@ -138,3 +138,15 @@
 .vw-selected-contexts>span>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vw-selected-contexts button{display:grid;place-items:center;flex:none;width:26px;height:26px;border:0;border-radius:50%;background:#ffffff12;color:inherit}
 @keyframes vw-host-in{from{opacity:0;transform:translateY(8px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* The assistant follows the active ZURI theme, including light mode. */
+.vw-host .vw-box{background:var(--zs-bg,#202738);border-color:var(--zs-border,#ffffff33);color:var(--zs-text,#fff);--vw-text:var(--zs-text,#fff);--vw-muted:var(--zs-muted,#c2bed4)}
+.vw-host .vw-box:not(.vw-full-mode){height:min(570px,72%);min-height:0;bottom:12px;width:calc(100% - 24px)}
+.vw-host .vw-box :is(.vw-header h2,.vw-header>button,.vw-assistant-switch,.vw-compose textarea){color:var(--zs-text,#fff)}
+.vw-host .vw-box :is(.vw-header small,.vw-compose textarea::placeholder){color:var(--zs-muted,#ccc)}
+.vw-host .vw-box .vw-compose{background:transparent}
+.vw-host .vw-box .vw-compose form{background:var(--zs-surface,#ffffff12);border-color:var(--zs-border,#ffffff33)}
+.vw-host .vw-box .vw-user,.vw-host .vw-box .vw-ai-message{width:fit-content;max-width:88%;padding:11px 15px;margin:10px 0;border:1px solid var(--zs-border,#ffffff20);color:var(--zs-text,#fff);line-height:1.5;box-sizing:border-box}
+.vw-host .vw-box .vw-user{margin-left:auto;background:color-mix(in srgb,var(--zs-accent,#aa88ee) 22%,var(--zs-surface,#303040));border-radius:18px 18px 5px 18px}
+.vw-host .vw-box .vw-ai-message{margin-right:auto;background:var(--zs-raised,#303040);border-radius:18px 18px 18px 5px}
+.vw-host .vw-box .vw-ai-message p{margin:0;color:inherit;line-height:1.55}
